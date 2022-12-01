@@ -1,7 +1,3 @@
-@file:Suppress("OPT_IN_IS_NOT_ENABLED")
-
-import org.jetbrains.kotlin.konan.library.konanCommonLibraryPath
-
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -12,65 +8,54 @@ plugins {
 kotlin {
     android()
 
-    iosArm32 {
-        binaries.framework {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
             baseName = "shared"
-        }
-    }
-    iosX64("uikitX64") {
-        binaries {
-            executable {
-                entryPoint = "main"
-                freeCompilerArgs += listOf(
-                    "-linker-option", "-framework", "-linker-option", "Metal",
-                    "-linker-option", "-framework", "-linker-option", "CoreText",
-                    "-linker-option", "-framework", "-linker-option", "CoreGraphics"
-                )
-            }
-            framework {
-                baseName = "shared"
-            }
-        }
-    }
-    iosArm64("uikitArm64") {
-        binaries {
-            executable {
-                entryPoint = "main"
-                freeCompilerArgs += listOf(
-                    "-linker-option", "-framework", "-linker-option", "Metal",
-                    "-linker-option", "-framework", "-linker-option", "CoreText",
-                    "-linker-option", "-framework", "-linker-option", "CoreGraphics"
-                )
-                // TODO: the current compose binary surprises LLVM, so disable checks for now.
-                freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
-            }
-            framework {
-                baseName = "shared"
-            }
+            freeCompilerArgs += listOf(
+                "-linker-option", "-framework", "-linker-option", "Metal",
+                "-linker-option", "-framework", "-linker-option", "CoreText",
+                "-linker-option", "-framework", "-linker-option", "CoreGraphics"
+            )
+            freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
         }
     }
 
     sourceSets {
         val commonMain by getting {
-            resources.srcDir("src/commonMain/resources")
-
             dependencies {
-                implementation(compose.ui)
-                implementation(compose.foundation)
-                implementation(compose.material)
                 implementation(compose.runtime)
-
-                implementation("io.ktor:ktor-utils:2.1.3")
+                implementation(compose.foundation)
+                implementation(compose.material3)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
             }
         }
         val androidMain by getting
-
-        val iosArm32Main by getting
-        val uikitArm64Main by getting
-        val uikitX64Main by getting {
+        val androidTest by getting
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val uikitX64Main by creating {
             dependsOn(commonMain)
-            uikitArm64Main.dependsOn(this)
-            iosArm32Main.dependsOn(this)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
+        val iosX64Test by getting
+        val iosArm64Test by getting
+        val iosSimulatorArm64Test by getting
+        val iosTest by creating {
+            dependsOn(commonTest)
+            iosX64Test.dependsOn(this)
+            iosArm64Test.dependsOn(this)
+            iosSimulatorArm64Test.dependsOn(this)
         }
     }
 }
@@ -82,31 +67,7 @@ android {
         minSdk = 21
         targetSdk = 32
     }
-}
-
-compose.experimental {
-    uikit.application {
-        bundleIdPrefix = "com.yama.marshal"
-        projectName = "Marshal"
-        deployConfigurations {
-            simulator("IPhone13") {
-                device = org.jetbrains.compose.experimental.dsl.IOSDevices.IPHONE_13_PRO
-            }
-            simulator("IPadUI") {
-                device = org.jetbrains.compose.experimental.dsl.IOSDevices.IPAD_MINI_6th_Gen
-            }
-        }
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-}
-
-kotlin {
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries.all {
-            freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
-        }
+    sourceSets["main"].apply {
+        res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     }
 }
