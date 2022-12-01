@@ -19,3 +19,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MarshalKMM"
 include(":shared")
+include(":androidApp")
