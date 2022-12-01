@@ -1,4 +1,4 @@
-package com.yama.myapplication5.android
+package com.yama.marshal
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
