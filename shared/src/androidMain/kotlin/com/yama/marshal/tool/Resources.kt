@@ -25,3 +25,11 @@ actual fun painterResource(path: String): Painter {
         context.resources.getIdentifier(name, "drawable", context.packageName)
     return androidx.compose.ui.res.painterResource(resId)
 }
+
+@Composable
+internal actual fun stringResource(key: String): String {
+    val context: Context = LocalContext.current
+    val resId: Int =
+        context.resources.getIdentifier(key, "string", context.packageName)
+    return androidx.compose.ui.res.stringResource(resId)
+}

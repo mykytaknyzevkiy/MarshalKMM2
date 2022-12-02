@@ -12,3 +12,7 @@ internal expect fun fontResources(
 internal expect fun painterResource(
     path: String
 ): Painter
+
+internal expect fun stringResource(
+    key: String
+): String

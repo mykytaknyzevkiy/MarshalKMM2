@@ -19,22 +19,6 @@ internal actual fun fontResources(
 
 @Composable
 internal actual fun painterResource(path: String): Painter {
-    /*val (filename, type) = when (val lastPeriodIndex = path.lastIndexOf('.')) {
-        0 -> {
-            null to path.drop(1)
-        }
-        in 1..Int.MAX_VALUE -> {
-            path.take(lastPeriodIndex) to path.drop(lastPeriodIndex + 1)
-        }
-        else -> {
-            path to null
-        }
-    }
-
-    val pathBundle = mainBundle.pathForResource(filename, type) ?: error(
-        "Couldn't get path of $path (parsed as: ${listOfNotNull(filename,type).joinToString(".")})"
-    )*/
-
     val image = UIImage.imageNamed(path) ?: error(
         "Couldn't getUIImage.imageNamed $path)"
     )
@@ -47,4 +31,9 @@ internal actual fun painterResource(path: String): Painter {
     return BitmapPainter(
         org.jetbrains.skia.Image.makeFromEncoded(byteArray).toComposeImageBitmap()
     )
+}
+
+@Composable
+internal actual fun stringResource(key: String): String {
+    TODO("Parce strings xml")
 }
