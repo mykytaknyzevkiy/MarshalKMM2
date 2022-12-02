@@ -7,16 +7,14 @@ import com.yama.marshal.tool.userName
 import io.ktor.util.date.*
 
 object AuthManager {
-    private val slash = "/"
-    private val APIVersion = "1.0"
-    private val SignatureVersion = "2.0"
-    private val SignatureMethod = "HmacSHA256"
-    private val ResponseFormat = "JSON"
-    private val ApplicationAPIKey = "uUqnXUKU86kghJk"
-    private val ApplicationSecretKey = "3CA0LPbu3FlXRin0UCH05rM"
-    private val ApplicationIgolfAPIKey = "ZLrzHqLHyAmBxB2"
-    private val ApplicationIgolfSecretKey = "msRPtr6VuEpe436LEMOoSE289CDZcQ"
-    private val timeStampDateFormatPattern = "yyMMddHHmmssZZZZ"
+    private const val slash = "/"
+    private const val APIVersion = "1.0"
+    private const val SignatureVersion = "2.0"
+    private const val SignatureMethod = "HmacSHA256"
+    private const val ResponseFormat = "JSON"
+    private const val ApplicationAPIKey = "uUqnXUKU86kghJk"
+    private const val ApplicationSecretKey = "3CA0LPbu3FlXRin0UCH05rM/ZzvCkK"
+    private const val timeStampDateFormatPattern = "yyMMddHHmmssZZZZ"
     private val timeStampDateFormat = GMTDateParser(timeStampDateFormatPattern)
 
     fun getUrlForAction(action: Action): String {
@@ -61,7 +59,7 @@ object AuthManager {
     }
 
     private fun getTimestamp(): String {
-        return GMTDate().format(timeStampDateFormatPattern)
+        return /*GMTDate().format(timeStampDateFormatPattern)*/ "221202200656GMT+02:00"
     }
 }
 

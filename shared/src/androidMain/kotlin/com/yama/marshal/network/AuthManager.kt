@@ -1,12 +1,15 @@
 package com.yama.marshal.network
 
+import android.os.Build
 import android.util.Base64
+import androidx.annotation.RequiresApi
 import java.io.UnsupportedEncodingException
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
+@RequiresApi(Build.VERSION_CODES.FROYO)
 internal actual fun makeSignature(src: String, secret: String): String {
     val CHARACTER_ENCODING = "UTF-8"
     var res = ""

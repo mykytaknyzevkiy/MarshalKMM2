@@ -22,7 +22,7 @@ internal class LoginScreen(navigationController: NavigationController) :
     YamaScreen(navigationController) {
     override val route: String = "login"
 
-    override val viewModel: YamaViewModel = LoginViewModel()
+    override val viewModel: LoginViewModel = LoginViewModel()
 
     @Composable
     override fun title(): String = ""
@@ -47,56 +47,72 @@ internal class LoginScreen(navigationController: NavigationController) :
 
                 Spacer(modifier = Modifier.height(Sizes.screenPadding * 3))
 
-                UserNameField()
-
-                Spacer(modifier = Modifier.height(Sizes.screenPadding))
-
-                PasswordField()
-
-                Spacer(modifier = Modifier.height(Sizes.screenPadding))
-
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {}, shape = RoundedCornerShape(0.dp)
-                ) {
-                    Text("Log in".uppercase())
+                val userName = remember {
+                    mutableStateOf("")
                 }
+
+                UserNameField(userName)
+
+                Spacer(modifier = Modifier.height(Sizes.screenPadding))
+
+                val password = remember {
+                    mutableStateOf("")
+                }
+
+                PasswordField(password)
+
+                Spacer(modifier = Modifier.height(Sizes.screenPadding))
+
+                val currentState by remember {
+                    viewModel.currentState
+                }.collectAsState()
+
+                if (currentState is LoginViewState.Loading)
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                else
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            viewModel.login(userName = userName.value, password = password.value)
+                        },
+                        enabled = userName.value.isNotBlank() && password.value.isNotBlank(),
+                        shape = RoundedCornerShape(0.dp)
+                    ) {
+                        Text("Log in".uppercase())
+                    }
             }
         }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun UserNameField() {
-        var userName by remember {
-            mutableStateOf("")
-        }
-
+    private fun UserNameField(userName: MutableState<String>) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = userName,
+            value = userName.value,
             label = {
                 Text("Login")
             },
-            onValueChange = { userName = it }
+            onValueChange = { userName.value = it }
         )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun PasswordField() {
-        var password by remember {
-            mutableStateOf("")
-        }
+    private fun PasswordField(password: MutableState<String>) {
+        val currentState by remember {
+            viewModel.currentState
+        }.collectAsState()
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = password,
+            value = password.value,
             label = {
                 Text("Password")
             },
             visualTransformation = PasswordVisualTransformation(),
-            onValueChange = { password = it }
+            onValueChange = { password.value = it },
+            isError = currentState is LoginViewState.Error
         )
     }
 

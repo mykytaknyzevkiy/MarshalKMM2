@@ -20,6 +20,8 @@ private val LightColorScheme = lightColorScheme(
 
     onBackground = Color.Black,
 
+    error = Color(255, 95, 21)
+
    // primaryContainer = Color.Red
 )
 
