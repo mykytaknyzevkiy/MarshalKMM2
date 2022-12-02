@@ -27,5 +27,7 @@ class SplashViewModel : YamaViewModel() {
             _currentViewState.value = SplashViewState.RequestLogin
             return
         }
+
+        _currentViewState.value = SplashViewState.OK
     }
 }

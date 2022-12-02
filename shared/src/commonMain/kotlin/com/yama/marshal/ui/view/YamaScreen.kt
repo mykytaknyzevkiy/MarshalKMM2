@@ -18,7 +18,7 @@ internal abstract class YamaScreen(protected val navigationController: Navigatio
 
     abstract val viewModel: YamaViewModel
 
-    open val isToolbarEnable: Boolean = true
+    open val isToolbarEnable: Boolean = false
 
     @Composable
     abstract fun content(args: List<NavArg>)
