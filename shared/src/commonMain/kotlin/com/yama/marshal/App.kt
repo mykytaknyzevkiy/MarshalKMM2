@@ -1,7 +1,8 @@
 package com.yama.marshal
 
 import androidx.compose.runtime.Composable
-import com.yama.marshal.screen.SplashScreen
+import com.yama.marshal.screen.login.LoginScreen
+import com.yama.marshal.screen.splash.SplashScreen
 import com.yama.marshal.ui.navigation.rememberNavController
 import com.yama.marshal.ui.view.NavHost
 
@@ -11,6 +12,9 @@ internal fun App() {
 
     NavHost(
         navigationController = navigationController,
-        screens = arrayOf(SplashScreen(navigationController))
+        screens = arrayOf(
+            SplashScreen(navigationController),
+            LoginScreen(navigationController)
+        )
     )
 }

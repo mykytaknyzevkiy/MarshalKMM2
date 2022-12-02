@@ -1,4 +1,4 @@
-package com.yama.marshal.screen
+package com.yama.marshal.screen.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -6,6 +6,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.tool.painterResource
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
@@ -14,6 +15,8 @@ import com.yama.marshal.ui.view.YamaScreen
 
 internal class SplashScreen(navigationController: NavigationController) : YamaScreen(navigationController) {
     override val route: String = "splash"
+
+    override val viewModel: YamaViewModel = SplashViewModel()
 
     @Composable
     override fun title(): String = ""
