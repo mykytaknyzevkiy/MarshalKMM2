@@ -18,6 +18,8 @@ import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.tool.Orientation
 import com.yama.marshal.ui.tool.currentOrientation
 import com.yama.marshal.ui.view.YamaScreen
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class LoginScreen(navigationController: NavigationController) :
     YamaScreen(navigationController) {
@@ -49,7 +51,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding * 3))
 
                 val userName = remember {
-                    mutableStateOf("")
+                    mutableStateOf("igolfsaltcreek")
                 }
 
                 UserNameField(userName)
@@ -57,7 +59,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding))
 
                 val password = remember {
-                    mutableStateOf("")
+                    mutableStateOf("92108340")
                 }
 
                 PasswordField(password)
@@ -82,6 +84,15 @@ internal class LoginScreen(navigationController: NavigationController) :
                         Text(stringResource("login_screen_button_login_label").uppercase())
                     }
             }
+        }
+
+        LaunchedEffect(0) {
+            viewModel.currentState
+                .onEach {
+                    if (it is LoginViewState.OK)
+                        navigationController.navigateToAndFinish("main")
+                }
+                .launchIn(this)
         }
     }
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Marshal</string>
+
     <string name="login_screen_text_field_username_label">Login</string>
     <string name="login_screen_text_field_password_label">Password</string>
     <string name="login_screen_button_login_label">Log in</string>

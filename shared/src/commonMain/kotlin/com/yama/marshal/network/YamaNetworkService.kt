@@ -33,7 +33,9 @@ abstract class YamaNetworkService(val host: String) {
             val resBody = response.bodyAsText()
 
             try {
-                Json.decodeFromString(resBody)
+                Json {
+                    ignoreUnknownKeys = true
+                }.decodeFromString(resBody)
             } catch (e: Exception) {
                 Logger.e(tag = TAG, message = {
                     "Error to parse response $resBody"

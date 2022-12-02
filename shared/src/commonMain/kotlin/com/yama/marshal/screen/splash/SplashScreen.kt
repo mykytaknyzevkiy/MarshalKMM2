@@ -44,6 +44,8 @@ internal class SplashScreen(navigationController: NavigationController) : YamaSc
                 .onEach {
                     if (it is SplashViewState.RequestLogin)
                         navigationController.navigateToAndFinish("login")
+                    else if (it is SplashViewState.OK)
+                        navigationController.navigateToAndFinish("main")
                 }
                 .launchIn(this)
 
