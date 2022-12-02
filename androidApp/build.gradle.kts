@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.yama.marshal.android"
-    compileSdk = 32
+    namespace = "com.yama.marshal"
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.yama.marshal"
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
@@ -17,7 +17,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.0"
+        kotlinCompilerExtensionVersion = "1.3.2"
     }
     packagingOptions {
         resources {
@@ -33,7 +33,7 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation("androidx.compose.ui:ui:1.3.1")
-    implementation("androidx.compose.foundation:foundation:1.3.1")
-    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.compose.ui:ui:1.4.0-alpha02")
+    implementation("androidx.compose.foundation:foundation:1.4.0-alpha02")
+    implementation("androidx.activity:activity-compose:1.7.0-alpha02")
 }

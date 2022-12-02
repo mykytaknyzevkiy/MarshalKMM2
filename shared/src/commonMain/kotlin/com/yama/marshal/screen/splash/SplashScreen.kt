@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.yama.marshal.screen.YamaViewModel
@@ -12,11 +13,13 @@ import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.YamaScreen
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class SplashScreen(navigationController: NavigationController) : YamaScreen(navigationController) {
     override val route: String = "splash"
 
-    override val viewModel: YamaViewModel = SplashViewModel()
+    override val viewModel: SplashViewModel = SplashViewModel()
 
     @Composable
     override fun title(): String = ""
@@ -34,6 +37,17 @@ internal class SplashScreen(navigationController: NavigationController) : YamaSc
             Spacer(modifier = Modifier.height(Sizes.screenPadding))
 
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+
+        LaunchedEffect(0) {
+            viewModel.currentViewState
+                .onEach {
+                    if (it is SplashViewState.RequestLogin)
+                        navigationController.navigateToAndFinish("login")
+                }
+                .launchIn(this)
+
+            viewModel.loadData()
         }
     }
 

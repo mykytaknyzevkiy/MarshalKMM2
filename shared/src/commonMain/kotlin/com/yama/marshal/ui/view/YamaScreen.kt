@@ -5,7 +5,7 @@ import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 
-internal abstract class YamaScreen(private val navigationController: NavigationController) {
+internal abstract class YamaScreen(protected val navigationController: NavigationController) {
     abstract val route: String
 
     @Composable

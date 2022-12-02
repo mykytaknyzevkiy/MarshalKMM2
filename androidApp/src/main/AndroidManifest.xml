@@ -6,7 +6,8 @@
     <application
         android:allowBackup="false"
         android:supportsRtl="true"
-        android:name=".MarshalApp">
+        android:name=".MarshalApp"
+        android:theme="@style/Theme.YamaScoreBoard">
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -1,6 +1,8 @@
 package com.yama.marshal.ui.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -27,7 +29,14 @@ internal fun YamaTheme(
 ) {
     MaterialTheme(
         colorScheme = LightColorScheme,
-        //typography = Typography(),
+        typography = Typography(),
+        shapes = Shapes(
+            extraLarge = RoundedCornerShape(0.dp),
+            large = RoundedCornerShape(0.dp),
+            extraSmall = RoundedCornerShape(0.dp),
+            small = RoundedCornerShape(0.dp),
+            medium = RoundedCornerShape(0.dp)
+        ),
         content = content
     )
 }
@@ -59,5 +68,9 @@ object Sizes {
 
     val system_dialog_width = 940.dp
     val system_dialog_height = 520.dp
+
+    val login_screen_logo_width = 400.dp
+
+    val login_screen_content_width = 430.dp
 
 }

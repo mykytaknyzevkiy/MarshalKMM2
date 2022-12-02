@@ -75,11 +75,8 @@ kotlin {
 
 android {
     namespace = "com.yama.marshal"
-    compileSdk = 32
-    defaultConfig {
-        minSdk = 21
-        targetSdk = 32
-    }
+    compileSdk = 33
+    defaultConfig.targetSdk = 33
     sourceSets["main"].apply {
         res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     }
