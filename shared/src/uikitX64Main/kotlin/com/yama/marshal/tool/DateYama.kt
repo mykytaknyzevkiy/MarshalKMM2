@@ -1,7 +1,14 @@
 package com.yama.marshal.tool
 
 import io.ktor.util.date.*
+import platform.Foundation.*
 
 actual fun GMTDate.format(pattern: String): String {
-    TODO("Add body for IOS")
+    val date = NSDate(this.timestamp.toDouble())
+
+    val dateFormatter = NSDateFormatter().apply {
+        dateFormat = pattern
+    }
+
+    return dateFormatter.stringFromDate(date)
 }

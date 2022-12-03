@@ -51,7 +51,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding * 3))
 
                 val userName = remember {
-                    mutableStateOf("igolfsaltcreek")
+                    mutableStateOf("")
                 }
 
                 UserNameField(userName)
@@ -59,7 +59,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding))
 
                 val password = remember {
-                    mutableStateOf("92108340")
+                    mutableStateOf("")
                 }
 
                 PasswordField(password)

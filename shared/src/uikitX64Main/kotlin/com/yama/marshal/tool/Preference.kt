@@ -1,12 +1,11 @@
 package com.yama.marshal.tool
 
+import com.russhwolf.settings.NSUserDefaultsSettings
 import com.russhwolf.settings.Settings
+import platform.Foundation.NSUserDefaults
 
 actual val prefs: Settings
     get() {
-        /*
-        val delegate: NSUserDefaults // ...
-val settings: Settings = NSUserDefaultsSettings(delegate)
-         */
-        TODO("Add preference body for ios")
+        val delegate = NSUserDefaults.standardUserDefaults()
+        return NSUserDefaultsSettings(delegate)
     }

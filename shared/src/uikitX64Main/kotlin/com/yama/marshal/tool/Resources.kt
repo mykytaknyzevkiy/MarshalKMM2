@@ -9,8 +9,14 @@ import platform.UIKit.UIImage
 import platform.UIKit.UIImagePNGRepresentation
 import platform.posix.memcpy
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import androidx.compose.ui.text.font.FontFamily
+import co.touchlab.kermit.Logger
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
+import platform.Foundation.NSURL
+import platform.Foundation.NSXMLParser
+
+private const val TAG = "ResourcesIOS"
 
 @Composable
 internal actual fun fontResources(
@@ -35,5 +41,14 @@ internal actual fun painterResource(path: String): Painter {
 
 @Composable
 internal actual fun stringResource(key: String): String {
-    TODO("Parce strings xml")
+    val path = mainBundle.pathForResource("strings", "xml")
+
+    if (path == null) {
+        Logger.e(tag = TAG, message = {
+            "Cannot find strings.xml in mainBundle"
+        })
+        return "null"
+    }
+
+    return "null"
 }
