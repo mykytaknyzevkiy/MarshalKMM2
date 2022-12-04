@@ -23,6 +23,7 @@ kotlin {
                 "-linker-option", "-framework", "-linker-option", "CoreGraphics"
             )
             freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
+            embedBitcode = org.jetbrains.kotlin.gradle.plugin.mpp.Framework.BitcodeEmbeddingMode.DISABLE
         }
     }
 
