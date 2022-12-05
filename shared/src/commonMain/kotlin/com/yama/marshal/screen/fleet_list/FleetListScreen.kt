@@ -29,34 +29,37 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-                    .height((Sizes.screenPadding.value * 2 + LocalAppDimens.current.bodyLarge.value).dp)
-                    .background(YamaColor.fleet_navigation_card_bg),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val textLabel: @Composable RowScope.(label: String, weight: Float, isLast: Boolean) -> Unit =
-                    { label, weight, isLast ->
-                        Text(
-                            label.uppercase(),
-                            modifier = Modifier.weight(weight),
-                            color = MaterialTheme.colorScheme.background,
-                            textAlign = TextAlign.Center
-                        )
-                        if (!isLast)
-                            Spacer(
-                                modifier = Modifier.width(1.dp).fillMaxHeight()
-                                    .background(Color.LightGray)
-                            )
-                    }
+            TableRow()
+    }
 
-                textLabel("Car", 0.8f, false)
-
-                textLabel("Start time", 0.7f, false)
-
-                textLabel("Place of play", 1f, false)
-
-                textLabel("Hole", 0.5f, true)
+    @Composable
+    private fun TableRow() = Row(
+        modifier = Modifier.fillMaxWidth()
+            .height((Sizes.screenPadding.value * 2 + LocalAppDimens.current.bodyLarge.value).dp)
+            .background(YamaColor.fleet_navigation_card_bg),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val textLabel: @Composable RowScope.(label: String, weight: Float, isLast: Boolean) -> Unit =
+            { label, weight, isLast ->
+                Text(
+                    label.uppercase(),
+                    modifier = Modifier.weight(weight),
+                    color = MaterialTheme.colorScheme.background,
+                    textAlign = TextAlign.Center
+                )
+                if (!isLast)
+                    Spacer(
+                        modifier = Modifier.width(1.dp).fillMaxHeight()
+                            .background(Color.LightGray)
+                    )
             }
-        }
+
+        textLabel(stringResource("fleet_list_screen_table_row_car_label"), 0.8f, false)
+
+        textLabel(stringResource("fleet_list_screen_table_row_start_time_label"), 0.7f, false)
+
+        textLabel(stringResource("fleet_list_screen_table_row_place_of_place_label"), 1f, false)
+
+        textLabel(stringResource("fleet_list_screen_table_row_hole_label"), 0.5f, true)
+    }
 }
