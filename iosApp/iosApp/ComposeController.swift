@@ -1,8 +1,9 @@
 import SwiftUI
+import shared
 
 struct ComposeController: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> some UIViewController {
-        BackgroundCrashWorkaroundController()
+        ComposeRootControllerKt.getRootController()
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
