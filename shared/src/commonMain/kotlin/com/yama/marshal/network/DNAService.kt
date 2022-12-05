@@ -1,10 +1,7 @@
 package com.yama.marshal.network
 
 import co.touchlab.kermit.Logger
-import com.yama.marshal.network.model.UserAccountDetailsRequest
-import com.yama.marshal.network.model.UserAccountDetailsResponse
-import com.yama.marshal.network.model.UserAccountLoginRequest
-import com.yama.marshal.network.model.UserAccountLoginResponse
+import com.yama.marshal.network.model.*
 
 class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") {
     companion object {
@@ -32,6 +29,20 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
                Logger.e(tag = TAG, message = {
                    "Cannot make request: userData"
                })
+            }
+            return it
+        }
+    }
+
+    suspend fun courseRelationshipList(body: CourseRelationshipListRequest): CourseRelationshipListResponse? {
+        post<CourseRelationshipListRequest, CourseRelationshipListResponse>(
+            action = Action.CourseRelationshipList,
+            payload = body
+        ).also {
+            if (it == null) {
+                Logger.e(tag = TAG, message = {
+                    "Cannot make request: userData"
+                })
             }
             return it
         }

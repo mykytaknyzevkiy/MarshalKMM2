@@ -1,5 +1,6 @@
 package com.yama.marshal.screen.login
 
+import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,9 +9,15 @@ import kotlinx.coroutines.launch
 
 interface UserDataViewModel {
     val userRepository: UserRepository
+    val companyRepository: CompanyRepository
 
     suspend fun loadData(): Boolean {
         userRepository.userData().also {
+            if (!it)
+                return false
+        }
+
+        companyRepository.loadCourses().also {
             if (!it)
                 return false
         }
@@ -32,6 +39,8 @@ class LoginViewModel : YamaViewModel(), UserDataViewModel {
         get() = _currentViewState
 
     override val userRepository = UserRepository()
+
+    override val companyRepository: CompanyRepository = CompanyRepository()
 
     fun login(userName: String, password: String) = viewModelScope.launch {
         _currentViewState.emit(LoginViewState.Loading)

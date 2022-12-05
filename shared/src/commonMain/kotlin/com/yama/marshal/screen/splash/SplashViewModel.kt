@@ -1,5 +1,6 @@
 package com.yama.marshal.screen.splash
 
+import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.screen.login.UserDataViewModel
@@ -21,6 +22,8 @@ class SplashViewModel : YamaViewModel(), UserDataViewModel {
         get() = _currentViewState
 
     override val userRepository = UserRepository()
+
+    override val companyRepository: CompanyRepository = CompanyRepository()
 
     fun startData() = viewModelScope.launch {
         _currentViewState.value = SplashViewState.Loading
