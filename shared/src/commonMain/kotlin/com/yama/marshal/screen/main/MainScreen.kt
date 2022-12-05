@@ -135,7 +135,7 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
         if (currentOrientation() == Orientation.LANDSCAPE)
             Column(
                 modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.End
             ) {
                 menuContext(
