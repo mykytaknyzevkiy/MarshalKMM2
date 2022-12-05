@@ -6,8 +6,11 @@ import androidx.compose.material3.Shapes
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yama.marshal.LocalAppDimens
 
 private val LightColorScheme = lightColorScheme(
     background = Color(0xFFFFFBFE),
@@ -21,8 +24,6 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color.Black,
 
     error = Color(255, 95, 21)
-
-   // primaryContainer = Color.Red
 )
 
 @Composable
@@ -43,36 +44,72 @@ internal fun YamaTheme(
     )
 }
 
-object Sizes {
-    val set_player_list_height = 280.dp
+internal object Sizes {
+    private val dimensions: Dimensions
+        @Composable
+        get() = LocalAppDimens.current
 
-    val screenPadding = 24.dp
+    val screenPadding
+        @Composable
+        get() = dimensions.screenPadding
 
-    val buttonSize = 75.dp
+    val buttonSize
+        @Composable
+        get() = dimensions.buttonSize
 
-    val button_icon_size = 32.dp
+    val button_icon_size
+        @Composable
+        get() = dimensions.button_icon_size
 
-    val scoreboard_sides_tab_width = 180.dp
+    val title
+        @Composable
+        get() = dimensions.title
 
-    val title = 44.sp
+    val login_screen_logo_width
+        @Composable
+        get() = dimensions.login_screen_logo_width
 
-    object ScoreBoardScreen {
-        const val PLAYER_CARD_WEIGHT = 1.8f
-        const val TOTAL_SCORE_CARD_WEIGHT = 1.3f
-    }
+    val login_screen_content_width
+        @Composable
+        get() = dimensions.login_screen_content_width
+}
 
-    val player_card_player_name = 34.sp
-    val player_card_score = 44.sp
+sealed class Dimensions(
+    val bodyLarge: TextUnit = 30.sp,
 
-    val score_hole_card_score = 66.sp
+    val bodySmall: TextUnit = 18.sp,
 
-    val set_score_alert_score_text = 74.sp
+    val labelLarge: TextUnit = 37.sp,
 
-    val system_dialog_width = 940.dp
-    val system_dialog_height = 520.dp
+    val screenPadding: Dp = 24.dp,
 
-    val login_screen_logo_width = 400.dp
+    val buttonSize: Dp = 75.dp,
 
-    val login_screen_content_width = 430.dp
+    val button_icon_size: Dp = 32.dp,
 
+    val title: TextUnit = 44.sp,
+
+    val login_screen_logo_width: Dp = 400.dp,
+
+    val login_screen_content_width: Dp = 430.dp,
+) {
+    object Phone: Dimensions(
+        bodyLarge = 18.sp,
+
+        bodySmall = 12.sp,
+
+        labelLarge = 24.sp,
+
+        title = 36.sp,
+
+        screenPadding = 16.dp,
+
+        button_icon_size = 24.dp,
+
+        buttonSize = 45.dp,
+
+        login_screen_logo_width = 300.dp
+    )
+
+    object Tablet: Dimensions()
 }

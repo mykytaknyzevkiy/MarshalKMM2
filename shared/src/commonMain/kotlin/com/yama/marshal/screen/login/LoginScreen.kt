@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.screen.YamaViewModel
@@ -33,18 +34,15 @@ internal class LoginScreen(navigationController: NavigationController) :
     @Composable
     override fun content(args: List<NavArg>) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(
-                modifier = Modifier.let {
+            Column(modifier = Modifier.let {
                     if (currentOrientation() == Orientation.LANDSCAPE) it.width(
                         Sizes.login_screen_content_width
                     ) else it.padding(Sizes.screenPadding)
-                },
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+                }, horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painterResource("img_app_logo.png"),
                     modifier = Modifier.width(Sizes.login_screen_logo_width),
+                    contentScale = ContentScale.FillWidth,
                     contentDescription = null
                 )
 
@@ -83,6 +81,9 @@ internal class LoginScreen(navigationController: NavigationController) :
                     ) {
                         Text(stringResource("login_screen_button_login_label").uppercase())
                     }
+
+                if (currentOrientation() == Orientation.PORTRAIT)
+                    Spacer(modifier = Modifier.height(Sizes.screenPadding * 10))
             }
         }
 

@@ -2,6 +2,10 @@ package com.yama.marshal
 
 import androidx.compose.ui.window.Application
 
-fun getRootController() = Application {
-    App()
+internal val currentRootView by lazy {
+    Application {
+        App()
+    }
 }
+
+fun getRootController() = currentRootView

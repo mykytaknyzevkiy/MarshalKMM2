@@ -1,22 +1,47 @@
 package com.yama.marshal
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import com.yama.marshal.screen.login.LoginScreen
 import com.yama.marshal.screen.main.MainScreen
 import com.yama.marshal.screen.splash.SplashScreen
 import com.yama.marshal.ui.navigation.rememberNavController
+import com.yama.marshal.ui.theme.Dimensions
+import com.yama.marshal.ui.tool.screenSize
 import com.yama.marshal.ui.view.NavHost
+
+internal val LocalAppDimens = compositionLocalOf<Dimensions> { Dimensions.Phone }
+
+@Composable
+fun ProvideDimens(
+    dimensions: Dimensions,
+    content: @Composable () -> Unit
+) {
+    val dimensionSet = remember { dimensions }
+    CompositionLocalProvider(LocalAppDimens provides dimensionSet, content = content)
+}
 
 @Composable
 internal fun App() {
     val navigationController = rememberNavController("splash")
 
-    NavHost(
-        navigationController = navigationController,
-        screens = arrayOf(
-            SplashScreen(navigationController),
-            LoginScreen(navigationController),
-            MainScreen(navigationController)
+    val screenSize = screenSize()
+
+    ProvideDimens(
+        dimensions = if (screenSize.height > screenSize.width)
+            Dimensions.Phone
+        else
+            Dimensions.Phone
+    ) {
+        NavHost(
+            navigationController = navigationController,
+            screens = arrayOf(
+                SplashScreen(navigationController),
+                LoginScreen(navigationController),
+                MainScreen(navigationController)
+            )
         )
-    )
+    }
 }

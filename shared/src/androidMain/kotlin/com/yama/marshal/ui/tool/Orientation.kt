@@ -1,6 +1,8 @@
 package com.yama.marshal.ui.tool
 
 import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
@@ -15,4 +17,15 @@ internal actual fun currentOrientation(): Orientation {
     } else {
         Orientation.PORTRAIT
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+@Composable
+internal actual fun screenSize(): ScreenSize {
+    val context = LocalContext.current
+
+    return ScreenSize(
+        width = context.resources.configuration.screenWidthDp,
+        height = context.resources.configuration.screenHeightDp
+    )
 }
