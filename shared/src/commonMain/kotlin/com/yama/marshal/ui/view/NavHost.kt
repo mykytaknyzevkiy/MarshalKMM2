@@ -33,7 +33,9 @@ internal fun NavHost(
                 if (screen != null) {
                     if (screen.isToolbarEnable) {
                         YamaToolbar(
-                            title = screen.title(),
+                            title = {
+                             screen.titleContent()
+                            },
                             actions = {
                                 screen.actions()
                             },

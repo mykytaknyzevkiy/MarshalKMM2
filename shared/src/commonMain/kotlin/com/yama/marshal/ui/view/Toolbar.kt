@@ -14,7 +14,7 @@ import com.yama.marshal.ui.theme.Sizes
 
 @Composable
 internal fun YamaToolbar(
-    title: String,
+    title: @Composable () -> Unit,
     color: Color = MaterialTheme.colorScheme.primary,
     onBack: (() -> Unit)? = null,
     backIcon: ImageVector = Icons.Filled.ArrowBack,
@@ -37,12 +37,7 @@ internal fun YamaToolbar(
             //Spacer(modifier = Modifier.width(Sizes.screenPadding))
         }
 
-        Text(
-            modifier = Modifier.padding(horizontal = Sizes.screenPadding),
-            text = title.uppercase(),
-            fontSize = Sizes.title,
-            textAlign = TextAlign.Center
-        )
+        title()
 
         if (actions != null) {
             Spacer(modifier = Modifier.weight(1f))

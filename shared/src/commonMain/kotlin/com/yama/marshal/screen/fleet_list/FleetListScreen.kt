@@ -5,10 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,31 +23,47 @@ internal class FleetListScreen(navigationController: NavigationController) :
     YamaScreen(navigationController) {
     override val route: String = "fleet_list"
 
-    @Composable
-    override fun title(): String = stringResource("fleet_list_screen_title")
-
     override val viewModel: FleetListViewModel = FleetListViewModel()
+
+    @Composable
+    override fun titleContent() {
+        val selectedCourse by remember { viewModel.selectedCourse }.collectAsState()
+
+        if (selectedCourse == null)
+            return
+
+        Text(
+            modifier = Modifier.padding(horizontal = Sizes.screenPadding),
+            text = selectedCourse!!.courseName,
+            fontSize = Sizes.title,
+            textAlign = TextAlign.Center
+        )
+    }
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
         TableRow()
+
+        LaunchedEffect(viewModel) {
+            viewModel.load()
+        }
     }
 
     @Composable
-    private fun TableRow() = Row(
-        modifier = Modifier.fillMaxWidth()
-            .height((Sizes.screenPadding.value * 2 + LocalAppDimens.current.bodyLarge.value).dp)
-            .background(YamaColor.fleet_navigation_card_bg),
-        verticalAlignment = Alignment.CenterVertically
+    private fun TableRow() = Column(modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.primary)
     ) {
         val currentSortFleet by remember { viewModel.currentFleetSort }.collectAsState()
 
-        val textLabel: @Composable RowScope.(type: SortFleet, weight: Float, isLast: Boolean) -> Unit =
-            { type, weight, isLast ->
-                Box(modifier = Modifier.weight(weight).fillMaxHeight().clickable {
-                    viewModel.updateSort(type)
-                },
-                    contentAlignment = Alignment.Center) {
+        val textLabel: @Composable RowScope.(type: SortFleet, isLast: Boolean) -> Unit =
+            { type, isLast ->
+                Box(
+                    modifier = Modifier.weight(type.weight).fillMaxHeight().clickable {
+                        viewModel.updateSort(type)
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
                         stringResource(type.label).uppercase(),
                         color = MaterialTheme.colorScheme.background.copy(alpha = if (currentSortFleet == type) 1f else 0.6f),
@@ -62,26 +75,22 @@ internal class FleetListScreen(navigationController: NavigationController) :
                 )
             }
 
-        textLabel(
-            SortFleet.CAR,
-            0.8f,
-            false,
-        )
+        Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
 
-        textLabel(
-            SortFleet.START_TIME,
-            0.7f,
-            false,
-        )
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .height(Sizes.screenPadding + LocalAppDimens.current.bodyLarge.value.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            textLabel(SortFleet.CAR, false)
 
-        textLabel(
-            SortFleet.PLACE_OF_PLAY,
-            1f,
-            false,
-        )
+            textLabel(SortFleet.START_TIME, false,)
 
-        textLabel(
-            SortFleet.HOLE, 0.5f, true
-        )
+            textLabel(SortFleet.PLACE_OF_PLAY, false,)
+
+            textLabel(SortFleet.HOLE,true)
+        }
+
+        Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
     }
 }

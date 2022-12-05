@@ -1,15 +1,30 @@
 package com.yama.marshal.ui.view
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.theme.Sizes
 
 internal abstract class YamaScreen(protected val navigationController: NavigationController) {
     abstract val route: String
 
     @Composable
-    abstract fun title(): String
+    open fun title(): String = ""
+
+    @Composable
+    open fun titleContent() {
+        Text(
+            modifier = Modifier.padding(horizontal = Sizes.screenPadding),
+            text = title().uppercase(),
+            fontSize = Sizes.title,
+            textAlign = TextAlign.Center
+        )
+    }
 
     @Composable
     open fun actions() {

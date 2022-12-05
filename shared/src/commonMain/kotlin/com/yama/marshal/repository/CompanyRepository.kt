@@ -7,6 +7,7 @@ import com.yama.marshal.network.DNAService
 import com.yama.marshal.network.model.CourseRelationshipListRequest
 import com.yama.marshal.tool.companyID
 import com.yama.marshal.tool.prefs
+import kotlinx.coroutines.flow.onStart
 
 class CompanyRepository {
     companion object {
@@ -45,7 +46,7 @@ class CompanyRepository {
 
     val courseList = Database
         .courseList
-        /*.onStart {
-            loadCourses()
-        }*/
+        .onStart {
+           // loadCourses()
+        }
 }

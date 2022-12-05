@@ -25,12 +25,18 @@ import com.yama.marshal.ui.tool.currentOrientation
 import com.yama.marshal.ui.view.NavHost
 import com.yama.marshal.ui.view.YamaScreen
 
-internal class MainScreen(navigationController: NavigationController) :
-    YamaScreen(navigationController) {
+internal class MainScreen(navigationController: NavigationController) : YamaScreen(navigationController) {
     override val route: String = "main"
 
     @Composable
-    override fun title(): String = stringResource("app_name")
+    override fun titleContent() {
+        val currentRoute by mainNavigationController.currentRoute.collectAsState()
+
+        if (currentRoute.route == fleetListScreen.route)
+            fleetListScreen.titleContent()
+        else
+            super.titleContent()
+    }
 
     @Composable
     override fun actions() {
