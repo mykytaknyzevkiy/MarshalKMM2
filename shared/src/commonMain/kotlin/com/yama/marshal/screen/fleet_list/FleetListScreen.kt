@@ -1,10 +1,14 @@
 package com.yama.marshal.screen.fleet_list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +33,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-            TableRow()
+        TableRow()
     }
 
     @Composable
@@ -39,27 +43,45 @@ internal class FleetListScreen(navigationController: NavigationController) :
             .background(YamaColor.fleet_navigation_card_bg),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val textLabel: @Composable RowScope.(label: String, weight: Float, isLast: Boolean) -> Unit =
-            { label, weight, isLast ->
-                Text(
-                    label.uppercase(),
-                    modifier = Modifier.weight(weight),
-                    color = MaterialTheme.colorScheme.background,
-                    textAlign = TextAlign.Center
-                )
-                if (!isLast)
-                    Spacer(
-                        modifier = Modifier.width(1.dp).fillMaxHeight()
-                            .background(Color.LightGray)
+        val currentSortFleet by remember { viewModel.currentFleetSort }.collectAsState()
+
+        val textLabel: @Composable RowScope.(type: SortFleet, weight: Float, isLast: Boolean) -> Unit =
+            { type, weight, isLast ->
+                Box(modifier = Modifier.weight(weight).fillMaxHeight().clickable {
+                    viewModel.updateSort(type)
+                },
+                    contentAlignment = Alignment.Center) {
+                    Text(
+                        stringResource(type.label).uppercase(),
+                        color = MaterialTheme.colorScheme.background.copy(alpha = if (currentSortFleet == type) 1f else 0.6f),
+                        textAlign = TextAlign.Center,
                     )
+                }
+                if (!isLast) Spacer(
+                    modifier = Modifier.width(1.dp).fillMaxHeight().background(Color.LightGray)
+                )
             }
 
-        textLabel(stringResource("fleet_list_screen_table_row_car_label"), 0.8f, false)
+        textLabel(
+            SortFleet.CAR,
+            0.8f,
+            false,
+        )
 
-        textLabel(stringResource("fleet_list_screen_table_row_start_time_label"), 0.7f, false)
+        textLabel(
+            SortFleet.START_TIME,
+            0.7f,
+            false,
+        )
 
-        textLabel(stringResource("fleet_list_screen_table_row_place_of_place_label"), 1f, false)
+        textLabel(
+            SortFleet.PLACE_OF_PLAY,
+            1f,
+            false,
+        )
 
-        textLabel(stringResource("fleet_list_screen_table_row_hole_label"), 0.5f, true)
+        textLabel(
+            SortFleet.HOLE, 0.5f, true
+        )
     }
 }
