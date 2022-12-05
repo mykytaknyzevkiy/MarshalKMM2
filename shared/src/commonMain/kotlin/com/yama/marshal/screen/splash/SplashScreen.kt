@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.tool.painterResource
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
@@ -49,7 +48,7 @@ internal class SplashScreen(navigationController: NavigationController) : YamaSc
                 }
                 .launchIn(this)
 
-            viewModel.loadData()
+            viewModel.startData()
         }
     }
 

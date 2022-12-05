@@ -6,6 +6,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+interface UserDataViewModel {
+    val userRepository: UserRepository
+
+    suspend fun loadData(): Boolean {
+        userRepository.userData().also {
+            if (!it)
+                return false
+        }
+
+        return true
+    }
+}
+
 sealed class LoginViewState {
     object Empty: LoginViewState()
     object Loading: LoginViewState()
@@ -13,12 +26,12 @@ sealed class LoginViewState {
     object OK: LoginViewState()
 }
 
-class LoginViewModel : YamaViewModel() {
+class LoginViewModel : YamaViewModel(), UserDataViewModel {
     private val _currentViewState = MutableStateFlow<LoginViewState>(LoginViewState.Empty)
     val currentState: StateFlow<LoginViewState>
         get() = _currentViewState
 
-    private val userRepository = UserRepository()
+    override val userRepository = UserRepository()
 
     fun login(userName: String, password: String) = viewModelScope.launch {
         _currentViewState.emit(LoginViewState.Loading)
@@ -26,11 +39,20 @@ class LoginViewModel : YamaViewModel() {
         userRepository.login(
             userName, password
         ).also {
-            if (it)
-                _currentViewState.emit(LoginViewState.OK)
-            else
+            if (!it) {
                 _currentViewState.emit(LoginViewState.Error)
+                return@launch
+            }
         }
+
+        loadData().also {
+            if (!it) {
+                _currentViewState.emit(LoginViewState.Error)
+                return@launch
+            }
+        }
+
+        _currentViewState.emit(LoginViewState.OK)
     }
 
 }

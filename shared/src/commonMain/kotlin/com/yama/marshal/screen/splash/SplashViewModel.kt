@@ -2,8 +2,10 @@ package com.yama.marshal.screen.splash
 
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
+import com.yama.marshal.screen.login.UserDataViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 sealed class SplashViewState {
     object Loading: SplashViewState()
@@ -11,21 +13,28 @@ sealed class SplashViewState {
     object OK: SplashViewState()
 }
 
-class SplashViewModel : YamaViewModel() {
+class SplashViewModel : YamaViewModel(), UserDataViewModel {
     private val _currentViewState = MutableStateFlow<SplashViewState>(
         SplashViewState.Loading
     )
     val currentViewState: StateFlow<SplashViewState>
         get() = _currentViewState
 
-    private val userRepository = UserRepository()
+    override val userRepository = UserRepository()
 
-    fun loadData() {
+    fun startData() = viewModelScope.launch {
         _currentViewState.value = SplashViewState.Loading
 
         if (!userRepository.isUserLogin()) {
             _currentViewState.value = SplashViewState.RequestLogin
-            return
+            return@launch
+        }
+
+        loadData().also {
+            if (!it) {
+                _currentViewState.value = SplashViewState.RequestLogin
+                return@launch
+            }
         }
 
         _currentViewState.value = SplashViewState.OK

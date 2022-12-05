@@ -2,7 +2,9 @@ package com.yama.marshal.repository
 
 import co.touchlab.kermit.Logger
 import com.yama.marshal.network.DNAService
+import com.yama.marshal.network.model.UserAccountDetailsRequest
 import com.yama.marshal.network.model.UserAccountLoginRequest
+import com.yama.marshal.tool.*
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.secretKey
 import com.yama.marshal.tool.userID
@@ -37,6 +39,25 @@ class UserRepository {
             prefs.userName = userName
             prefs.userID = it.idUser
             prefs.secretKey = it.secretKey
+
+            return true
+        }
+    }
+
+    suspend fun userData(): Boolean {
+        Logger.i(tag = TAG, message = {
+            "userData with userID ${prefs.userID}"
+        })
+
+        UserAccountDetailsRequest(
+            idUser = prefs.userID
+        ).let {
+            dnaService.userData(it)
+        }.also {
+            if (it == null)
+                return false
+
+            prefs.companyID = it.idCompany
 
             return true
         }

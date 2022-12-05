@@ -16,3 +16,7 @@ internal var Settings.secretKey: String?
 internal var Settings.userID: Int
     get() = this.getInt("userID", 0)
     set(value) = this.set("userID", value)
+
+internal var Settings.companyID: Int
+    get() = this.getInt("companyID", 0)
+    set(value) = this.set("companyID", value)
