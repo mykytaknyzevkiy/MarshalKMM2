@@ -15,7 +15,7 @@ import com.yama.marshal.ui.view.NavHost
 internal val LocalAppDimens = compositionLocalOf<Dimensions> { Dimensions.Phone }
 
 @Composable
-fun ProvideDimens(
+internal fun ProvideDimens(
     dimensions: Dimensions,
     content: @Composable () -> Unit
 ) {
