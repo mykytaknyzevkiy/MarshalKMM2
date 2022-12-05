@@ -1,6 +1,5 @@
 package com.yama.marshal.screen.main
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,6 +17,7 @@ import com.yama.marshal.tool.stringResource
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
+import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.YamaScreen
 
 internal class MainScreen(navigationController: NavigationController) :
@@ -45,15 +45,15 @@ internal class MainScreen(navigationController: NavigationController) :
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.Center
     ) {
-        NavigationItem(Color.Blue)
-        NavigationItem(Color.Green)
-        NavigationItem(Color.Yellow)
+        NavigationItem(YamaColor.fleet_navigation_card_bg, "fleet")
+        NavigationItem(YamaColor.hole_navigation_card_bg, "holes")
+        NavigationItem(YamaColor.alert_navigation_card_bg, "alerts")
     }
 
     @Composable
-    private fun NavigationItem(backgroundColor: Color) {
+    private fun ColumnScope.NavigationItem(backgroundColor: Color, label: String) {
         Card(
-            modifier = Modifier.size(200.dp),
+            modifier = Modifier.size(200.dp).weight(1f),
             shape = RoundedCornerShape(0),
             colors = CardDefaults.cardColors(containerColor = backgroundColor)
         ) {
@@ -70,7 +70,7 @@ internal class MainScreen(navigationController: NavigationController) :
 
                 Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
 
-                Text("fleet".uppercase())
+                Text(label.uppercase())
             }
         }
     }
