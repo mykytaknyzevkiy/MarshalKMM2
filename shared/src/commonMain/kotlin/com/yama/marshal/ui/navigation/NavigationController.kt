@@ -20,7 +20,7 @@ internal fun rememberNavController(currentRoute: String): NavigationController {
     return remember { NavigationController(currentRoute) }
 }
 
-class NavigationController internal constructor(currentRoute: String) {
+class NavigationController constructor(currentRoute: String) {
     private val stackRoutes = linkedSetOf<StackRoute>()
 
     private val _currentState = MutableStateFlow(StackRoute(route = currentRoute, args = emptyList()))

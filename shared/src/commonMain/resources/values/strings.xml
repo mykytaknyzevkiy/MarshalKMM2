@@ -5,4 +5,10 @@
     <string name="login_screen_text_field_username_label">Login</string>
     <string name="login_screen_text_field_password_label">Password</string>
     <string name="login_screen_button_login_label">Log in</string>
+
+    <string name="main_screen_navigation_item_fleet_label">Fleet</string>
+    <string name="main_screen_navigation_item_hole_label">Hole</string>
+    <string name="main_screen_navigation_item_alert_label">Alert</string>
+
+    <string name="fleet_list_screen_title">Fleet</string>
 </resources>

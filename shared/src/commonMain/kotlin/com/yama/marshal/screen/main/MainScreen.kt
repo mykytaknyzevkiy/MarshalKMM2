@@ -13,13 +13,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yama.marshal.screen.fleet_list.FleetListScreen
 import com.yama.marshal.tool.stringResource
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.navigation.rememberNavController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.tool.Orientation
 import com.yama.marshal.ui.tool.currentOrientation
+import com.yama.marshal.ui.view.NavHost
 import com.yama.marshal.ui.view.YamaScreen
 
 internal class MainScreen(navigationController: NavigationController) :
@@ -43,7 +46,7 @@ internal class MainScreen(navigationController: NavigationController) :
         }
 
         if (currentOrientation() == Orientation.LANDSCAPE) {
-            Spacer(modifier = Modifier.fillMaxHeight().width(0.5.dp).background(Color.LightGray))
+            Spacer(modifier = Modifier.fillMaxHeight().width(1.dp).background(Color.LightGray))
 
             Box(
                 modifier = Modifier.width(Sizes.tablet_main_screen_navigation_item_width),
@@ -58,21 +61,33 @@ internal class MainScreen(navigationController: NavigationController) :
 
     override val viewModel: MainViewModel = MainViewModel()
 
+    private val mainNavigationController = NavigationController("fleet_list")
+
+    private val fleetListScreen = FleetListScreen(mainNavigationController)
+
     @Composable
     override fun content(args: List<NavArg>) {
         val mContext = @Composable { modifier: Modifier ->
-            Box(modifier = modifier)
-
-            NavigationBar()
+            NavHost(
+                modifier = modifier,
+                navigationController = mainNavigationController,
+                screens = arrayOf(fleetListScreen)
+            )
         }
 
         if (currentOrientation() == Orientation.LANDSCAPE)
             Row(modifier = Modifier.fillMaxSize()) {
-                mContext(Modifier.weight(1f))
+                mContext(Modifier.weight(1f).fillMaxHeight())
+
+                Box(modifier = Modifier.fillMaxHeight().width(2.dp).background(Color.LightGray))
+
+                NavigationBar()
             }
         else
             Column(modifier = Modifier.fillMaxSize()) {
-                mContext(Modifier.weight(1f))
+                mContext(Modifier.weight(1f).fillMaxWidth())
+
+                NavigationBar()
             }
     }
 
@@ -83,16 +98,28 @@ internal class MainScreen(navigationController: NavigationController) :
                 mutableStateOf(1)
             }
 
-            NavigationItem(modifier, YamaColor.fleet_navigation_card_bg, "fleet", currentIem == 1) {
+            NavigationItem(
+                modifier,
+                YamaColor.fleet_navigation_card_bg,
+                stringResource("main_screen_navigation_item_fleet_label"),
+                currentIem == 1
+            ) {
                 currentIem = 1
             }
-            NavigationItem(modifier, YamaColor.hole_navigation_card_bg, "holes", currentIem == 2) {
+
+            NavigationItem(
+                modifier,
+                YamaColor.hole_navigation_card_bg,
+                stringResource("main_screen_navigation_item_hole_label"),
+                currentIem == 2
+            ) {
                 currentIem = 2
             }
+
             NavigationItem(
                 modifier,
                 YamaColor.alert_navigation_card_bg,
-                "alerts",
+                stringResource("main_screen_navigation_item_alert_label"),
                 currentIem == 3
             ) {
                 currentIem = 3
@@ -102,7 +129,7 @@ internal class MainScreen(navigationController: NavigationController) :
         if (currentOrientation() == Orientation.LANDSCAPE)
             Column(
                 modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceAround,
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.End
             ) {
                 menuContext(
@@ -130,7 +157,7 @@ internal class MainScreen(navigationController: NavigationController) :
             Card(
                 modifier = modifier,
                 colors = CardDefaults.cardColors(containerColor = backgroundColor),
-                elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 0.dp else 20.dp),
                 onClick = onClick
             ) {
                 Row {
