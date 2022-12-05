@@ -12,7 +12,7 @@ data class CourseRelationshipListResponse(
         @SerialName("courseName") val courseName: String,
         @SerialName("default") val defaultCourse: Int,
         @SerialName("id_course") val idCourse: String,
-        @SerialName("numberPlayers") val playersNumber: String,
+        @SerialName("numberPlayers") val playersNumber: Int,
         @SerialName("layoutHoles") val layoutHoles: Int?
     )
 }
