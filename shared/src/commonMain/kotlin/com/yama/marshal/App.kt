@@ -30,10 +30,10 @@ internal fun App() {
     val screenSize = screenSize()
 
     ProvideDimens(
-        dimensions = if (screenSize.height > screenSize.width)
+        dimensions = if (screenSize.width < 480)
             Dimensions.Phone
         else
-            Dimensions.Phone
+            Dimensions.Tablet
     ) {
         NavHost(
             navigationController = navigationController,

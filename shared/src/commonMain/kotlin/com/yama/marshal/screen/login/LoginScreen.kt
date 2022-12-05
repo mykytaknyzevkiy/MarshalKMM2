@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.tool.painterResource
 import com.yama.marshal.tool.stringResource
 import com.yama.marshal.ui.navigation.NavArg
@@ -36,7 +35,7 @@ internal class LoginScreen(navigationController: NavigationController) :
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(modifier = Modifier.let {
                     if (currentOrientation() == Orientation.LANDSCAPE) it.width(
-                        Sizes.login_screen_content_width
+                        Sizes.tablet_login_screen_content_width
                     ) else it.padding(Sizes.screenPadding)
                 }, horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
@@ -49,7 +48,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding * 3))
 
                 val userName = remember {
-                    mutableStateOf("")
+                    mutableStateOf("igolfsaltcreek")
                 }
 
                 UserNameField(userName)
@@ -57,7 +56,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding))
 
                 val password = remember {
-                    mutableStateOf("")
+                    mutableStateOf("92108340")
                 }
 
                 PasswordField(password)

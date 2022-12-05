@@ -69,9 +69,9 @@ internal object Sizes {
         @Composable
         get() = dimensions.login_screen_logo_width
 
-    val login_screen_content_width
-        @Composable
-        get() = dimensions.login_screen_content_width
+    val tablet_login_screen_content_width = 430.dp
+
+    val tablet_main_screen_navigation_item_width = 200.dp
 }
 
 sealed class Dimensions(
@@ -85,13 +85,11 @@ sealed class Dimensions(
 
     val buttonSize: Dp = 75.dp,
 
-    val button_icon_size: Dp = 32.dp,
+    val button_icon_size: Dp = 42.dp,
 
     val title: TextUnit = 44.sp,
 
     val login_screen_logo_width: Dp = 400.dp,
-
-    val login_screen_content_width: Dp = 430.dp,
 ) {
     object Phone: Dimensions(
         bodyLarge = 18.sp,

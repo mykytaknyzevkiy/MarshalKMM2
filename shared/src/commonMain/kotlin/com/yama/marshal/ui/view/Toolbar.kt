@@ -48,6 +48,8 @@ internal fun YamaToolbar(
             Spacer(modifier = Modifier.weight(1f))
 
             actions()
+
+            Spacer(modifier = Modifier.width(Sizes.screenPadding))
         }
     }
 }
