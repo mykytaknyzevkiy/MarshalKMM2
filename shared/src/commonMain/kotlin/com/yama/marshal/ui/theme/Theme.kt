@@ -71,7 +71,7 @@ internal object Sizes {
 
     val tablet_login_screen_content_width = 430.dp
 
-    val tablet_main_screen_navigation_item_width = 200.dp
+    val tablet_main_screen_navigation_item_width = 60.dp
 }
 
 sealed class Dimensions(

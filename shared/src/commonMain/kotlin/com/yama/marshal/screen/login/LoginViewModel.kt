@@ -27,6 +27,11 @@ interface UserDataViewModel {
                 return false
         }
 
+        companyRepository.loadCartsRound().also {
+            if (!it)
+                return false
+        }
+
         return true
     }
 }

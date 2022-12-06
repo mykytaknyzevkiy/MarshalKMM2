@@ -5,13 +5,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.screen.fleet_list.FleetListScreen
 import com.yama.marshal.tool.stringResource
@@ -25,7 +33,8 @@ import com.yama.marshal.ui.tool.currentOrientation
 import com.yama.marshal.ui.view.NavHost
 import com.yama.marshal.ui.view.YamaScreen
 
-internal class MainScreen(navigationController: NavigationController) : YamaScreen(navigationController) {
+internal class MainScreen(navigationController: NavigationController) :
+    YamaScreen(navigationController) {
     override val route: String = "main"
 
     @Composable
@@ -52,16 +61,9 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
         }
 
         if (currentOrientation() == Orientation.LANDSCAPE) {
-            Spacer(modifier = Modifier.fillMaxHeight().width(1.dp).background(Color.LightGray))
+            val clock by remember { viewModel.clock }.collectAsState("")
 
-            Box(
-                modifier = Modifier.width(Sizes.tablet_main_screen_navigation_item_width),
-                contentAlignment = Alignment.TopEnd
-            ) {
-                val clock by remember { viewModel.clock }.collectAsState("")
-
-                Text(clock, fontSize = Sizes.title)
-            }
+            Text(clock, fontSize = Sizes.title)
         }
     }
 
@@ -82,12 +84,14 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
         }
 
         if (currentOrientation() == Orientation.LANDSCAPE)
-            Row(modifier = Modifier.fillMaxSize()) {
-                mContext(Modifier.weight(1f).fillMaxHeight())
+            Box(modifier = Modifier.fillMaxSize()) {
+                mContext(Modifier.fillMaxSize())
 
-                Box(modifier = Modifier.fillMaxHeight().width(2.dp).background(Color.LightGray))
+                //Box(modifier = Modifier.fillMaxHeight().width(2.dp).background(Color.LightGray))
 
-                NavigationBar()
+                Box(modifier = Modifier.align(Alignment.BottomEnd)) {
+                    NavigationBar()
+                }
             }
         else
             Column(modifier = Modifier.fillMaxSize()) {
@@ -108,6 +112,7 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
                 modifier,
                 YamaColor.fleet_navigation_card_bg,
                 stringResource("main_screen_navigation_item_fleet_label"),
+                Icons.Default.ShoppingCart,
                 currentIem == 1
             ) {
                 currentIem = 1
@@ -117,6 +122,7 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
                 modifier,
                 YamaColor.hole_navigation_card_bg,
                 stringResource("main_screen_navigation_item_hole_label"),
+                Icons.Default.Place,
                 currentIem == 2
             ) {
                 currentIem = 2
@@ -126,6 +132,7 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
                 modifier,
                 YamaColor.alert_navigation_card_bg,
                 stringResource("main_screen_navigation_item_alert_label"),
+                Icons.Default.Warning,
                 currentIem == 3
             ) {
                 currentIem = 3
@@ -134,8 +141,8 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
 
         if (currentOrientation() == Orientation.LANDSCAPE)
             Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceAround,
+                //modifier = Modifier.fillMaxHeight(),
+                //verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.End
             ) {
                 menuContext(
@@ -156,39 +163,46 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
         modifier: Modifier,
         backgroundColor: Color,
         label: String,
+        icon: ImageVector,
         isSelected: Boolean,
         onClick: () -> Unit
     ) {
         if (currentOrientation() == Orientation.LANDSCAPE)
             Card(
-                modifier = modifier,
                 colors = CardDefaults.cardColors(containerColor = backgroundColor),
-                elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 0.dp else 20.dp),
-                onClick = onClick
+                elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+                onClick = if (isSelected) {{}} else onClick
             ) {
                 Row {
                     AnimatedVisibility(
                         visible = isSelected,
                     ) {
-                        Spacer(modifier = Modifier.width(Sizes.screenPadding))
+                        Spacer(modifier = Modifier.width(Sizes.screenPadding / 3))
                     }
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(Sizes.tablet_main_screen_navigation_item_width),
+                        modifier = Modifier.width(Sizes.tablet_main_screen_navigation_item_width),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
+
                         Icon(
-                            modifier = Modifier.size(50.dp),
-                            imageVector = Icons.Default.ShoppingCart,
+                            modifier = Modifier.size(35.dp),
+                            imageVector = icon,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.background
                         )
 
-                        Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
+                         Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
 
-                        Text(label.uppercase(), color = MaterialTheme.colorScheme.background)
+                        Text(
+                            label.uppercase(),
+                            modifier = Modifier.vertical().rotate(90f),
+                            color = MaterialTheme.colorScheme.background,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
                     }
                 }
             }
@@ -201,7 +215,7 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
                 AnimatedVisibility(
                     visible = isSelected,
                 ) {
-                    Spacer(modifier = Modifier.height(Sizes.screenPadding))
+                    Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
                 }
                 Text(
                     label.uppercase(),
@@ -212,4 +226,14 @@ internal class MainScreen(navigationController: NavigationController) : YamaScre
     }
 
     override val isToolbarEnable: Boolean = true
+
+    private fun Modifier.vertical() = layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        layout(placeable.height, placeable.width) {
+            placeable.place(
+                x = -(placeable.width / 2 - placeable.height / 2),
+                y = -(placeable.height / 2 - placeable.width / 2)
+            )
+        }
+    }
 }

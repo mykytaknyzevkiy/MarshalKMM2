@@ -13,7 +13,10 @@
     <string name="fleet_list_screen_title">Fleet</string>
     <string name="fleet_list_screen_table_row_car_label">Car</string>
     <string name="fleet_list_screen_table_row_start_time_label">Start time</string>
-    <string name="fleet_list_screen_table_row_place_of_place_label">Place of play</string>
+    <string name="fleet_list_screen_table_row_place_of_place_label">Pace of play</string>
     <string name="fleet_list_screen_table_row_hole_label">Hole</string>
+
+    <string name="fleet_view_holder_car_no_active">Car not in use</string>
+
 
 </resources>

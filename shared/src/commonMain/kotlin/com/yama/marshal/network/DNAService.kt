@@ -26,9 +26,9 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
             payload = body
         ).also {
             if (it == null) {
-               Logger.e(tag = TAG, message = {
-                   "Cannot make request: userData"
-               })
+                Logger.e(tag = TAG, message = {
+                    "Cannot make request: userData"
+                })
             }
             return it
         }
@@ -48,14 +48,27 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
         }
     }
 
-    suspend fun cartDetailsList(body: CartDetailsListRequest): CartDetailsListResponse? = post<CartDetailsListRequest, CartDetailsListResponse>(
-        action = Action.CartDetailsList,
-        payload = body
-    ).also {
-        if (it == null) {
-            Logger.e(tag = TAG, message = {
-                "Cannot make request: userData"
-            })
+    suspend fun cartDetailsList(body: CartDetailsListRequest): CartDetailsListResponse? =
+        post<CartDetailsListRequest, CartDetailsListResponse>(
+            action = Action.CartDetailsList,
+            payload = body
+        ).also {
+            if (it == null) {
+                Logger.e(tag = TAG, message = {
+                    "Cannot make request: userData"
+                })
+            }
         }
-    }
+
+    suspend fun companyCartsRoundDetails(body: CompanyCartsRoundDetailsRequest): CompanyCartsRoundDetailsResponse? =
+        post<CompanyCartsRoundDetailsRequest, CompanyCartsRoundDetailsResponse>(
+            action = Action.CompanyCartsRoundDetails,
+            payload = body
+        ).also {
+            if (it == null) {
+                Logger.e(tag = TAG, message = {
+                    "Cannot make request: userData"
+                })
+            }
+        }
 }
