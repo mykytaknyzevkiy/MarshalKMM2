@@ -21,7 +21,7 @@ internal fun YamaToolbar(
     actions: (@Composable RowScope.() -> Unit)? = null,
 ) = Surface(color = color) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(Sizes.buttonSize),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (onBack != null) {

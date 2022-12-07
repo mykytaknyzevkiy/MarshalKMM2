@@ -10,11 +10,11 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
-		399E9F40293BFC3D00CB8410 /* img_app_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 399E9F3B293BFC3D00CB8410 /* img_app_logo.png */; };
-		399E9F41293BFC3D00CB8410 /* strings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 399E9F3D293BFC3D00CB8410 /* strings.xml */; };
-		399E9F42293BFC3D00CB8410 /* bebas_neue.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 399E9F3F293BFC3D00CB8410 /* bebas_neue.ttf */; };
 		39E2A69D293860C6008BE541 /* BackgroundCrashWorkaroundController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E2A69B293860C6008BE541 /* BackgroundCrashWorkaroundController.swift */; };
 		39E2A69E293860C6008BE541 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E2A69C293860C6008BE541 /* ComposeController.swift */; };
+		39FD89F729412D8700931D7C /* img_app_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 39FD89F129412D8700931D7C /* img_app_logo.png */; };
+		39FD89F829412D8700931D7C /* strings.xml in Resources */ = {isa = PBXBuildFile; fileRef = 39FD89F329412D8700931D7C /* strings.xml */; };
+		39FD89FA29412D8700931D7C /* bebas_neue.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39FD89F629412D8700931D7C /* bebas_neue.ttf */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
@@ -35,11 +35,11 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
-		399E9F3B293BFC3D00CB8410 /* img_app_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_app_logo.png; sourceTree = "<group>"; };
-		399E9F3D293BFC3D00CB8410 /* strings.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = strings.xml; sourceTree = "<group>"; };
-		399E9F3F293BFC3D00CB8410 /* bebas_neue.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bebas_neue.ttf; sourceTree = "<group>"; };
 		39E2A69B293860C6008BE541 /* BackgroundCrashWorkaroundController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundCrashWorkaroundController.swift; sourceTree = "<group>"; };
 		39E2A69C293860C6008BE541 /* ComposeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
+		39FD89F129412D8700931D7C /* img_app_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_app_logo.png; sourceTree = "<group>"; };
+		39FD89F329412D8700931D7C /* strings.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = strings.xml; sourceTree = "<group>"; };
+		39FD89F629412D8700931D7C /* bebas_neue.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bebas_neue.ttf; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -64,37 +64,37 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		399E9F39293BFC3D00CB8410 /* resources */ = {
+		39FD89EF29412D8700931D7C /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				399E9F3A293BFC3D00CB8410 /* drawable */,
-				399E9F3C293BFC3D00CB8410 /* values */,
-				399E9F3E293BFC3D00CB8410 /* font */,
+				39FD89F029412D8700931D7C /* drawable */,
+				39FD89F229412D8700931D7C /* values */,
+				39FD89F529412D8700931D7C /* font */,
 			);
 			name = resources;
 			path = ../shared/src/commonMain/resources;
 			sourceTree = "<group>";
 		};
-		399E9F3A293BFC3D00CB8410 /* drawable */ = {
+		39FD89F029412D8700931D7C /* drawable */ = {
 			isa = PBXGroup;
 			children = (
-				399E9F3B293BFC3D00CB8410 /* img_app_logo.png */,
+				39FD89F129412D8700931D7C /* img_app_logo.png */,
 			);
 			path = drawable;
 			sourceTree = "<group>";
 		};
-		399E9F3C293BFC3D00CB8410 /* values */ = {
+		39FD89F229412D8700931D7C /* values */ = {
 			isa = PBXGroup;
 			children = (
-				399E9F3D293BFC3D00CB8410 /* strings.xml */,
+				39FD89F329412D8700931D7C /* strings.xml */,
 			);
 			path = values;
 			sourceTree = "<group>";
 		};
-		399E9F3E293BFC3D00CB8410 /* font */ = {
+		39FD89F529412D8700931D7C /* font */ = {
 			isa = PBXGroup;
 			children = (
-				399E9F3F293BFC3D00CB8410 /* bebas_neue.ttf */,
+				39FD89F629412D8700931D7C /* bebas_neue.ttf */,
 			);
 			path = font;
 			sourceTree = "<group>";
@@ -102,7 +102,7 @@
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
-				399E9F39293BFC3D00CB8410 /* resources */,
+				39FD89EF29412D8700931D7C /* resources */,
 				7555FF7D242A565900829871 /* iosApp */,
 				7555FF7C242A565900829871 /* Products */,
 				7555FFB0242A642200829871 /* Frameworks */,
@@ -198,9 +198,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				399E9F42293BFC3D00CB8410 /* bebas_neue.ttf in Resources */,
-				399E9F41293BFC3D00CB8410 /* strings.xml in Resources */,
-				399E9F40293BFC3D00CB8410 /* img_app_logo.png in Resources */,
+				39FD89F829412D8700931D7C /* strings.xml in Resources */,
+				39FD89FA29412D8700931D7C /* bebas_neue.ttf in Resources */,
+				39FD89F729412D8700931D7C /* img_app_logo.png in Resources */,
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
 			);
@@ -364,21 +364,26 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.0.0;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 65BT94VC7B;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Marshall;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = "";
+				"MARKETING_VERSION[sdk=iphoneos*]" = 2.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
 					shared,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.igolf.dna-marshall-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -390,21 +395,26 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.0.0;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 65BT94VC7B;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Marshall;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = "";
+				"MARKETING_VERSION[sdk=iphoneos*]" = 2.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
 					shared,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.igolf.dna-marshall-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

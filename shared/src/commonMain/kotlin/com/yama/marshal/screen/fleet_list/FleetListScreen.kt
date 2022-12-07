@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.tool.PaceValueFormatter
+import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
-import com.yama.marshal.tool.stringResource
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
@@ -45,7 +45,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
             return
 
         Text(
-            modifier = Modifier.padding(horizontal = Sizes.screenPadding)
+            modifier = Modifier.padding(Sizes.screenPadding)
                 .clickable { onSelectCourseState.value = true },
             text = selectedCourse!!.courseName,
             fontSize = Sizes.title,
@@ -143,14 +143,12 @@ internal class FleetListScreen(navigationController: NavigationController) :
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        stringResource(type.label).uppercase(),
+                        type.label.uppercase(),
                         color = MaterialTheme.colorScheme.background.copy(alpha = if (currentSortFleet == type) 1f else 0.6f),
                         textAlign = TextAlign.Center,
                     )
                 }
-                if (!isLast) Spacer(
-                    modifier = Modifier.width(1.dp).fillMaxHeight().background(Color.LightGray)
-                )
+                if (!isLast) NSpacer()
             }
 
         Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
@@ -158,7 +156,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(Sizes.screenPadding + LocalAppDimens.current.bodyLarge.value.dp),
+                .height(Sizes.fleet_view_holder_height),
             verticalAlignment = Alignment.CenterVertically
         ) {
             textLabel(SortFleet.CAR, false)
@@ -192,13 +190,11 @@ internal class FleetListScreen(navigationController: NavigationController) :
             Text(
                 text = if ((fleet.state != CartFullDetail.State.inUse || fleet.isOnClubHouse) && fleet.returnAreaSts != 0) {
                     if (fleet.isOnClubHouse)
-                        stringResource(
-                            "cart_not_in_use_ended_round"
-                        )
+                        Strings.cart_not_in_use_ended_round
                     else
-                        stringResource("cart_not_in_use")
+                        Strings.cart_not_in_use
                 } else fleet.startTime.let {
-                    it?.format("h:mm a") ?: stringResource("fleet_view_holder_car_no_active")
+                    it?.format("h:mm a") ?: Strings.fleet_view_holder_car_no_active
                 },
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(SortFleet.START_TIME.weight)
@@ -226,7 +222,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
                         if (fleet.startTime == null || fleet.currPosHole == null || fleet.currPosHole == -1) "---" else fleet.currPosHole.toString()
                     else
                         if (fleet.isOnClubHouse)
-                            stringResource("clubhouse")
+                            Strings.clubhouse
                         else
                             "---"
                 },
@@ -247,7 +243,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
     @Composable
     private fun NSpacer() {
         Spacer(
-            modifier = Modifier.width(1.dp).fillMaxHeight().background(Color.LightGray)
+            modifier = Modifier.width(1.dp).fillMaxHeight().padding(vertical = Sizes.screenPadding / 2).background(Color.LightGray)
         )
     }
 }

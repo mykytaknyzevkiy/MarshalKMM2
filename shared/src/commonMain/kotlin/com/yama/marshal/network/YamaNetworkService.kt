@@ -24,9 +24,16 @@ abstract class YamaNetworkService(val host: String) {
             "on post request with url $url and data ${Json.encodeToString(payload)}"
         })
 
-        val response = client.post(url = url) {
-            contentType(ContentType.Application.Json)
-            setBody(Json.encodeToString(payload))
+        val response = try {
+            client.post(url = url) {
+                contentType(ContentType.Application.Json)
+                setBody(Json.encodeToString(payload))
+            }
+        } catch (e: Exception) {
+            Logger.e(TAG, message = {
+                "Make request $url"
+            }, throwable = e)
+            return null
         }
 
         return if (response.status == HttpStatusCode.OK) {

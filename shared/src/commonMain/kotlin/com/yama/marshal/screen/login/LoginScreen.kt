@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.painterResource
-import com.yama.marshal.tool.stringResource
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
@@ -78,7 +78,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                         enabled = userName.value.isNotBlank() && password.value.isNotBlank(),
                         shape = RoundedCornerShape(0.dp)
                     ) {
-                        Text(stringResource("login_screen_button_login_label").uppercase())
+                        Text(Strings.login_screen_button_login_label.uppercase())
                     }
 
                 if (currentOrientation() == Orientation.PORTRAIT)
@@ -103,7 +103,7 @@ internal class LoginScreen(navigationController: NavigationController) :
             modifier = Modifier.fillMaxWidth(),
             value = userName.value,
             label = {
-                Text(stringResource("login_screen_text_field_username_label"))
+                Text(Strings.login_screen_text_field_username_label)
             },
             onValueChange = { userName.value = it }
         )
@@ -120,7 +120,7 @@ internal class LoginScreen(navigationController: NavigationController) :
             modifier = Modifier.fillMaxWidth(),
             value = password.value,
             label = {
-                Text(stringResource("login_screen_text_field_password_label"))
+                Text(Strings.login_screen_text_field_password_label)
             },
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = { password.value = it },

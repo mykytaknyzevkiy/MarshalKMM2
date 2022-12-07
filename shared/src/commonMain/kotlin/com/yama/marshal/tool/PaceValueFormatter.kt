@@ -34,18 +34,18 @@ internal object PaceValueFormatter {
         val minutes = getMinutes(pace)
 
         if (minutes == 0) {
-            return stringResource("on_pace")
+            return Strings.on_pace
         } else {
             val builder = StringBuilder()
             builder.append(abs(minutes))
             builder.append(" ")
-            builder.append(stringResource(if (abs(minutes) > 1) "mins" else "min"))
+            builder.append(if (abs(minutes) > 1) Strings.mins else Strings.min)
             builder.append(" ")
-            builder.append(if (minutes > 0) stringResource("behind") else stringResource("ahead"))
+            builder.append(if (minutes > 0) Strings.behind else Strings.ahead)
 
             if (type == PaceType.Full) {
                 builder.append(" ")
-                builder.append(if (minutes > 0) stringResource("pace") else stringResource("of_pace"))
+                builder.append(if (minutes > 0) Strings.pace else Strings.of_pace)
             }
 
             return builder.toString()
@@ -58,9 +58,9 @@ internal object PaceValueFormatter {
         val builder = StringBuilder()
         builder.append(abs(minutes).toString())
         builder.append(" ")
-        builder.append(if (abs(minutes) == 1) stringResource("min") else stringResource("mins"))
+        builder.append(if (abs(minutes) == 1) Strings.min else Strings.mins)
         builder.append(" ")
-        builder.append(stringResource("current_pace"))
+        builder.append(Strings.current_pace)
         return builder.toString()
 
     }

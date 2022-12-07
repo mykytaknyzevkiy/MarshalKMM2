@@ -98,13 +98,13 @@ sealed class Dimensions(
     val fleet_view_holder_height: Dp = 80.dp
 ) {
     object Phone: Dimensions(
-        bodyLarge = 18.sp,
+        bodyLarge = 16.sp,
 
         bodySmall = 12.sp,
 
-        labelLarge = 24.sp,
+        labelLarge = 18.sp,
 
-        title = 36.sp,
+        title = 22.sp,
 
         screenPadding = 16.dp,
 
@@ -114,7 +114,7 @@ sealed class Dimensions(
 
         login_screen_logo_width = 300.dp,
 
-        fleet_view_holder_height = 30.dp
+        fleet_view_holder_height = 60.dp
     )
 
     object Tablet: Dimensions()

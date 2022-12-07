@@ -16,16 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.screen.fleet_list.FleetListScreen
-import com.yama.marshal.tool.stringResource
+import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
-import com.yama.marshal.ui.navigation.rememberNavController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.tool.Orientation
@@ -111,7 +109,7 @@ internal class MainScreen(navigationController: NavigationController) :
             NavigationItem(
                 modifier,
                 YamaColor.fleet_navigation_card_bg,
-                stringResource("main_screen_navigation_item_fleet_label"),
+                Strings.main_screen_navigation_item_fleet_label,
                 Icons.Default.ShoppingCart,
                 currentIem == 1
             ) {
@@ -121,7 +119,7 @@ internal class MainScreen(navigationController: NavigationController) :
             NavigationItem(
                 modifier,
                 YamaColor.hole_navigation_card_bg,
-                stringResource("main_screen_navigation_item_hole_label"),
+                Strings.main_screen_navigation_item_hole_label,
                 Icons.Default.Place,
                 currentIem == 2
             ) {
@@ -131,7 +129,7 @@ internal class MainScreen(navigationController: NavigationController) :
             NavigationItem(
                 modifier,
                 YamaColor.alert_navigation_card_bg,
-                stringResource("main_screen_navigation_item_alert_label"),
+                Strings.main_screen_navigation_item_alert_label,
                 Icons.Default.Warning,
                 currentIem == 3
             ) {

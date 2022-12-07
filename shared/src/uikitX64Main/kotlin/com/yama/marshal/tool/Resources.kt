@@ -13,8 +13,8 @@ import androidx.compose.ui.text.font.FontFamily
 import co.touchlab.kermit.Logger
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
-import platform.Foundation.NSURL
-import platform.Foundation.NSXMLParser
+import platform.Foundation.*
+import platform.darwin.NSObject
 
 private const val TAG = "ResourcesIOS"
 
@@ -50,5 +50,6 @@ internal actual fun stringResource(key: String): String {
         return key
     }
 
-    return key
+    
+    return ""
 }
