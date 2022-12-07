@@ -14,5 +14,12 @@ actual fun GMTDate.format(pattern: String): String {
 }
 
 actual fun parseDate(pattern: String, date: String): GMTDate {
-    //TODO(Parse date)
+    return NSDateFormatter().apply {
+        dateFormat = pattern
+    }.dateFromString(date).let {
+        if (it == null)
+            GMTDate()
+        else
+            GMTDate(it.timeIntervalSince1970.toLong())
+    }
 }

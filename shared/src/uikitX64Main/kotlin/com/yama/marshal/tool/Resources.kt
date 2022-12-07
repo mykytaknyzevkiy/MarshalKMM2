@@ -47,8 +47,8 @@ internal actual fun stringResource(key: String): String {
         Logger.e(tag = TAG, message = {
             "Cannot find strings.xml in mainBundle"
         })
-        return "null"
+        return key
     }
 
-    return "null"
+    return key
 }
