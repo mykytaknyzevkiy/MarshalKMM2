@@ -24,6 +24,8 @@ import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
+import com.yama.marshal.ui.tool.Orientation
+import com.yama.marshal.ui.tool.currentOrientation
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -60,12 +62,16 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 itemsIndexed(fleets.let {
-                    if (it.size >= 8)
+                    val size = if (currentOrientation() == Orientation.LANDSCAPE)
+                        8
+                    else
+                        20
+                    if (it.size >= size)
                         it
                     else
                         ArrayList<CartFullDetail?>().apply {
                             addAll(it)
-                            repeat(8 - it.size) {
+                            repeat(size - it.size) {
                                 add(null)
                             }
                         }
