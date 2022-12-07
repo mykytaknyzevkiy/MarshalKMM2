@@ -2,6 +2,7 @@ package com.yama.marshal.network
 
 import co.touchlab.kermit.Logger
 import com.appmattus.crypto.Algorithm
+import com.yama.marshal.tool.Base64
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.secretKey
 import com.yama.marshal.tool.userName
@@ -74,12 +75,10 @@ internal fun makeSignature(src: String, secret: String): String {
         .createHmac(key = secret.toByteArray(charset = charSet))
         .digest(src.toByteArray(charSet))
         .let {
-            toBase64Url(it)
+            String(Base64.encoder.encode(it))
         }
         .replace('+', '-').replace('/', '_')
 }
-
-internal expect fun toBase64Url(bt: ByteArray): String
 
 enum class Action(val actionName: String, val isPrivate: Boolean) {
     NONE("", true),
