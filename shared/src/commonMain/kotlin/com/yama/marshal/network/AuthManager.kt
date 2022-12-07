@@ -1,10 +1,13 @@
 package com.yama.marshal.network
 
-import com.yama.marshal.tool.format
+import co.touchlab.kermit.Logger
+import com.appmattus.crypto.Algorithm
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.secretKey
 import com.yama.marshal.tool.userName
-import io.ktor.util.date.*
+import io.ktor.util.*
+import io.ktor.utils.io.charsets.*
+import io.ktor.utils.io.core.*
 
 object AuthManager {
     private const val slash = "/"
@@ -63,7 +66,20 @@ object AuthManager {
     }
 }
 
-internal expect fun makeSignature(src: String, secret: String): String
+internal fun makeSignature(src: String, secret: String): String {
+    val charSet = Charset.forName("UTF-8")
+
+    return Algorithm
+        .SHA_256
+        .createHmac(key = secret.toByteArray(charset = charSet))
+        .digest(src.toByteArray(charSet))
+        .let {
+            toBase64Url(it)
+        }
+        .replace('+', '-').replace('/', '_')
+}
+
+internal expect fun toBase64Url(bt: ByteArray): String
 
 enum class Action(val actionName: String, val isPrivate: Boolean) {
     NONE("", true),

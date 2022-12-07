@@ -39,6 +39,7 @@ kotlin {
                 implementation("com.russhwolf:multiplatform-settings:1.0.0-RC")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
                 implementation("co.touchlab:kermit:1.2.2")
+                implementation("com.appmattus.crypto:cryptohash:0.10.1")
             }
         }
         val commonTest by getting {
