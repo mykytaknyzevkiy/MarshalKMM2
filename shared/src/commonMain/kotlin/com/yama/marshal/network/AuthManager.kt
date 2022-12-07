@@ -15,7 +15,7 @@ object AuthManager {
     private const val ApplicationAPIKey = "uUqnXUKU86kghJk"
     private const val ApplicationSecretKey = "3CA0LPbu3FlXRin0UCH05rM/ZzvCkK"
     private const val timeStampDateFormatPattern = "yyMMddHHmmssZZZZ"
-    private val timeStampDateFormat = GMTDateParser(timeStampDateFormatPattern)
+    const val timeStampDateFormatDataPattern = "yyMMddHHmmss"
 
     fun getUrlForAction(action: Action): String {
         val urlBuilder = StringBuilder()

@@ -18,5 +18,20 @@
 
     <string name="fleet_view_holder_car_no_active">Car not in use</string>
 
+    <string name="on_pace">On Pace</string>
+    <string name="mins">mins</string>
+    <string name="min">min</string>
+    <string name="behind">behind</string>
+    <string name="ahead">ahead</string>
+    <string name="pace">pace</string>
+    <string name="of_pace">of pace</string>
+    <string name="current_pace">current pace</string>
+    <string name="clubhouse">CH</string>
+    <string name="cart_not_in_use_ended_round">Car not in use - Recently ended round"</string>
+    <string name="cart_not_in_use">Car not in use</string>
+
+
+
+
 
 </resources>

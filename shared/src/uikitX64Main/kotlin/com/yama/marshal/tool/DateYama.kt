@@ -12,3 +12,7 @@ actual fun GMTDate.format(pattern: String): String {
 
     return dateFormatter.stringFromDate(date)
 }
+
+actual fun parseDate(pattern: String, date: String): GMTDate {
+    //TODO(Parse date)
+}

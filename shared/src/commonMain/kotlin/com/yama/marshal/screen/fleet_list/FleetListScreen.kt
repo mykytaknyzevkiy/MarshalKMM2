@@ -1,10 +1,12 @@
 package com.yama.marshal.screen.fleet_list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -15,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.data.model.CartFullDetail
+import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.format
 import com.yama.marshal.tool.stringResource
 import com.yama.marshal.ui.navigation.NavArg
@@ -22,12 +25,15 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.YamaScreen
+import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class FleetListScreen(navigationController: NavigationController) :
     YamaScreen(navigationController) {
     override val route: String = "fleet_list"
 
     override val viewModel: FleetListViewModel = FleetListViewModel()
+
+    private val onSelectCourseState = MutableStateFlow(false)
 
     @Composable
     override fun titleContent() {
@@ -37,7 +43,8 @@ internal class FleetListScreen(navigationController: NavigationController) :
             return
 
         Text(
-            modifier = Modifier.padding(horizontal = Sizes.screenPadding),
+            modifier = Modifier.padding(horizontal = Sizes.screenPadding)
+                .clickable { onSelectCourseState.value = true },
             text = selectedCourse!!.courseName,
             fontSize = Sizes.title,
             textAlign = TextAlign.Center
@@ -45,21 +52,71 @@ internal class FleetListScreen(navigationController: NavigationController) :
     }
 
     @Composable
-    override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        TableRow()
+    override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            TableRow()
 
-        val fleets by remember { viewModel.fleetList }.collectAsState()
+            val fleets by remember { viewModel.fleetList }.collectAsState()
 
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(fleets) {
-                FleetViewHolder(it)
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                itemsIndexed(fleets.let {
+                    if (it.size >= 8)
+                        it
+                    else
+                        ArrayList<CartFullDetail?>().apply {
+                            addAll(it)
+                            repeat(8 - it.size) {
+                                add(null)
+                            }
+                        }
+                }, key = { p, c -> p }) { position, fleet ->
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(Sizes.fleet_view_holder_height)
+                            .background(
+                                if (position % 2 == 0) Color(
+                                    238,
+                                    238,
+                                    238
+                                ) else MaterialTheme.colorScheme.background
+                            )
+                    ) {
+                        if (fleet != null)
+                            FleetViewHolder(fleet)
+                    }
 
-                Spacer(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray))
+
+                    Spacer(
+                        modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray)
+                    )
+                }
+            }
+
+            LaunchedEffect(viewModel) {
+                viewModel.load()
             }
         }
 
-        LaunchedEffect(viewModel) {
-            viewModel.load()
+        val onSelectCourse by onSelectCourseState.collectAsState()
+
+        if (onSelectCourse) {
+            val courses by viewModel.courseList.collectAsState()
+
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = Sizes.screenPadding)
+                    .background(MaterialTheme.colorScheme.background).align(Alignment.TopStart)
+            ) {
+                items(courses) {
+                    Box(
+                        modifier = Modifier.width(300.dp)
+                            .border(width = 1.dp, color = Color.LightGray).clickable {
+                                onSelectCourseState.value = false
+                                viewModel.selectCourse(it)
+                            }, contentAlignment = Alignment.Center
+                    ) {
+                        Text(it.courseName, modifier = Modifier.padding(Sizes.screenPadding))
+                    }
+                }
+            }
         }
     }
 
@@ -111,45 +168,74 @@ internal class FleetListScreen(navigationController: NavigationController) :
     }
 
     @Composable
-    private fun FleetViewHolder(fleet: CartFullDetail) = Row(
-        modifier = Modifier.fillMaxWidth().height(100.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = fleet.cartName,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxHeight().weight(SortFleet.CAR.weight)
-        )
+    private fun FleetViewHolder(fleet: CartFullDetail) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = fleet.cartName,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(SortFleet.CAR.weight)
+            )
 
-        NSpacer()
+            NSpacer()
 
-        Text(
-            text = fleet.startTime.let {
-                it?.format("h:mm a") ?: stringResource("fleet_view_holder_car_no_active")
-            },
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxHeight().weight(SortFleet.START_TIME.weight)
-        )
+            Text(
+                text = if ((fleet.state != CartFullDetail.State.inUse || fleet.isOnClubHouse) && fleet.returnAreaSts != 0) {
+                    if (fleet.isOnClubHouse)
+                        stringResource(
+                            "cart_not_in_use_ended_round"
+                        )
+                    else
+                        stringResource("cart_not_in_use")
+                } else fleet.startTime.let {
+                    it?.format("h:mm a") ?: stringResource("fleet_view_holder_car_no_active")
+                },
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(SortFleet.START_TIME.weight)
+            )
 
-        NSpacer()
+            NSpacer()
 
-        Text(
-            text = fleet.startTime.let {
-                it?.format("h:mm a") ?: stringResource("fleet_view_holder_car_no_active")
-            },
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxHeight().weight(SortFleet.PLACE_OF_PLAY.weight)
-        )
+            Text(
+                text = if (fleet.startTime == null || fleet.totalNetPace == null) "---" else PaceValueFormatter.getString(
+                    fleet.totalNetPace,
+                    PaceValueFormatter.PaceType.Short
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(SortFleet.PLACE_OF_PLAY.weight),
+                color = PaceValueFormatter.getColor(
+                    fleet.totalNetPace ?: 0
+                )
+            )
 
-        NSpacer()
+            NSpacer()
 
-        Text(
-            text = "2",
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxHeight().weight(SortFleet.HOLE.weight)
-        )
+            Text(
+                text = fleet.returnAreaSts.let { returnAreaSts ->
+                    if (returnAreaSts == 0)
+                        if (fleet.startTime == null || fleet.currPosHole == null || fleet.currPosHole == -1) "---" else fleet.currPosHole.toString()
+                    else
+                        if (fleet.isOnClubHouse)
+                            stringResource("clubhouse")
+                        else
+                            "---"
+                },
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(SortFleet.HOLE.weight)
+            )
 
-        NSpacer()
+            NSpacer()
+        }
+
+        if (fleet.isCartInShutdownMode)
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .background(YamaColor.cart_shut_down_bg.copy(alpha = 0.5f))
+            )
     }
 
     @Composable

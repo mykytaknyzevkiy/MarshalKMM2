@@ -32,6 +32,11 @@ interface UserDataViewModel {
                 return false
         }
 
+        companyRepository.loadCartReport().also {
+            if (!it)
+                return false
+        }
+
         return true
     }
 }

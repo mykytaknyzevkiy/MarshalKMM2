@@ -1,6 +1,7 @@
 package com.yama.marshal.data
 
 import com.yama.marshal.data.entity.CartItem
+import com.yama.marshal.data.entity.CartReportEntity
 import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.data.entity.CourseEntity
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,10 @@ internal object Database {
     val cartRoundList: StateFlow<List<CartRoundItem>>
         get() = _cartRoundList
 
+    private val _cartReport = MutableStateFlow<List<CartReportEntity>>(emptyList())
+    val cartReport: StateFlow<List<CartReportEntity>>
+        get() = _cartReport
+
     suspend fun updateCourses(data: List<CourseEntity>) {
         _courseList.emit(data)
     }
@@ -29,5 +34,9 @@ internal object Database {
 
     suspend fun updateCartsRound(data: List<CartRoundItem>) {
         _cartRoundList.emit(data)
+    }
+
+    suspend fun updateCartReport(data: List<CartReportEntity>) {
+        _cartReport.emit(data)
     }
 }

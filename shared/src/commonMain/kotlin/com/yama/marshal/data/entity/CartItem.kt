@@ -19,7 +19,7 @@ data class CartRoundItem(
     val cartName: String? = null,
     val idDevice: String? = null,
     val idTrip: Int? = null,
-    val roundStartTime: String? = null,
+    val roundStartTime: GMTDate? = null,
     val currPosTime: String? = null,
     val currPosLon: Double? = null,
     val currPosLat: Double? = null,

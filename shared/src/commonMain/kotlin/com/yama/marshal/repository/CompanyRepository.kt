@@ -3,15 +3,19 @@ package com.yama.marshal.repository
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
 import com.yama.marshal.data.entity.CartItem
+import com.yama.marshal.data.entity.CartReportEntity
 import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.data.entity.CourseEntity
 import com.yama.marshal.data.model.CartFullDetail
+import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.network.AuthManager
 import com.yama.marshal.network.DNAService
 import com.yama.marshal.network.model.CartDetailsListRequest
+import com.yama.marshal.network.model.CartReportByTypeRequest
 import com.yama.marshal.network.model.CompanyCartsRoundDetailsRequest
 import com.yama.marshal.network.model.CourseRelationshipListRequest
 import com.yama.marshal.tool.companyID
+import com.yama.marshal.tool.parseDate
 import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.*
@@ -82,7 +86,7 @@ class CompanyRepository {
                         if (d == null)
                             null
                         else
-                            GMTDateParser("yyMMddHHmmss").parse(d)
+                            parseDate(AuthManager.timeStampDateFormatDataPattern, d)
                     }
                 )
             }
@@ -117,7 +121,9 @@ class CompanyRepository {
                     cartName = it.cartName,
                     idDevice = it.idDevice,
                     idTrip = it.idTrip,
-                    roundStartTime = it.roundStartTime,
+                    roundStartTime = it.roundStartTime?.let { t ->
+                        parseDate(AuthManager.timeStampDateFormatDataPattern, t)
+                    },
                     currPosTime = it.currPosTime,
                     currPosLon = it.currPosLon,
                     currPosLat = it.currPosLat,
@@ -137,41 +143,95 @@ class CompanyRepository {
         return true
     }
 
+    suspend fun loadCartReport(): Boolean {
+        dnaService
+            .cartReportByType(
+                body = CartReportByTypeRequest(
+                    idCompany = prefs.companyID,
+                    reportTypeID = 43
+                )
+            )
+            .let {
+                if (it == null) {
+                    Logger.e(TAG, message = {
+                        "Error to loadCartsRoundForCourse"
+                    })
+                    return false
+                }
+                it
+            }
+            .list
+            .map {
+                CartReportEntity(
+                    holeNumber = it.holeNumber,
+                    idCourse = it.idCourse,
+                    defaultPace = it.defaultPace,
+                    averagePace = it.averagePace,
+                    differentialPace = it.differentialPace
+                )
+            }
+            .also {
+                Database.updateCartReport(it)
+            }
+
+        return true
+    }
+
     val courseList = Database
         .courseList
+        .combine(Database.cartReport) { a, b ->
+            a.map {
+                CourseFullDetail(
+                    id = it.id,
+                    courseName = it.courseName,
+                    defaultCourse = it.defaultCourse,
+                    playersNumber = it.playersNumber,
+                    layoutHoles = it.layoutHoles,
+                    holes = b.filter { h -> h.idCourse == it.id }.map { h ->
+                        CourseFullDetail.HoleData(
+                            holeNumber = h.holeNumber,
+                            defaultPace = h.defaultPace,
+                            averagePace = h.averagePace,
+                            differentialPace = h.differentialPace
+                        )
+                    }
+                )
+            }
+        }
 
     fun cartOfCourse(idCourse: String) = channelFlow {
-        flowOf(Database.cartList, Database.courseList, Database.cartRoundList).collectLatest {
+        flowOf(Database.cartList, courseList, Database.cartRoundList).collectLatest {
             this.channel.send(Database.cartList.value)
         }
     }
         .map { cartsDetail ->
-            val course = Database.courseList.value.find { it.id == idCourse }
-            val cartsRoundOfCourse = Database.cartRoundList.value.filter { it.idCourse == idCourse }
+            val course = courseList.first().find { it.id == idCourse }
 
-            (if (idCourse.isNotEmpty())
-                cartsDetail.filter { c -> cartsRoundOfCourse.any { it.id == c.id } }
-            else
-                cartsDetail
-                    ).map {
-                    CartFullDetail(
-                        id = it.id,
-                        course = course ?: CourseEntity(id = idCourse, courseName = "All"),
-                        cartName = it.cartName,
-                        startTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.roundStartTime.let { t ->
-                            if (t == null)
-                                null
-                            else
-                                GMTDateParser("HHmmss").parse(t.substring(startIndex = 6))
-                        },
-                        currPosTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosTime,
-                        currPosLon = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosLon,
-                        currPosLat = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosLat,
-                        currPosHole = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosHole,
-                        totalNetPace = cartsRoundOfCourse.find { d -> d.id == it.id }?.totalNetPace,
-                        totalElapsedTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.totalElapsedTime,
-                    )
-                }
+            val cartsRoundOfCourse =
+                Database.cartRoundList.value.filter { it.idCourse == idCourse || idCourse.isEmpty() }
+
+            cartsDetail.let {
+                if (idCourse.isNotEmpty())
+                    cartsDetail.filter { c -> cartsRoundOfCourse.any { t -> t.id == c.id } }
+                else
+                    it
+            }.map {
+                CartFullDetail(
+                    id = it.id,
+                    course = course ?: CourseFullDetail(id = idCourse, courseName = "All"),
+                    cartName = it.cartName,
+                    startTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.roundStartTime,
+                    currPosTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosTime,
+                    currPosLon = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosLon,
+                    currPosLat = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosLat,
+                    currPosHole = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosHole,
+                    totalNetPace = cartsRoundOfCourse.find { d -> d.id == it.id }?.totalNetPace,
+                    totalElapsedTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.totalElapsedTime,
+                    returnAreaSts = cartsRoundOfCourse.find { d -> d.id == it.id }?.onDest ?: 0,
+                    holesPlayed = cartsRoundOfCourse.find { d -> d.id == it.id }?.holesPlayed ?: 0,
+                    idTrip = cartsRoundOfCourse.find { d -> d.id == it.id }?.idTrip ?: -1
+                )
+            }
         }
         .filterList {
             it.course.id == idCourse

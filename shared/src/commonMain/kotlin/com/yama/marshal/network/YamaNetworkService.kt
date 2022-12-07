@@ -21,7 +21,7 @@ abstract class YamaNetworkService(val host: String) {
         val url = Url(host + AuthManager.getUrlForAction(action))
 
         Logger.i(tag = TAG, message = {
-            "on post request with url $url"
+            "on post request with url $url and data ${Json.encodeToString(payload)}"
         })
 
         val response = client.post(url = url) {

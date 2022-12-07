@@ -71,4 +71,16 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
                 })
             }
         }
+
+    suspend fun cartReportByType(body: CartReportByTypeRequest): CartReportByTypeResponse? =
+        post<CartReportByTypeRequest, CartReportByTypeResponse>(
+            action = Action.CartReportByType,
+            payload = body
+        ).also {
+            if (it == null) {
+                Logger.e(tag = TAG, message = {
+                    "Cannot make request: userData"
+                })
+            }
+        }
 }
