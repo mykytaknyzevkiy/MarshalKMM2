@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.tool.Orientation
@@ -16,7 +18,7 @@ import com.yama.marshal.ui.tool.currentOrientation
 @Composable
 internal fun <E> MarshalList(modifier: Modifier = Modifier,
                     list: List<E>,
-                    itemContent: @Composable (item: E) -> Unit)
+                    itemContent: @Composable BoxScope.(item: E, position: Int) -> Unit)
 = Box(modifier = modifier) {
     val orientation = currentOrientation()
 
@@ -35,8 +37,15 @@ internal fun <E> MarshalList(modifier: Modifier = Modifier,
                 .height(Sizes.fleet_view_holder_height)
                 .fillMaxWidth()
                 .background(YamaColor.itemColor(position))) {
-                itemContent(item)
+                itemContent(item, position)
             }
+            Spacer(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = Sizes.screenPadding / 2)
+                    .background(Color.LightGray)
+            )
         })
     }
 }

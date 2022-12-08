@@ -21,8 +21,7 @@ internal object Strings {
     const val fleet_list_screen_table_row_place_of_place_label = "Pace of play"
     const val fleet_list_screen_table_row_hole_label = "Hole"
     
-    const val fleet_view_holder_car_no_active = "Car not in use"
-    
+
     const val on_pace = "On Pace"
     const val mins = "mins"
     const val min = "min"
@@ -34,6 +33,12 @@ internal object Strings {
     const val clubhouse = "CH"
     const val cart_not_in_use_ended_round = "Car not in use - Recently ended round"
     const val cart_not_in_use = "Car not in use"
+
+    const val fleet_view_holder_action_view_cart_btn_label = "VIEW CAR"
+    const val fleet_view_holder_action_flag_cart_btn_label = "FLAG"
+    const val fleet_view_holder_action_message_btn_label = "MESSAGE"
+    const val fleet_view_holder_action_shutdown_btn_label = "SHUTDOWN"
+    const val fleet_view_holder_action_restore_btn_label = "RESTORE"
 } 
 
 @Composable

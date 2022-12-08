@@ -5,10 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -53,7 +50,6 @@ internal class MainScreen(navigationController: NavigationController) :
                 //TODO(Open search)
             }) {
             Icon(
-                modifier = Modifier.size(Sizes.button_icon_size),
                 imageVector = Icons.Default.Search, contentDescription = null
             )
         }
@@ -110,7 +106,7 @@ internal class MainScreen(navigationController: NavigationController) :
                 modifier,
                 YamaColor.fleet_navigation_card_bg,
                 Strings.main_screen_navigation_item_fleet_label,
-                Icons.Default.ShoppingCart,
+                Icons.Default.DirectionsCar,
                 currentIem == 1
             ) {
                 currentIem = 1
@@ -120,7 +116,7 @@ internal class MainScreen(navigationController: NavigationController) :
                 modifier,
                 YamaColor.hole_navigation_card_bg,
                 Strings.main_screen_navigation_item_hole_label,
-                Icons.Default.Place,
+                Icons.Default.GolfCourse,
                 currentIem == 2
             ) {
                 currentIem = 2

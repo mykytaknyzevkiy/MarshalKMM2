@@ -3,17 +3,25 @@ package com.yama.marshal.screen.fleet_list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.data.model.CartFullDetail
@@ -29,6 +37,7 @@ import com.yama.marshal.ui.tool.currentOrientation
 import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.math.roundToInt
 
 internal class FleetListScreen(navigationController: NavigationController) :
     YamaScreen(navigationController) {
@@ -61,8 +70,8 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
             val fleets by remember { viewModel.fleetList }.collectAsState()
 
-            MarshalList(modifier = Modifier.fillMaxWidth(), list = fleets) {
-                FleetViewHolder(fleet = it)
+            MarshalList(modifier = Modifier.fillMaxWidth(), list = fleets) { it, position ->
+                FleetViewHolder(fleet = it, position = position)
             }
 
             LaunchedEffect(viewModel) {
@@ -140,60 +149,155 @@ internal class FleetListScreen(navigationController: NavigationController) :
     }
 
     @Composable
-    private fun FleetViewHolder(fleet: CartFullDetail) = Box(modifier = Modifier.fillMaxSize()) {
-        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = fleet.cartName,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(SortFleet.CAR.weight)
-            )
+    private fun FleetViewHolder(fleet: CartFullDetail, position: Int) {
+        val orientation = currentOrientation()
 
-            NSpacer()
+        var maxOffset = 0f
 
-            Text(
-                text = if ((fleet.state != CartFullDetail.State.inUse || fleet.isOnClubHouse) && fleet.returnAreaSts != 0) {
-                    if (fleet.isOnClubHouse)
-                        Strings.cart_not_in_use_ended_round
-                    else
-                        Strings.cart_not_in_use
-                } else fleet.startTime.let {
-                    it?.format("h:mm a") ?: Strings.fleet_view_holder_car_no_active
-                },
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(SortFleet.START_TIME.weight)
-            )
+        var offsetX by remember { mutableStateOf(0f) }
 
-            NSpacer()
+        Row {
+            maxOffset = 0f
 
-            Text(
-                text = if (fleet.startTime == null || fleet.totalNetPace == null) "---" else PaceValueFormatter.getString(
-                    fleet.totalNetPace,
-                    PaceValueFormatter.PaceType.Short
-                ),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(SortFleet.PLACE_OF_PLAY.weight),
-                color = PaceValueFormatter.getColor(
-                    fleet.totalNetPace ?: 0
+            val btn: @Composable (Color, String, ImageVector, () -> Unit) -> Unit = { color, label, icon, onCLick ->
+                IconButton(
+                    modifier = Modifier
+                        .size(Sizes.fleet_view_holder_height)
+                        .background(color),
+                    onClick = onCLick
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.background,
+                        )
+                        if (orientation == Orientation.LANDSCAPE) {
+                            Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
+                            Text(
+                                label.uppercase(),
+                                modifier = Modifier.padding(horizontal = Sizes.screenPadding / 2),
+                                color = MaterialTheme.colorScheme.background,
+                                textAlign = TextAlign.Center,
+                                fontSize = LocalAppDimens.current.bodySmall
+                            )
+                        }
+                    }
+                }
+
+                maxOffset += Sizes.fleet_view_holder_height.value
+            }
+
+            btn(
+                YamaColor.view_cart_btn_bg_color,
+                Strings.fleet_view_holder_action_view_cart_btn_label,
+                Icons.Default.Place
+            ) {}
+
+            btn(
+                YamaColor.flag_cart_btn_bg_color,
+                Strings.fleet_view_holder_action_flag_cart_btn_label,
+                Icons.Default.Flag
+            ) {}
+
+            btn(
+                YamaColor.message_cart_btn_bg_color,
+                Strings.fleet_view_holder_action_message_btn_label,
+                Icons.Default.Email
+            ) {}
+
+            btn(
+                YamaColor.shutdown_cart_btn_bg_color,
+                Strings.fleet_view_holder_action_shutdown_btn_label,
+                Icons.Default.PowerSettingsNew
+            ) {}
+
+            btn(
+                YamaColor.restore_cart_btn_bg_color,
+                Strings.fleet_view_holder_action_restore_btn_label,
+                Icons.Default.PowerSettingsNew
+            ) {}
+        }
+
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable { offsetX = if (offsetX < maxOffset) maxOffset else 0f }
+            .offset { IntOffset(offsetX.roundToInt(), 0) }
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures(
+                    onHorizontalDrag = { _, x ->
+                        val original = Offset(offsetX, 0f)
+                        val summed = original + Offset(x = x, y = 0f)
+
+                        if (summed.x in 0.0..maxOffset.toDouble())
+                            offsetX = summed.x
+                    },
+                    onDragEnd = {
+                        if (offsetX < maxOffset / 2f)
+                            offsetX = 0f
+                        else if (offsetX > maxOffset / 2f)
+                            offsetX = maxOffset
+                    }
                 )
-            )
+            }
+        ) {
+            Row(modifier = Modifier
+                .background(YamaColor.itemColor(position)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = fleet.cartName,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(SortFleet.CAR.weight)
+                )
 
-            NSpacer()
+                NSpacer()
 
-            Text(
-                text = fleet.returnAreaSts.let { returnAreaSts ->
-                    if (returnAreaSts == 0)
-                        if (fleet.startTime == null || fleet.currPosHole == null || fleet.currPosHole == -1) "---" else fleet.currPosHole.toString()
-                    else
+                Text(
+                    text = if ((fleet.state != CartFullDetail.State.inUse || fleet.isOnClubHouse) && fleet.returnAreaSts != 0) {
                         if (fleet.isOnClubHouse)
-                            Strings.clubhouse
+                            Strings.cart_not_in_use_ended_round
                         else
-                            "---"
-                },
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(SortFleet.HOLE.weight)
-            )
+                            Strings.cart_not_in_use
+                    } else fleet.startTime.let {
+                        it?.format("h:mm a") ?: Strings.cart_not_in_use
+                    },
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(SortFleet.START_TIME.weight)
+                )
 
-            NSpacer()
+                NSpacer()
+
+                Text(
+                    text = if (fleet.startTime == null || fleet.totalNetPace == null) "---" else PaceValueFormatter.getString(
+                        fleet.totalNetPace,
+                        PaceValueFormatter.PaceType.Short
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(SortFleet.PLACE_OF_PLAY.weight),
+                    color = PaceValueFormatter.getColor(
+                        fleet.totalNetPace ?: 0
+                    )
+                )
+
+                NSpacer()
+
+                Text(
+                    text = fleet.returnAreaSts.let { returnAreaSts ->
+                        if (returnAreaSts == 0)
+                            if (fleet.startTime == null || fleet.currPosHole == null || fleet.currPosHole == -1) "---" else fleet.currPosHole.toString()
+                        else
+                            if (fleet.isOnClubHouse)
+                                Strings.clubhouse
+                            else
+                                "---"
+                    },
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(SortFleet.HOLE.weight)
+                )
+
+                NSpacer()
+            }
         }
 
         if (fleet.isCartInShutdownMode)
