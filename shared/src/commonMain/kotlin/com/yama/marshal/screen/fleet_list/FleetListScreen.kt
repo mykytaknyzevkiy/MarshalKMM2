@@ -26,6 +26,7 @@ import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.tool.Orientation
 import com.yama.marshal.ui.tool.currentOrientation
+import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -55,48 +56,13 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
     @Composable
     override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
-        val orientation = currentOrientation()
-
         Column(modifier = Modifier.fillMaxSize()) {
             TableRow()
 
             val fleets by remember { viewModel.fleetList }.collectAsState()
 
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(fleets.let {
-                    val size = if (orientation == Orientation.LANDSCAPE)
-                        8
-                    else
-                        20
-                    if (it.size >= size)
-                        it
-                    else
-                        ArrayList<CartFullDetail?>().apply {
-                            addAll(it)
-                            repeat(size - it.size) {
-                                add(null)
-                            }
-                        }
-                }, key = { p, c -> p }) { position, fleet ->
-                    Box(
-                        modifier = Modifier.fillMaxWidth().height(Sizes.fleet_view_holder_height)
-                            .background(
-                                if (position % 2 == 0) Color(
-                                    238,
-                                    238,
-                                    238
-                                ) else MaterialTheme.colorScheme.background
-                            )
-                    ) {
-                        if (fleet != null)
-                            FleetViewHolder(fleet)
-                    }
-
-
-                    Spacer(
-                        modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray)
-                    )
-                }
+            MarshalList(modifier = Modifier.fillMaxWidth(), list = fleets) {
+                FleetViewHolder(fleet = it)
             }
 
             LaunchedEffect(viewModel) {
@@ -174,13 +140,8 @@ internal class FleetListScreen(navigationController: NavigationController) :
     }
 
     @Composable
-    private fun FleetViewHolder(fleet: CartFullDetail) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    private fun FleetViewHolder(fleet: CartFullDetail) = Box(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = fleet.cartName,
                 textAlign = TextAlign.Center,
@@ -236,9 +197,9 @@ internal class FleetListScreen(navigationController: NavigationController) :
         }
 
         if (fleet.isCartInShutdownMode)
-            Box(
-                modifier = Modifier.fillMaxSize()
-                    .background(YamaColor.cart_shut_down_bg.copy(alpha = 0.5f))
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(YamaColor.cart_shut_down_bg.copy(alpha = 0.5f))
             )
     }
 

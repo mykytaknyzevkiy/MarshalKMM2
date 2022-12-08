@@ -1,5 +1,7 @@
 package com.yama.marshal.ui.theme
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 internal object YamaColor {
@@ -11,4 +13,11 @@ internal object YamaColor {
     val pace_behind_color = Color(183, 17, 21)
 
     val cart_shut_down_bg = Color(255, 0, 0)
+
+    @Composable
+    fun itemColor(position: Int) = if (position % 2 == 0) Color(
+        238,
+        238,
+        238
+    ) else MaterialTheme.colorScheme.background
 }
