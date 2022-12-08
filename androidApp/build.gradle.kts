@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    namespace = "com.yama.marshal"
+    namespace = "com.yama.marshal_app"
     compileSdk = 33
     defaultConfig {
-        applicationId = "com.yama.marshal"
+        applicationId = "com.yama.marshal.app"
         minSdk = 21
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 100
+        versionName = "2.0"
     }
     buildFeatures {
         compose = true

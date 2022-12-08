@@ -6,10 +6,12 @@
     <application
         android:allowBackup="false"
         android:supportsRtl="true"
-        android:name=".MarshalApp"
-        android:theme="@style/Theme.YamaScoreBoard">
+        android:name="com.yama.marshal_app.MarshalApp"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.YamaScoreBoard"
+        android:usesCleartextTraffic="true">
         <activity
-            android:name=".MainActivity"
+            android:name="com.yama.marshal_app.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

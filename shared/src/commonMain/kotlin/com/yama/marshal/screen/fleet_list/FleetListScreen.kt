@@ -55,6 +55,8 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
     @Composable
     override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
+        val orientation = currentOrientation()
+
         Column(modifier = Modifier.fillMaxSize()) {
             TableRow()
 
@@ -62,7 +64,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 itemsIndexed(fleets.let {
-                    val size = if (currentOrientation() == Orientation.LANDSCAPE)
+                    val size = if (orientation == Orientation.LANDSCAPE)
                         8
                     else
                         20
