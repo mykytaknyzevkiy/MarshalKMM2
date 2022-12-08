@@ -200,11 +200,12 @@ internal class FleetListScreen(navigationController: NavigationController) :
                 Icons.Default.Flag
             ) {}
 
-            btn(
-                YamaColor.message_cart_btn_bg_color,
-                Strings.fleet_view_holder_action_message_btn_label,
-                Icons.Default.Email
-            ) {}
+            if (fleet.isMessagingAvailable)
+                btn(
+                    YamaColor.message_cart_btn_bg_color,
+                    Strings.fleet_view_holder_action_message_btn_label,
+                    Icons.Default.Email
+                ) {}
 
             btn(
                 YamaColor.shutdown_cart_btn_bg_color,
@@ -212,11 +213,12 @@ internal class FleetListScreen(navigationController: NavigationController) :
                 Icons.Default.PowerSettingsNew
             ) {}
 
-            btn(
-                YamaColor.restore_cart_btn_bg_color,
-                Strings.fleet_view_holder_action_restore_btn_label,
-                Icons.Default.PowerSettingsNew
-            ) {}
+            if (fleet.isCartInShutdownMode)
+                btn(
+                    YamaColor.restore_cart_btn_bg_color,
+                    Strings.fleet_view_holder_action_restore_btn_label,
+                    Icons.Default.PowerSettingsNew
+                ) {}
         }
 
         Box(modifier = Modifier

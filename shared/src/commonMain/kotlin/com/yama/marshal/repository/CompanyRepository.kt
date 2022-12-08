@@ -229,7 +229,10 @@ class CompanyRepository {
                     totalElapsedTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.totalElapsedTime,
                     returnAreaSts = cartsRoundOfCourse.find { d -> d.id == it.id }?.onDest ?: 0,
                     holesPlayed = cartsRoundOfCourse.find { d -> d.id == it.id }?.holesPlayed ?: 0,
-                    idTrip = cartsRoundOfCourse.find { d -> d.id == it.id }?.idTrip ?: -1
+                    idTrip = cartsRoundOfCourse.find { d -> d.id == it.id }?.idTrip ?: -1,
+                    hasControlAccess = it.controllerAccess == 1,
+                    idDeviceModel = it.idDeviceModel ?: 0,
+                    assetControlOverride = cartsRoundOfCourse.find { d -> d.id == it.id }?.assetControlOverride
                 )
             }
         }

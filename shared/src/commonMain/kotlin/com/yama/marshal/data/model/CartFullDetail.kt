@@ -17,6 +17,9 @@ data class CartFullDetail(
     val returnAreaSts: Int,
     val holesPlayed: Int,
     val idTrip: Int,
+    val hasControlAccess: Boolean,
+    val idDeviceModel: Int,
+    val assetControlOverride: Int?
 ) {
     enum class State {
         inUse,
@@ -46,5 +49,9 @@ data class CartFullDetail(
             return false
         }
 
-    val isCartInShutdownMode: Boolean = false
+    val isCartInShutdownMode: Boolean
+        get() = listOf(1,2).contains(assetControlOverride)
+
+    val isMessagingAvailable: Boolean
+        get() = listOf(3,6,8).contains(idDeviceModel)
 }
