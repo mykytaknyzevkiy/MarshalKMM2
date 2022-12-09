@@ -1,7 +1,9 @@
 package com.yama.marshal.data.model
 
-import com.yama.marshal.data.entity.CourseEntity
+import com.yama.marshal.tool.isCartFlag
+import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class CartFullDetail(
     val id: Int,
@@ -34,7 +36,8 @@ data class CartFullDetail(
                 State.notInUse
         }
 
-    val flagCart: Boolean = false
+    val isFlag: Boolean
+        get() = prefs.isCartFlag(id)
 
     val isOnClubHouse: Boolean
         get() {

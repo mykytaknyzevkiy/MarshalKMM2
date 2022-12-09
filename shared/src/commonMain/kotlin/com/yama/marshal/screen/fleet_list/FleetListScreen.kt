@@ -68,7 +68,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
         Column(modifier = Modifier.fillMaxSize()) {
             TableRow()
 
-            val fleets by remember { viewModel.fleetList }.collectAsState()
+            val fleets = remember { viewModel.fleetList }
 
             MarshalList(modifier = Modifier.fillMaxWidth(), list = fleets) { it, position ->
                 FleetViewHolder(fleet = it, position = position)
@@ -164,7 +164,10 @@ internal class FleetListScreen(navigationController: NavigationController) :
                     modifier = Modifier
                         .size(Sizes.fleet_view_holder_height)
                         .background(color),
-                    onClick = onCLick
+                    onClick = {
+                        offsetX = 0f
+                        onCLick()
+                    }
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
@@ -194,11 +197,14 @@ internal class FleetListScreen(navigationController: NavigationController) :
                 Icons.Default.Place
             ) {}
 
-            btn(
-                YamaColor.flag_cart_btn_bg_color,
-                Strings.fleet_view_holder_action_flag_cart_btn_label,
-                Icons.Default.Flag
-            ) {}
+            if (!fleet.isFlag)
+                btn(
+                    YamaColor.flag_cart_btn_bg_color,
+                    Strings.fleet_view_holder_action_flag_cart_btn_label,
+                    Icons.Default.Flag
+                ) {
+                    viewModel.flagCart(fleet)
+                }
 
             if (fleet.isMessagingAvailable)
                 btn(
@@ -223,7 +229,6 @@ internal class FleetListScreen(navigationController: NavigationController) :
 
         Box(modifier = Modifier
             .fillMaxSize()
-            .clickable { offsetX = if (offsetX < maxOffset) maxOffset else 0f }
             .offset { IntOffset(offsetX.roundToInt(), 0) }
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
@@ -244,7 +249,15 @@ internal class FleetListScreen(navigationController: NavigationController) :
             }
         ) {
             Row(modifier = Modifier
-                .background(YamaColor.itemColor(position)),
+                .background(
+                    if (fleet.isCartInShutdownMode)
+                        YamaColor.cart_shut_down_bg
+                    else if (fleet.isFlag)
+                        YamaColor.item_cart_flag_container_bg
+                    else
+                        YamaColor.itemColor(position)
+                )
+                .clickable { offsetX = if (offsetX < maxOffset) maxOffset else 0f },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -301,12 +314,6 @@ internal class FleetListScreen(navigationController: NavigationController) :
                 NSpacer()
             }
         }
-
-        if (fleet.isCartInShutdownMode)
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(YamaColor.cart_shut_down_bg.copy(alpha = 0.5f))
-            )
     }
 
     @Composable

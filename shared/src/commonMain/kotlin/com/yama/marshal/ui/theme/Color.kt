@@ -26,4 +26,6 @@ internal object YamaColor {
     val message_cart_btn_bg_color = Color(35, 100, 165)
     val shutdown_cart_btn_bg_color = Color(255, 0, 0)
     val restore_cart_btn_bg_color = Color(27, 139, 0)
+
+    val item_cart_flag_container_bg = Color(255, 229, 180)
 }

@@ -4,11 +4,18 @@ import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.fleet_list.SortFleet
 
 class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail> {
-    override fun compare(a: CartFullDetail, b: CartFullDetail): Int = when (sortFleet) {
-        SortFleet.CAR -> byCardName(a, b)
-        SortFleet.START_TIME -> byStartTime(a, b)
-        SortFleet.PLACE_OF_PLAY -> byPaceOfPlay(a, b)
-        SortFleet.HOLE -> byHole(a, b)
+    override fun compare(a: CartFullDetail, b: CartFullDetail): Int {
+        return if (a.isFlag && !b.isFlag)
+            -1
+        else if (!a.isFlag && b.isFlag)
+            1
+        else
+            when (sortFleet) {
+                SortFleet.CAR -> byCardName(a, b)
+                SortFleet.START_TIME -> byStartTime(a, b)
+                SortFleet.PLACE_OF_PLAY -> byPaceOfPlay(a, b)
+                SortFleet.HOLE -> byHole(a, b)
+            }
     }
 
     private fun byCardName(a: CartFullDetail, b: CartFullDetail): Int {
@@ -46,36 +53,36 @@ class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail>
         if (aState == CartFullDetail.State.inUse && bState == CartFullDetail.State.inUse) {
             if (aTotalNetPace != null && bTotalNetPace != null) {
 
-                if ((a.flagCart && b.flagCart) || (!a.flagCart && !b.flagCart)) {
+                if ((a.isFlag && b.isFlag) || (!a.isFlag && !b.isFlag)) {
                     if (aTotalNetPace == bTotalNetPace)
                         return 0
                     return if (aTotalNetPace > bTotalNetPace) -1 else 1
-                } else if (a.flagCart) {
+                } else if (a.isFlag) {
                     return -1
                 } else return 1
             } else {
-                return if ((a.flagCart && b.flagCart) || (!a.flagCart && !b.flagCart))
+                return if ((a.isFlag && b.isFlag) || (!a.isFlag && !b.isFlag))
                     if (aTotalNetPace != null) -1 else 1
-                else if (a.flagCart)
+                else if (a.isFlag)
                     -1
                 else
                     1
             }
         } else if (aState == CartFullDetail.State.inUse && bState != CartFullDetail.State.inUse) {
-            return if (a.flagCart && b.flagCart)
+            return if (a.isFlag && b.isFlag)
                 -1
-            else if (a.flagCart)
+            else if (a.isFlag)
                 -1
-            else if (b.flagCart)
+            else if (b.isFlag)
                 1
             else
                 -1
         } else if (aState != CartFullDetail.State.inUse && bState == CartFullDetail.State.inUse) {
-            return if (a.flagCart && b.flagCart)
+            return if (a.isFlag && b.isFlag)
                 1
-            else if (a.flagCart)
+            else if (a.isFlag)
                 -1
-            else if (b.flagCart)
+            else if (b.isFlag)
                 1
             else
                 1
