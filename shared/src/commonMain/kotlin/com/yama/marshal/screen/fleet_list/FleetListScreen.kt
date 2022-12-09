@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.data.model.CartFullDetail
+import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
@@ -202,7 +203,11 @@ internal class FleetListScreen(navigationController: NavigationController) :
                 YamaColor.view_cart_btn_bg_color,
                 Strings.fleet_view_holder_action_view_cart_btn_label,
                 Icons.Default.Place
-            ) {}
+            ) {
+                navigationController.navigateTo(
+                    MapScreen.route, listOf(NavArg(key = MapScreen.ARG_CART_ID, value = fleet.id))
+                )
+            }
 
             if (!fleet.isFlag)
                 btn(

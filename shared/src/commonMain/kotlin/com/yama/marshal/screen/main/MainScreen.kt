@@ -65,7 +65,7 @@ internal class MainScreen(navigationController: NavigationController) :
 
     private val mainNavigationController = NavigationController("fleet_list")
 
-    private val fleetListScreen = FleetListScreen(mainNavigationController)
+    private val fleetListScreen = FleetListScreen(navigationController)
 
     @Composable
     override fun content(args: List<NavArg>) {

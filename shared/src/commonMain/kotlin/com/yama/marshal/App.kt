@@ -6,6 +6,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import com.yama.marshal.screen.login.LoginScreen
 import com.yama.marshal.screen.main.MainScreen
+import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.screen.splash.SplashScreen
 import com.yama.marshal.ui.navigation.rememberNavController
 import com.yama.marshal.ui.theme.Dimensions
@@ -40,7 +41,8 @@ internal fun App() {
             screens = arrayOf(
                 SplashScreen(navigationController),
                 LoginScreen(navigationController),
-                MainScreen(navigationController)
+                MainScreen(navigationController),
+                MapScreen(navigationController)
             )
         )
     }
