@@ -21,6 +21,7 @@ data class CartFullDetail(
     val hasControlAccess: Boolean,
     val idDeviceModel: Int,
     val assetControlOverride: Int?,
+    val lastActivity: GMTDate?
 ) {
     enum class State {
         inUse,

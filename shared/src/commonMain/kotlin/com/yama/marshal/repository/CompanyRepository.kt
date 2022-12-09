@@ -240,7 +240,8 @@ class CompanyRepository {
                     idTrip = cartRound?.idTrip ?: -1,
                     hasControlAccess = it.controllerAccess == 1,
                     idDeviceModel = it.idDeviceModel ?: 0,
-                    assetControlOverride = cartRound?.assetControlOverride
+                    assetControlOverride = cartRound?.assetControlOverride,
+                    lastActivity = cartRound?.roundStartTime ?: it.lastActivity
                 )
             }
         }

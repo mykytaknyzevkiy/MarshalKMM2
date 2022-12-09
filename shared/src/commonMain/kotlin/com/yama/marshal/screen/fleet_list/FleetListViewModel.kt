@@ -7,10 +7,11 @@ import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.screen.YamaViewModel
-import com.yama.marshal.tool.FleetSorter
+import com.yama.marshal.tool.*
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.setCartFlag
+import io.ktor.util.date.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -68,9 +69,13 @@ class FleetListViewModel : YamaViewModel() {
 
         companyRepository
             .cartsFullDetail
-            .onEach {
-                _fleetList.clear()
-                _fleetList.addAll(it.sortedWith(FleetSorter(_currentFleetSort.value)))
+            .map {
+                it.filter { c ->
+                    c.lastActivity != null && !c.lastActivity.isBeforeDate(GMTDate())
+                }
+            }
+            .map {
+                it.sortedWith(FleetSorter(_currentFleetSort.value))
             }
             .launchIn(viewModelScope)
     }
