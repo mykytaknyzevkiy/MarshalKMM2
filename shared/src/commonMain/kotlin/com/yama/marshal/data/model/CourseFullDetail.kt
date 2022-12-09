@@ -1,7 +1,7 @@
 package com.yama.marshal.data.model
 
 data class CourseFullDetail(
-    val id: String,
+    val id: String?,
     val courseName: String,
     val defaultCourse: Int = 0,
     val playersNumber: Int = 0,

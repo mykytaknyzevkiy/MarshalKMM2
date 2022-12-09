@@ -25,6 +25,12 @@ class CompanyRepository {
         private const val TAG = "CompanyRepository"
     }
 
+    data class CartFullFlow(
+        val carts: List<CartItem>,
+        val cartRounds: List<CartRoundItem> ,
+        var courseList: List<CourseFullDetail>
+    )
+
     private val dnaService = DNAService()
 
     suspend fun loadCourses(): Boolean {
@@ -199,45 +205,44 @@ class CompanyRepository {
             }
         }
 
-    fun cartOfCourse(idCourse: String) = channelFlow {
-        flowOf(Database.cartList, courseList, Database.cartRoundList).collectLatest {
-            this.channel.send(Database.cartList.value)
+    val cartsFullDetail = Database
+        .cartRoundList
+        .combine(Database.cartList) { rounds, carts ->
+            CartFullFlow(
+                carts = carts,
+                cartRounds = rounds,
+                courseList = emptyList()
+            )
         }
-    }
-        .map { cartsDetail ->
-            val course = courseList.first().find { it.id == idCourse }
-
-            val cartsRoundOfCourse =
-                Database.cartRoundList.value.filter { it.idCourse == idCourse || idCourse.isEmpty() }
-
-            cartsDetail.let {
-                if (idCourse.isNotEmpty())
-                    cartsDetail.filter { c -> cartsRoundOfCourse.any { t -> t.id == c.id } }
-                else
-                    it
-            }.map {
-                CartFullDetail(
-                    id = it.id,
-                    course = course ?: CourseFullDetail(id = idCourse, courseName = "All"),
-                    cartName = it.cartName,
-                    startTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.roundStartTime,
-                    currPosTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosTime,
-                    currPosLon = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosLon,
-                    currPosLat = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosLat,
-                    currPosHole = cartsRoundOfCourse.find { d -> d.id == it.id }?.currPosHole,
-                    totalNetPace = cartsRoundOfCourse.find { d -> d.id == it.id }?.totalNetPace,
-                    totalElapsedTime = cartsRoundOfCourse.find { d -> d.id == it.id }?.totalElapsedTime,
-                    returnAreaSts = cartsRoundOfCourse.find { d -> d.id == it.id }?.onDest ?: 0,
-                    holesPlayed = cartsRoundOfCourse.find { d -> d.id == it.id }?.holesPlayed ?: 0,
-                    idTrip = cartsRoundOfCourse.find { d -> d.id == it.id }?.idTrip ?: -1,
-                    hasControlAccess = it.controllerAccess == 1,
-                    idDeviceModel = it.idDeviceModel ?: 0,
-                    assetControlOverride = cartsRoundOfCourse.find { d -> d.id == it.id }?.assetControlOverride
-                )
+        .combine(courseList) { d, courses ->
+            d.apply {
+                courseList = courses
             }
         }
-        .filterList {
-            it.course.id == idCourse
+        .map { fD ->
+            fD.carts.map {
+                val cartRound = fD.cartRounds.findLast { c-> c.id == it.id }
+                val course = fD.courseList.find { c -> c.id == cartRound?.idCourse }
+
+                CartFullDetail(
+                    id = it.id,
+                    course = course,
+                    cartName = it.cartName,
+                    startTime = cartRound?.roundStartTime,
+                    currPosTime = cartRound?.currPosTime,
+                    currPosLon = cartRound?.currPosLon,
+                    currPosLat = cartRound?.currPosLat,
+                    currPosHole = cartRound?.currPosHole,
+                    totalNetPace = cartRound?.totalNetPace,
+                    totalElapsedTime = cartRound?.totalElapsedTime,
+                    returnAreaSts = cartRound?.onDest ?: 0,
+                    holesPlayed =cartRound?.holesPlayed ?: 0,
+                    idTrip = cartRound?.idTrip ?: -1,
+                    hasControlAccess = it.controllerAccess == 1,
+                    idDeviceModel = it.idDeviceModel ?: 0,
+                    assetControlOverride = cartRound?.assetControlOverride
+                )
+            }
         }
 
     private fun <T> Flow<List<T>>.filterList(predicate: (T) -> Boolean) = this.map {

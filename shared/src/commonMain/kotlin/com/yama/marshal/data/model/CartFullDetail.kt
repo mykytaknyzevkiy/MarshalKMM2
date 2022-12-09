@@ -3,11 +3,10 @@ package com.yama.marshal.data.model
 import com.yama.marshal.tool.isCartFlag
 import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
-import kotlinx.coroutines.flow.MutableStateFlow
 
 data class CartFullDetail(
     val id: Int,
-    val course: CourseFullDetail,
+    val course: CourseFullDetail?,
     val cartName: String,
     val startTime: GMTDate? = null,
     val currPosTime: String? = null,
@@ -21,7 +20,7 @@ data class CartFullDetail(
     val idTrip: Int,
     val hasControlAccess: Boolean,
     val idDeviceModel: Int,
-    val assetControlOverride: Int?
+    val assetControlOverride: Int?,
 ) {
     enum class State {
         inUse,
@@ -36,13 +35,10 @@ data class CartFullDetail(
                 State.notInUse
         }
 
-    val isFlag: Boolean
-        get() = prefs.isCartFlag(id)
-
     val isOnClubHouse: Boolean
         get() {
-            course.holes.size.let { totalHoles ->
-                holesPlayed.let { holesPlayed ->
+            course?.holes?.size?.also { totalHoles ->
+                holesPlayed.also { holesPlayed ->
                     if (totalHoles != 0) {
                         val progress = holesPlayed.toFloat() / totalHoles.toFloat()
                         return progress < 0.65
@@ -57,4 +53,6 @@ data class CartFullDetail(
 
     val isMessagingAvailable: Boolean
         get() = listOf(3,6,8).contains(idDeviceModel)
+
+    var isFlag: Boolean = prefs.isCartFlag(id)
 }

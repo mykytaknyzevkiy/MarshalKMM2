@@ -68,9 +68,16 @@ internal class FleetListScreen(navigationController: NavigationController) :
         Column(modifier = Modifier.fillMaxSize()) {
             TableRow()
 
-            val fleets = remember { viewModel.fleetList }
+            val selectedCourse by remember { viewModel.selectedCourse }.collectAsState()
 
-            MarshalList(modifier = Modifier.fillMaxWidth(), list = fleets) { it, position ->
+            val fleets = remember {
+                viewModel.fleetList
+            }
+
+            MarshalList(modifier = Modifier.fillMaxWidth(), list = fleets.filter {
+                it.course?.id == selectedCourse?.id
+                        || selectedCourse?.id == null
+            }) { it, position ->
                 FleetViewHolder(fleet = it, position = position)
             }
 

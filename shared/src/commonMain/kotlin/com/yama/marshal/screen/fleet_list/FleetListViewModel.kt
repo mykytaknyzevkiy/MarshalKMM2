@@ -36,9 +36,9 @@ class FleetListViewModel : YamaViewModel() {
     val courseList: StateFlow<List<CourseFullDetail>>
         get() = _courseList
 
-    val fleetList = mutableStateListOf<CartFullDetail>()
-
-    private var currentLoadCartJob: Job? = null
+    private val _fleetList = mutableStateListOf<CartFullDetail>()
+    val fleetList: List<CartFullDetail>
+        get() = _fleetList
 
     fun load() {
         companyRepository
@@ -47,7 +47,7 @@ class FleetListViewModel : YamaViewModel() {
                 ArrayList<CourseFullDetail>().apply {
                     add(
                         CourseFullDetail(
-                            id = "",
+                            id = null,
                             courseName = "All",
                             defaultCourse = 0,
                             playersNumber = 0,
@@ -65,30 +65,19 @@ class FleetListViewModel : YamaViewModel() {
             }
             .launchIn(viewModelScope)
 
-        _selectedCourse.onEach {
-            loadCarts()
-        }.launchIn(viewModelScope)
-    }
-
-    private fun loadCarts() {
-        val courseEntity = selectedCourse.value ?: return
-
         companyRepository
-            .cartOfCourse(courseEntity.id)
+            .cartsFullDetail
             .onEach {
-                fleetList.clear()
-                fleetList.addAll(it)
+                _fleetList.clear()
+                _fleetList.addAll(it.sortedWith(FleetSorter(_currentFleetSort.value)))
             }
-            .launchIn(this.viewModelScope)
-            .also {
-                currentLoadCartJob = it
-            }
+            .launchIn(viewModelScope)
     }
 
     fun updateSort(type: SortFleet) {
         _currentFleetSort.value = type
 
-        fleetList.sortWith(FleetSorter(type))
+        _fleetList.sortWith(FleetSorter(type))
     }
 
     fun selectCourse(course: CourseFullDetail) {
@@ -98,6 +87,8 @@ class FleetListViewModel : YamaViewModel() {
     fun flagCart(cart: CartFullDetail) {
         prefs.setCartFlag(cart.id)
 
-        loadCarts()
+        cart.isFlag = true
+
+        updateSort(_currentFleetSort.value)
     }
 }
