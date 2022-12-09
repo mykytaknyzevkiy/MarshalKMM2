@@ -2,6 +2,7 @@ package com.yama.marshal.screen.fleet_list
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.repository.CompanyRepository
