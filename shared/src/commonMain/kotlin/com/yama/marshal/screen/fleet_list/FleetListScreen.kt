@@ -219,7 +219,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
                     viewModel.flagCart(fleet)
                 }
 
-            //if (fleet.isMessagingAvailable)
+            if (fleet.isMessagingAvailable)
                 btn(
                     YamaColor.message_cart_btn_bg_color,
                     Strings.fleet_view_holder_action_message_btn_label,
