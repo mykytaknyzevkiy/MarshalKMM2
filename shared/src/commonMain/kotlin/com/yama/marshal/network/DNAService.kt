@@ -83,4 +83,14 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
                 })
             }
         }
+
+    suspend fun messageList(body: CartMessageListRequest): CartMessageListResponse? = post(
+        Action.CartMessageList,
+        payload = body
+    )
+
+    suspend fun sendMessageToCarts(body: CartMessageSentRequest): BaseResponse? = post(
+        action = Action.CartMessageSent,
+        payload = body
+    )
 }

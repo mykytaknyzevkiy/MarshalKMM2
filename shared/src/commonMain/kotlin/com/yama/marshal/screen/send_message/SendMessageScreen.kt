@@ -1,5 +1,6 @@
 package com.yama.marshal.screen.send_message
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
@@ -18,7 +19,8 @@ import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-internal class SendMessageScreen(navigationController: NavigationController) : YamaScreen(navigationController) {
+internal class SendMessageScreen(navigationController: NavigationController)
+    : YamaScreen(navigationController) {
     companion object {
         const val ROUTE = "send_message"
         const val ARG_CART_ID = "cart_id"
@@ -29,18 +31,34 @@ internal class SendMessageScreen(navigationController: NavigationController) : Y
 
     override val viewModel: SendMessageViewModel = SendMessageViewModel()
 
+    private var cartID: Int = 0
+
     @Composable
     override fun content(args: List<NavArg>) {
-        val cartID = args.findInt(ARG_CART_ID) ?: return
-        val courseID = args.findString(ARG_COURSE_ID)
+        cartID = args.findInt(ARG_CART_ID) ?: return
+        //val courseID = args.findString(ARG_COURSE_ID)
+
+        val currentState by remember { viewModel.currentState }.collectAsState()
 
         Column(modifier = Modifier.fillMaxSize()) {
+            if (currentState is SendMessageViewState.Loading)
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
             MarshalList(
                 modifier = Modifier.fillMaxWidth().weight(1f),
-                list = emptyList<String>()
-            ) { _, _ ->
-
+                list = viewModel.messages
+            ) { message, _ ->
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { viewModel.updateMessage(message.message) }
+                ) {
+                    Text(message.message)
+                }
             }
+        }
+
+        LaunchedEffect(viewModel) {
+            viewModel.loadMessages()
         }
     }
 
@@ -52,6 +70,8 @@ internal class SendMessageScreen(navigationController: NavigationController) : Y
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun titleContent() {
+        val currentState by remember { viewModel.currentState }.collectAsState()
+
         val sendSendMessageText = remember {
             mutableStateOf("")
         }
@@ -70,7 +90,8 @@ internal class SendMessageScreen(navigationController: NavigationController) : Y
                 placeholderColor = Color.LightGray,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.background,
                 unfocusedTrailingIconColor = Color.LightGray
-            )
+            ),
+            enabled = currentState !is SendMessageViewState.Loading
         )
 
         LaunchedEffect(viewModel) {
@@ -85,7 +106,11 @@ internal class SendMessageScreen(navigationController: NavigationController) : Y
 
     @Composable
     override fun actions() {
-        IconButton(onClick = {}) {
+        val currentState by remember { viewModel.currentState }.collectAsState()
+
+        IconButton(onClick = {
+            viewModel.sendMessage(cartID)
+        }, enabled = currentState !is SendMessageViewState.Loading) {
             Icon(
                 Icons.Default.Send,
                 contentDescription = null

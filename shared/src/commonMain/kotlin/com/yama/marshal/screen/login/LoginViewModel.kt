@@ -37,6 +37,11 @@ interface UserDataViewModel {
                 return false
         }
 
+        companyRepository.loadMessages().also {
+            if (!it)
+                return false
+        }
+
         return true
     }
 }

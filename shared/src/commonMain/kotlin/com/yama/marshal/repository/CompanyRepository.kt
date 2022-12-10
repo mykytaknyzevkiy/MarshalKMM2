@@ -2,18 +2,12 @@ package com.yama.marshal.repository
 
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
-import com.yama.marshal.data.entity.CartItem
-import com.yama.marshal.data.entity.CartReportEntity
-import com.yama.marshal.data.entity.CartRoundItem
-import com.yama.marshal.data.entity.CourseEntity
+import com.yama.marshal.data.entity.*
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.network.AuthManager
 import com.yama.marshal.network.DNAService
-import com.yama.marshal.network.model.CartDetailsListRequest
-import com.yama.marshal.network.model.CartReportByTypeRequest
-import com.yama.marshal.network.model.CompanyCartsRoundDetailsRequest
-import com.yama.marshal.network.model.CourseRelationshipListRequest
+import com.yama.marshal.network.model.*
 import com.yama.marshal.tool.companyID
 import com.yama.marshal.tool.parseDate
 import com.yama.marshal.tool.prefs
@@ -183,6 +177,56 @@ class CompanyRepository {
         return true
     }
 
+    suspend fun loadMessages(): Boolean {
+        dnaService
+            .messageList(CartMessageListRequest(idCompany = prefs.companyID, active = 1))
+            .let {
+                if (it == null) {
+                    Logger.e(TAG, message = {
+                        "Cannot loadMessages"
+                    })
+                    return false
+                }
+                it
+            }
+            .list
+            .map {
+                CompanyMessage(
+                    id = it.id,
+                    message = it.message
+                )
+            }
+            .also {
+                Database.updateCompanyMessages(it)
+            }
+
+        return true
+    }
+
+    suspend fun sendMessageToCarts(cartIds: IntArray, idMessage: Int): Boolean {
+        dnaService.sendMessageToCarts(
+            body = CartMessageSentRequest(
+                cartIds = cartIds.toList(),
+                idMessage = idMessage,
+                customMessage = null
+            )
+        ).also {
+            return it != null
+        }
+    }
+
+    suspend fun sendMessageToCarts(cartIds: IntArray, message: String): Boolean {
+        dnaService.sendMessageToCarts(
+            body = CartMessageSentRequest(
+                cartIds = cartIds.toList(),
+                idMessage = null,
+                customMessage = message
+            )
+        ).also {
+            return it != null
+        }
+    }
+
     val courseList = Database
         .courseList
         .combine(Database.cartReport) { a, b ->
@@ -246,15 +290,21 @@ class CompanyRepository {
             }
         }
 
-    private fun <T> Flow<List<T>>.filterList(predicate: (T) -> Boolean) = this.map {
-        it.filter { d ->
-            predicate(d)
+    val companyMessages = Database
+        .companyMessages
+        .filterList {
+            it.message.isNotBlank()
         }
-    }
+}
 
-    private fun <T, R> Flow<List<T>>.mapList(transform: (T) -> R) = this.map { list ->
-        list.map {
-            transform(it)
-        }
+fun <T> Flow<List<T>>.filterList(predicate: (T) -> Boolean) = this.map {
+    it.filter { d ->
+        predicate(d)
+    }
+}
+
+fun <T, R> Flow<List<T>>.mapList(transform: (T) -> R) = this.map { list ->
+    list.map {
+        transform(it)
     }
 }
