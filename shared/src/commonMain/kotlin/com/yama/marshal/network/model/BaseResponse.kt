@@ -4,5 +4,5 @@ import kotlinx.serialization.SerialName
 
 @kotlinx.serialization.Serializable
 data class BaseResponse(
-    @SerialName("Status") val status: String
+    @SerialName("Status") val status: Int
 )

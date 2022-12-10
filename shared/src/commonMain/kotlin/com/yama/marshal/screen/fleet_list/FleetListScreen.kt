@@ -234,13 +234,14 @@ internal class FleetListScreen(navigationController: NavigationController) :
                     })
                 }
 
-            btn(
-                YamaColor.shutdown_cart_btn_bg_color,
-                Strings.fleet_view_holder_action_shutdown_btn_label,
-                Icons.Default.PowerSettingsNew
-            ) {}
+            if (fleet.isShutdownEnable)
+                btn(
+                    YamaColor.shutdown_cart_btn_bg_color,
+                    Strings.fleet_view_holder_action_shutdown_btn_label,
+                    Icons.Default.PowerSettingsNew
+                ) {}
 
-            if (fleet.isCartInShutdownMode)
+            if (fleet.isCartInShutdownMode && fleet.isShutdownEnable)
                 btn(
                     YamaColor.restore_cart_btn_bg_color,
                     Strings.fleet_view_holder_action_restore_btn_label,

@@ -16,10 +16,6 @@ sealed class SendMessageViewState {
 class SendMessageViewModel : YamaViewModel() {
     private val companyRepository = CompanyRepository()
 
-    private val _currentMessage = MutableStateFlow("")
-    val currentMessage: StateFlow<String>
-        get() = _currentMessage
-
     private val _messagesList = mutableStateListOf<CompanyMessage>()
     val messages: List<CompanyMessage>
         get() = _messagesList
@@ -27,10 +23,6 @@ class SendMessageViewModel : YamaViewModel() {
     private val _currentState = MutableStateFlow<SendMessageViewState>(SendMessageViewState.Empty)
     val currentState: StateFlow<SendMessageViewState>
         get() = _currentState
-
-    fun updateMessage(data: String) {
-        _currentMessage.value = data
-    }
 
     fun loadMessages() {
         companyRepository
@@ -42,23 +34,30 @@ class SendMessageViewModel : YamaViewModel() {
             .launchIn(viewModelScope)
     }
 
-    fun sendMessage(cartID: Int) = viewModelScope.launch {
+    fun sendMessage(cartID: Int, message: String) = viewModelScope.launch {
+        if (message.isBlank())
+            return@launch
+
         _currentState.emit(SendMessageViewState.Loading)
 
-        (if (_messagesList.any { it.message == _currentMessage.value })
+        val isSuccess = if (_messagesList.any { it.message == message })
             companyRepository.sendMessageToCarts(
                 cartIds = intArrayOf(cartID),
-                idMessage = _messagesList.find { it.message == _currentMessage.value }?.id ?: return@launch
+                idMessage = _messagesList.find { it.message == message }?.id ?: return@launch
             )
         else
             companyRepository.sendMessageToCarts(
                 cartIds = intArrayOf(cartID),
-                message = _currentMessage.value
-            )).also {
-                if (it)
-                    _currentState.emit(SendMessageViewState.Success)
-            else
-                _currentState.emit(SendMessageViewState.Empty)
-        }
+                message = message
+            )
+
+        if (isSuccess)
+            _currentState.emit(SendMessageViewState.Success)
+        else
+            _currentState.emit(SendMessageViewState.Empty)
+    }
+
+    fun emptyState() {
+        _currentState.value = SendMessageViewState.Empty
     }
 }

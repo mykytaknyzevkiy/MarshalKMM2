@@ -21,7 +21,8 @@ data class CartFullDetail(
     val hasControlAccess: Boolean,
     val idDeviceModel: Int,
     val assetControlOverride: Int?,
-    val lastActivity: GMTDate?
+    val lastActivity: GMTDate?,
+    val controllerAccess: Int
 ) {
     enum class State {
         inUse,
@@ -56,4 +57,7 @@ data class CartFullDetail(
         get() = listOf(3,6,8).contains(idDeviceModel)
 
     var isFlag: Boolean = prefs.isCartFlag(id)
+
+    val isShutdownEnable: Boolean
+        get() = controllerAccess > 0
 }

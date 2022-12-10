@@ -285,7 +285,8 @@ class CompanyRepository {
                     hasControlAccess = it.controllerAccess == 1,
                     idDeviceModel = it.idDeviceModel ?: 0,
                     assetControlOverride = cartRound?.assetControlOverride,
-                    lastActivity = cartRound?.roundStartTime ?: it.lastActivity
+                    lastActivity = cartRound?.roundStartTime ?: it.lastActivity,
+                    controllerAccess = it.controllerAccess ?: 0
                 )
             }
         }

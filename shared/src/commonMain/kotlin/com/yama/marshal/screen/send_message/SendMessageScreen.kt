@@ -6,14 +6,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.window.PopupPositionProvider
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.navigation.findInt
 import com.yama.marshal.ui.navigation.findString
 import com.yama.marshal.ui.theme.Sizes
+import com.yama.marshal.ui.view.Dialog
 import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.launchIn
@@ -33,6 +36,8 @@ internal class SendMessageScreen(navigationController: NavigationController)
 
     private var cartID: Int = 0
 
+    private val sendSendMessageText = mutableStateOf("")
+
     @Composable
     override fun content(args: List<NavArg>) {
         cartID = args.findInt(ARG_CART_ID) ?: return
@@ -50,9 +55,10 @@ internal class SendMessageScreen(navigationController: NavigationController)
             ) { message, _ ->
                 Box(modifier = Modifier
                     .fillMaxSize()
-                    .clickable { viewModel.updateMessage(message.message) }
+                    .clickable { sendSendMessageText.value = message.message },
+                    contentAlignment = Alignment.CenterStart
                 ) {
-                    Text(message.message)
+                    Text(message.message, modifier = Modifier.padding(Sizes.screenPadding))
                 }
             }
         }
@@ -60,6 +66,16 @@ internal class SendMessageScreen(navigationController: NavigationController)
         LaunchedEffect(viewModel) {
             viewModel.loadMessages()
         }
+
+        if (currentState is SendMessageViewState.Success)
+            Dialog(
+                title = "Success",
+                message = "Message have sent",
+                onConfirmClick = {
+                    viewModel.emptyState()
+                },
+                onCancelClick = null
+            )
     }
 
     override val isToolbarEnable: Boolean = true
@@ -70,11 +86,7 @@ internal class SendMessageScreen(navigationController: NavigationController)
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun titleContent() {
-        val currentState by remember { viewModel.currentState }.collectAsState()
-
-        val sendSendMessageText = remember {
-            mutableStateOf("")
-        }
+       // val currentState by remember { viewModel.currentState }.collectAsState()
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth().padding(vertical = Sizes.screenPadding / 2),
@@ -82,7 +94,7 @@ internal class SendMessageScreen(navigationController: NavigationController)
             placeholder = {
                 Text(Strings.send_message_screen_message_text_field_label)
             },
-            onValueChange = { viewModel.updateMessage(it) },
+            onValueChange = { sendSendMessageText.value = it },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 textColor = MaterialTheme.colorScheme.background,
                 focusedBorderColor = MaterialTheme.colorScheme.background,
@@ -91,17 +103,8 @@ internal class SendMessageScreen(navigationController: NavigationController)
                 focusedTrailingIconColor = MaterialTheme.colorScheme.background,
                 unfocusedTrailingIconColor = Color.LightGray
             ),
-            enabled = currentState !is SendMessageViewState.Loading
+            //enabled = currentState !is SendMessageViewState.Loading
         )
-
-        LaunchedEffect(viewModel) {
-            viewModel
-                .currentMessage
-                .onEach {
-                    sendSendMessageText.value = it
-                }
-                .launchIn(this)
-        }
     }
 
     @Composable
@@ -109,7 +112,7 @@ internal class SendMessageScreen(navigationController: NavigationController)
         val currentState by remember { viewModel.currentState }.collectAsState()
 
         IconButton(onClick = {
-            viewModel.sendMessage(cartID)
+            viewModel.sendMessage(cartID, sendSendMessageText.value)
         }, enabled = currentState !is SendMessageViewState.Loading) {
             Icon(
                 Icons.Default.Send,

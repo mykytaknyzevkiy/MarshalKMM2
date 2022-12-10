@@ -8,8 +8,8 @@ expect fun parseDate(pattern: String, date: String): GMTDate
 
 fun GMTDate.isBeforeDate(date: GMTDate): Boolean {
     return if (this.year < date.year)
-        false
+        true
     else if (this.month < date.month)
-        false
-    else this.dayOfMonth >= date.dayOfMonth
+        true
+    else this.dayOfMonth < date.dayOfMonth
 }
