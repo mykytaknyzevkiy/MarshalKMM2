@@ -10,7 +10,7 @@ android {
         applicationId = "com.yama.marshal.app"
         minSdk = 21
         targetSdk = 33
-        versionCode = 100
+        versionCode = 101
         versionName = "2.0"
     }
     buildFeatures {

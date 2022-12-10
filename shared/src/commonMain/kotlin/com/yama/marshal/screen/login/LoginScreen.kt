@@ -105,7 +105,7 @@ internal class LoginScreen(navigationController: NavigationController) :
             label = {
                 Text(Strings.login_screen_text_field_username_label)
             },
-            onValueChange = { userName.value = it },
+            onValueChange = { userName.value = it.replace("\n", "") },
             maxLines = 1
         )
     }
@@ -124,7 +124,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Text(Strings.login_screen_text_field_password_label)
             },
             visualTransformation = PasswordVisualTransformation(),
-            onValueChange = { password.value = it },
+            onValueChange = { password.value = it.replace("\n", "") },
             isError = currentState is LoginViewState.Error,
             maxLines = 1
         )
