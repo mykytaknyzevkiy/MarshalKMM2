@@ -46,7 +46,7 @@ internal fun NavHost(
                             }
                         )
                     }
-                    screen.content(currentRoute.args)
+                    screen.contentReal(currentRoute.args)
                 } else {
                     Text("No screen for route ${currentRoute.route}")
                 }

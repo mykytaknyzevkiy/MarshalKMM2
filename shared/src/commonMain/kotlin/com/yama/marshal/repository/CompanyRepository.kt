@@ -72,7 +72,7 @@ class CompanyRepository {
         })
 
         dnaService
-            .cartDetailsList(CartDetailsListRequest(prefs.companyID))
+            .cartDetailsList(CartDetailsListRequest(prefs.companyID, 1, 1))
             .let {
                 if (it == null)
                     return false

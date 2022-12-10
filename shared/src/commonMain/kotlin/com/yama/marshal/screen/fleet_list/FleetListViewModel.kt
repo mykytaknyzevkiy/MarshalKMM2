@@ -69,13 +69,17 @@ class FleetListViewModel : YamaViewModel() {
 
         companyRepository
             .cartsFullDetail
-            .map {
+            /*.map {
                 it.filter { c ->
                     c.lastActivity != null && !c.lastActivity.isBeforeDate(GMTDate())
                 }
-            }
+            }*/
             .map {
                 it.sortedWith(FleetSorter(_currentFleetSort.value))
+            }
+            .onEach {
+                _fleetList.clear()
+                _fleetList.addAll(it)
             }
             .launchIn(viewModelScope)
     }

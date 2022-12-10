@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.map.MapScreen
+import com.yama.marshal.screen.send_message.SendMessageScreen
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
@@ -218,12 +219,20 @@ internal class FleetListScreen(navigationController: NavigationController) :
                     viewModel.flagCart(fleet)
                 }
 
-            if (fleet.isMessagingAvailable)
+            //if (fleet.isMessagingAvailable)
                 btn(
                     YamaColor.message_cart_btn_bg_color,
                     Strings.fleet_view_holder_action_message_btn_label,
                     Icons.Default.Email
-                ) {}
+                ) {
+                    navigationController.navigateTo(SendMessageScreen.ROUTE, arrayListOf(
+                        NavArg(key = SendMessageScreen.ARG_CART_ID, fleet.id)
+                    ).apply {
+                        fleet.course?.id?.also {
+                            this.add(NavArg(key = SendMessageScreen.ARG_COURSE_ID, it))
+                        }
+                    })
+                }
 
             btn(
                 YamaColor.shutdown_cart_btn_bg_color,

@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import com.yama.marshal.screen.login.LoginScreen
 import com.yama.marshal.screen.main.MainScreen
 import com.yama.marshal.screen.map.MapScreen
+import com.yama.marshal.screen.send_message.SendMessageScreen
 import com.yama.marshal.screen.splash.SplashScreen
 import com.yama.marshal.ui.navigation.rememberNavController
 import com.yama.marshal.ui.theme.Dimensions
@@ -42,7 +43,8 @@ internal fun App() {
                 SplashScreen(navigationController),
                 LoginScreen(navigationController),
                 MainScreen(navigationController),
-                MapScreen(navigationController)
+                MapScreen(navigationController),
+                SendMessageScreen(navigationController)
             )
         )
     }

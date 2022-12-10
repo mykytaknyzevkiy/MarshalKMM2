@@ -3,6 +3,7 @@ package com.yama.marshal.ui.view
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.screen.YamaViewModel
@@ -36,5 +37,16 @@ internal abstract class YamaScreen(protected val navigationController: Navigatio
     open val isToolbarEnable: Boolean = false
 
     @Composable
-    abstract fun content(args: List<NavArg>)
+    protected abstract fun content(args: List<NavArg>)
+
+    @Composable
+    fun contentReal(args: List<NavArg>) {
+        content(args)
+
+        DisposableEffect(viewModel) {
+            onDispose {
+                viewModel.onClear()
+            }
+        }
+    }
 }

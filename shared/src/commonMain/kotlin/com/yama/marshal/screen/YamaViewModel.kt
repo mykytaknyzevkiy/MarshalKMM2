@@ -10,5 +10,11 @@ abstract class YamaViewModel {
         })
     }
 
-    val viewModelScope = CoroutineScope(Dispatchers.Default) + errorHandler
+    private val job = Job()
+    val viewModelScope = CoroutineScope(Dispatchers.Default) + errorHandler + job
+
+    fun onClear() {
+        job.cancel()
+        viewModelScope.cancel()
+    }
 }

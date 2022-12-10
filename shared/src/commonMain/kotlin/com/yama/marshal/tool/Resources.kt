@@ -39,6 +39,10 @@ internal object Strings {
     const val fleet_view_holder_action_message_btn_label = "MESSAGE"
     const val fleet_view_holder_action_shutdown_btn_label = "SHUTDOWN"
     const val fleet_view_holder_action_restore_btn_label = "RESTORE"
+
+    const val send_message_screen_title = "Send message"
+    const val send_message_screen_message_text_field_label = "Message"
+    const val send_message_screen_messages_list_label = "Simple messages"
 } 
 
 @Composable

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.ui.theme.Sizes
 
 @Composable
@@ -21,10 +22,10 @@ internal fun YamaToolbar(
     actions: (@Composable RowScope.() -> Unit)? = null,
 ) = Surface(color = color) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = LocalAppDimens.current.toolbar_height),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (onBack != null) {
+        if (onBack != null)
             IconButton(
                 modifier = Modifier.size(Sizes.buttonSize),
                 onClick = { onBack.invoke() }) {
@@ -34,17 +35,13 @@ internal fun YamaToolbar(
                 )
             }
 
-            //Spacer(modifier = Modifier.width(Sizes.screenPadding))
+        Box(modifier = Modifier.weight(1f)) {
+            title()
         }
 
-        title()
-
-        if (actions != null) {
-            Spacer(modifier = Modifier.weight(1f))
-
+        if (actions != null)
             actions()
-
+        else
             Spacer(modifier = Modifier.width(Sizes.screenPadding))
-        }
     }
 }
