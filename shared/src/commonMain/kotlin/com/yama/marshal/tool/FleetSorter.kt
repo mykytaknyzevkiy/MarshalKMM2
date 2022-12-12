@@ -1,7 +1,10 @@
 package com.yama.marshal.tool
 
+import com.yama.marshal.data.entity.HoleEntity
 import com.yama.marshal.data.model.CartFullDetail
-import com.yama.marshal.screen.main.SortFleet
+import com.yama.marshal.screen.main.SortType.SortHole
+import com.yama.marshal.screen.main.SortType.SortFleet
+import com.yama.marshal.screen.main.SortType.SortHole.*
 
 class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail> {
     override fun compare(a: CartFullDetail, b: CartFullDetail): Int {
@@ -122,5 +125,28 @@ class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail>
         }
 
         return (a.compareTo(b, ignoreCase = true))
+    }
+}
+
+class HoleSorter(private val sortHole: SortHole) : Comparator<HoleEntity> {
+    override fun compare(a: HoleEntity, b: HoleEntity): Int = when (sortHole) {
+        HOLE -> byID(a, b)
+        PACE_OF_PLAY -> holeByPaceOfPlay(a, b)
+    }
+
+    private fun byID(a: HoleEntity, b: HoleEntity): Int {
+        return if (a.id < b.id)
+            -1
+        else if (a.id > b.id)
+            1
+        else
+            0
+    }
+
+    private fun holeByPaceOfPlay(a: HoleEntity, b: HoleEntity): Int {
+        if (a.differentialPace == b.differentialPace)
+            return 0
+        return if (a.differentialPace > b.differentialPace) -1 else 1
+
     }
 }

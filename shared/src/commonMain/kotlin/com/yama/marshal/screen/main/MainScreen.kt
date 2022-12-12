@@ -18,15 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.screen.fleet_list.FleetListScreen
+import com.yama.marshal.screen.hole_list.HoleListScreen
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
-import com.yama.marshal.ui.navigation.rememberNavController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.tool.Orientation
@@ -43,7 +42,10 @@ internal class MainScreen(navigationController: NavigationController) :
 
     override val viewModel: MainViewModel = MainViewModel()
 
+    private val mainNavigationController = NavigationController(FleetListScreen.ROUTE)
+
     private val fleetListScreen = FleetListScreen(navigationController, viewModel)
+    private val holeListScreen = HoleListScreen(navigationController, viewModel)
 
     @Composable
     override fun titleContent() {
@@ -71,14 +73,12 @@ internal class MainScreen(navigationController: NavigationController) :
 
     @Composable
     override fun content(args: List<NavArg>) {
-        val mainNavigationController = rememberNavController("fleet_list")
-
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
                 NavHost(
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     navigationController = mainNavigationController,
-                    screens = arrayOf(fleetListScreen)
+                    screens = arrayOf(fleetListScreen, holeListScreen)
                 )
 
                 menuNavigation()
@@ -119,13 +119,17 @@ internal class MainScreen(navigationController: NavigationController) :
             YamaColor.fleet_navigation_card_bg,
             Strings.main_screen_navigation_item_fleet_label,
             Icons.Default.DirectionsCar,
-        ) {}
+        ) {
+            mainNavigationController.navigateTo(FleetListScreen.ROUTE)
+        }
 
         NavigationItem(
             YamaColor.hole_navigation_card_bg,
             Strings.main_screen_navigation_item_hole_label,
             Icons.Default.GolfCourse,
-        ) {}
+        ) {
+            mainNavigationController.navigateTo(HoleListScreen.ROUTE)
+        }
 
         NavigationItem(
             YamaColor.alert_navigation_card_bg,

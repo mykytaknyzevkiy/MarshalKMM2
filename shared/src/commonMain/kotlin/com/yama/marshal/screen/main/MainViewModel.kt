@@ -1,6 +1,7 @@
 package com.yama.marshal.screen.main
 
 import androidx.compose.runtime.mutableStateListOf
+import com.yama.marshal.data.entity.HoleEntity
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.repository.CompanyRepository
@@ -15,11 +16,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-enum class SortFleet(val label: String, val weight: Float) {
-    CAR(Strings.fleet_list_screen_table_row_car_label, 0.8f),
-    START_TIME(Strings.fleet_list_screen_table_row_start_time_label, 0.7f),
-    PLACE_OF_PLAY(Strings.fleet_list_screen_table_row_place_of_place_label, 1f),
-    HOLE(Strings.fleet_list_screen_table_row_hole_label, 0.5f)
+interface SortType {
+    val label: String
+    val weight: Float
+
+    enum class SortFleet(override val label: String,
+                         override val weight: Float): SortType {
+        CAR(Strings.fleet_list_screen_table_row_car_label, 0.8f),
+        START_TIME(Strings.fleet_list_screen_table_row_start_time_label, 0.7f),
+        PLACE_OF_PLAY(Strings.fleet_list_screen_table_row_place_of_place_label, 1f),
+        HOLE(Strings.fleet_list_screen_table_row_hole_label, 0.5f)
+    }
+
+    enum class SortHole(override val label: String,
+                        override val weight: Float): SortType {
+        HOLE(Strings.hole_screen_table_row_hole_label, 0.3f),
+        PACE_OF_PLAY(Strings.hole_screen_table_row_pace_of_play_label, 1f)
+    }
 }
 
 class MainViewModel : YamaViewModel() {
@@ -34,9 +47,13 @@ class MainViewModel : YamaViewModel() {
 
     private val companyRepository = CompanyRepository()
 
-    private val _currentFleetSort = MutableStateFlow(SortFleet.CAR)
-    val currentFleetSort: StateFlow<SortFleet>
+    private val _currentFleetSort = MutableStateFlow(SortType.SortFleet.CAR)
+    val currentFleetSort: StateFlow<SortType.SortFleet>
         get() = _currentFleetSort
+
+    private val _currentHoleSort = MutableStateFlow(SortType.SortHole.HOLE)
+    val currentHoleSort: StateFlow<SortType.SortHole>
+        get() = _currentHoleSort
 
     private val _selectedCourse = MutableStateFlow<CourseFullDetail?>(null)
     val selectedCourse: StateFlow<CourseFullDetail?>
@@ -49,6 +66,10 @@ class MainViewModel : YamaViewModel() {
     private val _fleetList = mutableStateListOf<CartFullDetail>()
     val fleetList: List<CartFullDetail>
         get() = _fleetList
+
+    private val _holeList = mutableStateListOf<HoleEntity>()
+    val holeList: List<HoleEntity>
+        get() = _holeList
 
     fun load() {
         companyRepository
@@ -91,14 +112,28 @@ class MainViewModel : YamaViewModel() {
                 _fleetList.addAll(it)
             }
             .launchIn(viewModelScope)
+
+        companyRepository
+            .holeList
+            .onEach {
+                _holeList.clear()
+                _holeList.addAll(it.sortedWith(HoleSorter(_currentHoleSort.value)))
+            }
+            .launchIn(viewModelScope)
     }
 
-    fun updateFleetSort(type: SortFleet) {
+    fun updateFleetSort(type: SortType.SortFleet) {
         _currentFleetSort.value = type
 
         viewModelScope.launch(Dispatchers.Default) {
             _fleetList.sortWith(FleetSorter(type))
         }
+    }
+
+    fun updateHoleSort(type: SortType.SortHole) {
+        _currentHoleSort.value = type
+
+        _holeList.sortWith(HoleSorter(type))
     }
 
     fun selectCourse(course: CourseFullDetail) {

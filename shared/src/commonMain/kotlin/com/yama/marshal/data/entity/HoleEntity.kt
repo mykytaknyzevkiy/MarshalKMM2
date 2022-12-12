@@ -1,7 +1,7 @@
 package com.yama.marshal.data.entity
 
-data class CartReportEntity(
-    val holeNumber: Int,
+data class HoleEntity(
+    val id: Int,
     val idCourse: String,
     val defaultPace: Int,
     val averagePace: Double,

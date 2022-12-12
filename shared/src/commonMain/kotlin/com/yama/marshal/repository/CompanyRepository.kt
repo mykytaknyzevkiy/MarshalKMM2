@@ -11,7 +11,6 @@ import com.yama.marshal.network.model.*
 import com.yama.marshal.tool.companyID
 import com.yama.marshal.tool.parseDate
 import com.yama.marshal.tool.prefs
-import io.ktor.util.date.*
 import kotlinx.coroutines.flow.*
 
 class CompanyRepository {
@@ -162,8 +161,8 @@ class CompanyRepository {
             }
             .list
             .map {
-                CartReportEntity(
-                    holeNumber = it.holeNumber,
+                HoleEntity(
+                    id = it.holeNumber,
                     idCourse = it.idCourse,
                     defaultPace = it.defaultPace,
                     averagePace = it.averagePace,
@@ -227,9 +226,11 @@ class CompanyRepository {
         }
     }
 
+    val holeList = Database.cartReport
+
     val courseList = Database
         .courseList
-        .combine(Database.cartReport) { a, b ->
+        .combine(holeList) { a, b ->
             a.map {
                 CourseFullDetail(
                     id = it.id,
@@ -239,7 +240,7 @@ class CompanyRepository {
                     layoutHoles = it.layoutHoles,
                     holes = b.filter { h -> h.idCourse == it.id }.map { h ->
                         CourseFullDetail.HoleData(
-                            holeNumber = h.holeNumber,
+                            holeNumber = h.id,
                             defaultPace = h.defaultPace,
                             averagePace = h.averagePace,
                             differentialPace = h.differentialPace

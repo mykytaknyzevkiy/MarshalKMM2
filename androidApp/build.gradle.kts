@@ -18,7 +18,7 @@ android {
         applicationId = "com.l1inc.yamatrackmarshal"
         minSdk = 21
         targetSdk = 33
-        versionCode = 12
+        versionCode = 13
         versionName = "2.0"
     }
     buildFeatures {
@@ -40,9 +40,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        getByName("debug") {
-            isMinifyEnabled = false
         }
     }
 }

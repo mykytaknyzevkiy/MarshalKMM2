@@ -20,7 +20,6 @@ internal object Strings {
     const val fleet_list_screen_table_row_start_time_label = "Start time"
     const val fleet_list_screen_table_row_place_of_place_label = "Pace of play"
     const val fleet_list_screen_table_row_hole_label = "Hole"
-    
 
     const val on_pace = "On Pace"
     const val mins = "mins"
@@ -43,6 +42,9 @@ internal object Strings {
     const val send_message_screen_title = "Send message"
     const val send_message_screen_message_text_field_label = "Message"
     const val send_message_screen_messages_list_label = "Simple messages"
+
+    const val hole_screen_table_row_hole_label = "Hole"
+    const val hole_screen_table_row_pace_of_play_label = "Pace of play"
 } 
 
 @Composable

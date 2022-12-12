@@ -17,8 +17,8 @@ internal object Database {
     val cartRoundList: StateFlow<List<CartRoundItem>>
         get() = _cartRoundList
 
-    private val _cartReport = MutableStateFlow<List<CartReportEntity>>(emptyList())
-    val cartReport: StateFlow<List<CartReportEntity>>
+    private val _cartReport = MutableStateFlow<List<HoleEntity>>(emptyList())
+    val cartReport: StateFlow<List<HoleEntity>>
         get() = _cartReport
 
     private val _companyMessages = MutableStateFlow<List<CompanyMessage>>(emptyList())
@@ -37,7 +37,7 @@ internal object Database {
         _cartRoundList.emit(data)
     }
 
-    suspend fun updateCartReport(data: List<CartReportEntity>) {
+    suspend fun updateCartReport(data: List<HoleEntity>) {
         _cartReport.emit(data)
     }
 
