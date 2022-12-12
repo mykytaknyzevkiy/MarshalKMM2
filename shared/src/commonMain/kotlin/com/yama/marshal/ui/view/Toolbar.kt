@@ -22,7 +22,9 @@ internal fun YamaToolbar(
     actions: (@Composable RowScope.() -> Unit)? = null,
 ) = Surface(color = color) {
     Row(
-        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = LocalAppDimens.current.toolbar_height),
+        modifier = Modifier.fillMaxWidth()
+            .defaultMinSize(minHeight = LocalAppDimens.current.toolbar_height)
+            .padding(horizontal = Sizes.screenPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (onBack != null)
@@ -41,7 +43,5 @@ internal fun YamaToolbar(
 
         if (actions != null)
             actions()
-        else
-            Spacer(modifier = Modifier.width(Sizes.screenPadding))
     }
 }

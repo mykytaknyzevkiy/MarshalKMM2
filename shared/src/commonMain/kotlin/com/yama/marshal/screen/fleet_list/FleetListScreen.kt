@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.data.model.CartFullDetail
+import com.yama.marshal.screen.main.MainViewModel
+import com.yama.marshal.screen.main.SortFleet
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.screen.send_message.SendMessageScreen
 import com.yama.marshal.tool.PaceValueFormatter
@@ -41,29 +43,9 @@ import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.roundToInt
 
-internal class FleetListScreen(navigationController: NavigationController) :
+internal class FleetListScreen(navigationController: NavigationController, override val viewModel: MainViewModel) :
     YamaScreen(navigationController) {
     override val route: String = "fleet_list"
-
-    override val viewModel: FleetListViewModel = FleetListViewModel()
-
-    private val onSelectCourseState = MutableStateFlow(false)
-
-    @Composable
-    override fun titleContent() {
-        val selectedCourse by remember { viewModel.selectedCourse }.collectAsState()
-
-        if (selectedCourse == null)
-            return
-
-        Text(
-            modifier = Modifier.padding(Sizes.screenPadding)
-                .clickable { onSelectCourseState.value = true },
-            text = selectedCourse!!.courseName,
-            fontSize = Sizes.title,
-            textAlign = TextAlign.Center
-        )
-    }
 
     @Composable
     override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
@@ -87,29 +69,6 @@ internal class FleetListScreen(navigationController: NavigationController) :
                 viewModel.load()
             }
         }
-
-        val onSelectCourse by onSelectCourseState.collectAsState()
-
-        if (onSelectCourse) {
-            val courses by viewModel.courseList.collectAsState()
-
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = Sizes.screenPadding)
-                    .background(MaterialTheme.colorScheme.background).align(Alignment.TopStart)
-            ) {
-                items(courses) {
-                    Box(
-                        modifier = Modifier.width(300.dp)
-                            .border(width = 1.dp, color = Color.LightGray).clickable {
-                                onSelectCourseState.value = false
-                                viewModel.selectCourse(it)
-                            }, contentAlignment = Alignment.Center
-                    ) {
-                        Text(it.courseName, modifier = Modifier.padding(Sizes.screenPadding))
-                    }
-                }
-            }
-        }
     }
 
     @Composable
@@ -124,7 +83,7 @@ internal class FleetListScreen(navigationController: NavigationController) :
             { type, isLast ->
                 Box(
                     modifier = Modifier.weight(type.weight).fillMaxHeight().clickable {
-                        viewModel.updateSort(type)
+                        viewModel.updateFleetSort(type)
                     },
                     contentAlignment = Alignment.Center
                 ) {

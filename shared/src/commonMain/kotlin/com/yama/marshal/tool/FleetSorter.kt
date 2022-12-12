@@ -1,7 +1,7 @@
 package com.yama.marshal.tool
 
 import com.yama.marshal.data.model.CartFullDetail
-import com.yama.marshal.screen.fleet_list.SortFleet
+import com.yama.marshal.screen.main.SortFleet
 
 class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail> {
     override fun compare(a: CartFullDetail, b: CartFullDetail): Int {
