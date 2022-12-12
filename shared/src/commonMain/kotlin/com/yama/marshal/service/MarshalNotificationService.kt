@@ -14,7 +14,7 @@ object MarshalNotificationService : CoroutineScope {
 
     fun start() = this.launch(Dispatchers.Default) {
         while (true) {
-            delay(2 * 60 * 1000L)
+            delay(2 * 1000L)
 
             companyRepository.loadCarts()
             companyRepository.loadCartsRound()

@@ -64,7 +64,7 @@ internal class FleetListScreen(navigationController: NavigationController, overr
 
         MarshalList(
             modifier = Modifier.fillMaxWidth(),
-            list = fleets.filter { it.course?.id == selectedCourse?.id },
+            list = fleets.filter { it.course?.id == selectedCourse?.id || selectedCourse?.id.isNullOrBlank() },
             key = {_, f -> f.id}
         ) { it, position ->
             FleetViewHolder(fleet = it, position = position)

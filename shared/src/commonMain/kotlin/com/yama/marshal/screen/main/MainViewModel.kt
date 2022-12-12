@@ -78,11 +78,11 @@ class MainViewModel : YamaViewModel() {
         companyRepository
             .cartsFullDetail
             .flowOn(Dispatchers.Default)
-            /*.map {
+            .map {
                 it.filter { c ->
                     c.lastActivity != null && !c.lastActivity.isBeforeDate(GMTDate())
                 }
-            }*/
+            }
             .map {
                 it.sortedWith(FleetSorter(_currentFleetSort.value))
             }

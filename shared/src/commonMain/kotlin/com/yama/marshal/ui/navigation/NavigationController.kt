@@ -28,11 +28,12 @@ class NavigationController constructor(currentRoute: String) {
         get() = _currentState
 
     fun popBack() {
-        if (stackRoutes.last().route == _currentState.value.route)
-            stackRoutes.remove(_currentState.value)
+        if (stackRoutes.isEmpty())
+            return
 
-        if (stackRoutes.isNotEmpty())
-            _currentState.value = stackRoutes.last()
+        val route = stackRoutes.last()
+        _currentState.value = route
+        stackRoutes.remove(route)
     }
 
     fun navigateTo(route: String, args: List<NavArg> = emptyList()) {

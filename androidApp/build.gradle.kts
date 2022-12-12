@@ -15,10 +15,10 @@ android {
     namespace = "com.yama.marshal_app"
     compileSdk = 33
     defaultConfig {
-        applicationId = "com.yama.marshal.app"
+        applicationId = "com.l1inc.yamatrackmarshal"
         minSdk = 21
         targetSdk = 33
-        versionCode = 101
+        versionCode = 12
         versionName = "2.0"
     }
     buildFeatures {
