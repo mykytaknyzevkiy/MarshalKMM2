@@ -79,25 +79,25 @@ internal object Sizes {
 }
 
 sealed class Dimensions(
-    val bodyLarge: TextUnit = 30.sp,
+    val bodyLarge: TextUnit = 22.sp,
 
     val bodySmall: TextUnit = 16.sp,
 
-    val labelLarge: TextUnit = 37.sp,
+    val labelLarge: TextUnit = 24.sp,
 
     val screenPadding: Dp = 24.dp,
 
-    val buttonSize: Dp = 75.dp,
+    val buttonSize: Dp = 55.dp,
 
-    val button_icon_size: Dp = 42.dp,
+    val button_icon_size: Dp = 32.dp,
 
-    val title: TextUnit = 44.sp,
+    val title: TextUnit = 32.sp,
 
     val login_screen_logo_width: Dp = 400.dp,
 
-    val fleet_view_holder_height: Dp = 85.dp,
+    val fleet_view_holder_height: Dp = 75.dp,
 
-    val toolbar_height: Dp = 90.dp
+    val toolbar_height: Dp = 85.dp
 ) {
     object Phone: Dimensions(
         bodyLarge = 16.sp,
