@@ -10,8 +10,10 @@ import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.setCartFlag
 import io.ktor.util.date.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 enum class SortFleet(val label: String, val weight: Float) {
     CAR(Strings.fleet_list_screen_table_row_car_label, 0.8f),
@@ -75,11 +77,12 @@ class MainViewModel : YamaViewModel() {
 
         companyRepository
             .cartsFullDetail
-            .map {
+            .flowOn(Dispatchers.Default)
+            /*.map {
                 it.filter { c ->
                     c.lastActivity != null && !c.lastActivity.isBeforeDate(GMTDate())
                 }
-            }
+            }*/
             .map {
                 it.sortedWith(FleetSorter(_currentFleetSort.value))
             }
@@ -93,7 +96,9 @@ class MainViewModel : YamaViewModel() {
     fun updateFleetSort(type: SortFleet) {
         _currentFleetSort.value = type
 
-        _fleetList.sortWith(FleetSorter(type))
+        viewModelScope.launch(Dispatchers.Default) {
+            _fleetList.sortWith(FleetSorter(type))
+        }
     }
 
     fun selectCourse(course: CourseFullDetail) {

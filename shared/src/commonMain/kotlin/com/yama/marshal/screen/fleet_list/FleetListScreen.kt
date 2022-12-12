@@ -41,6 +41,9 @@ import com.yama.marshal.ui.tool.currentOrientation
 import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
 
 internal class FleetListScreen(navigationController: NavigationController, override val viewModel: MainViewModel) :
@@ -48,26 +51,23 @@ internal class FleetListScreen(navigationController: NavigationController, overr
     override val route: String = "fleet_list"
 
     @Composable
-    override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            TableRow()
+    override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
+        TableRow()
 
-            val selectedCourse by remember { viewModel.selectedCourse }.collectAsState()
+        val selectedCourse by remember(viewModel) {
+            viewModel.selectedCourse
+        }.collectAsState()
 
-            val fleets = remember {
-                viewModel.fleetList
-            }
+        val fleets = remember {
+            viewModel.fleetList
+        }
 
-            MarshalList(modifier = Modifier.fillMaxWidth(), list = fleets.filter {
-                it.course?.id == selectedCourse?.id
-                        || selectedCourse?.id == null
-            }) { it, position ->
-                FleetViewHolder(fleet = it, position = position)
-            }
-
-            LaunchedEffect(viewModel) {
-                viewModel.load()
-            }
+        MarshalList(
+            modifier = Modifier.fillMaxWidth(),
+            list = fleets.filter { it.course?.id == selectedCourse?.id },
+            key = {_, f -> f.id}
+        ) { it, position ->
+            FleetViewHolder(fleet = it, position = position)
         }
     }
 
@@ -118,8 +118,6 @@ internal class FleetListScreen(navigationController: NavigationController, overr
 
     @Composable
     private fun FleetViewHolder(fleet: CartFullDetail, position: Int) {
-        val orientation = currentOrientation()
-
         var maxOffset = 0f
 
         var offsetX by remember { mutableStateOf(0f) }
@@ -137,14 +135,21 @@ internal class FleetListScreen(navigationController: NavigationController, overr
                         onCLick()
                     }
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.background,
+                    )
+                    /*Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.background,
                         )
-                        if (orientation == Orientation.LANDSCAPE) {
-                            Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
+                        if (orientation == Orientation.LANDSCAPE)
                             Text(
                                 label.uppercase(),
                                 modifier = Modifier.padding(horizontal = Sizes.screenPadding / 2),
@@ -152,8 +157,7 @@ internal class FleetListScreen(navigationController: NavigationController, overr
                                 textAlign = TextAlign.Center,
                                 fontSize = LocalAppDimens.current.bodySmall
                             )
-                        }
-                    }
+                    }*/
                 }
 
                 maxOffset += Sizes.fleet_view_holder_height.value

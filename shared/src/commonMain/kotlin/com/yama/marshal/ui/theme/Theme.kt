@@ -81,7 +81,7 @@ internal object Sizes {
 sealed class Dimensions(
     val bodyLarge: TextUnit = 30.sp,
 
-    val bodySmall: TextUnit = 18.sp,
+    val bodySmall: TextUnit = 16.sp,
 
     val labelLarge: TextUnit = 37.sp,
 
@@ -95,7 +95,7 @@ sealed class Dimensions(
 
     val login_screen_logo_width: Dp = 400.dp,
 
-    val fleet_view_holder_height: Dp = 80.dp,
+    val fleet_view_holder_height: Dp = 85.dp,
 
     val toolbar_height: Dp = 90.dp
 ) {

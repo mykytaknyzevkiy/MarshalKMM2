@@ -16,9 +16,10 @@ import com.yama.marshal.ui.tool.Orientation
 import com.yama.marshal.ui.tool.currentOrientation
 
 @Composable
-internal fun <E> MarshalList(modifier: Modifier = Modifier,
-                    list: List<E>,
-                    itemContent: @Composable BoxScope.(item: E, position: Int) -> Unit)
+internal inline fun <E> MarshalList(modifier: Modifier = Modifier,
+                                    list: List<E>,
+                                    noinline key: ((index: Int, item: E) -> Any)? = null,
+                                    crossinline itemContent: @Composable BoxScope.(item: E, position: Int) -> Unit)
 = Box(modifier = modifier) {
     val orientation = currentOrientation()
 
@@ -32,7 +33,7 @@ internal fun <E> MarshalList(modifier: Modifier = Modifier,
     }
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        itemsIndexed(list, itemContent = { position, item ->
+        itemsIndexed(list, key = key, itemContent = { position, item ->
             Box(modifier = Modifier
                 .height(Sizes.fleet_view_holder_height)
                 .fillMaxWidth()
