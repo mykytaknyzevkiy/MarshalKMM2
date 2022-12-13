@@ -52,6 +52,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+                implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+                implementation("net.iharder:base64:2.3.8")
             }
         }
         val androidTest by getting

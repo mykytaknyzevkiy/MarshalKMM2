@@ -1,12 +1,10 @@
 package com.yama.marshal.network
 
-import co.touchlab.kermit.Logger
 import com.appmattus.crypto.Algorithm
 import com.yama.marshal.tool.Base64
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.secretKey
 import com.yama.marshal.tool.userName
-import io.ktor.util.*
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
 
@@ -16,10 +14,11 @@ object AuthManager {
     private const val SignatureVersion = "2.0"
     private const val SignatureMethod = "HmacSHA256"
     private const val ResponseFormat = "JSON"
-    private const val ApplicationAPIKey = "uUqnXUKU86kghJk"
-    private const val ApplicationSecretKey = "3CA0LPbu3FlXRin0UCH05rM/ZzvCkK"
+    const val ApplicationSecretKey = "3CA0LPbu3FlXRin0UCH05rM/ZzvCkK"
     private const val timeStampDateFormatPattern = "yyMMddHHmmssZZZZ"
     const val timeStampDateFormatDataPattern = "yyMMddHHmmss"
+    const val ApplicationAPIKey = "uUqnXUKU86kghJk"
+    const val MARSHAL_NOTIFICATION_ENDPOINT = "https://pace-push.syncwise360.com:9001"
 
     fun getUrlForAction(action: Action): String {
         val urlBuilder = StringBuilder()

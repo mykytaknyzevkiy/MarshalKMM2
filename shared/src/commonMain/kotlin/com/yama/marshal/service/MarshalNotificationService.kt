@@ -1,5 +1,6 @@
 package com.yama.marshal.service
 
+import com.yama.marshal.network.MarshalSocket
 import com.yama.marshal.repository.CompanyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +14,8 @@ object MarshalNotificationService : CoroutineScope {
     private val companyRepository = CompanyRepository()
 
     fun start() = this.launch(Dispatchers.Default) {
+        MarshalSocket().connect()
+
         while (true) {
             delay(2 * 1000L)
 
