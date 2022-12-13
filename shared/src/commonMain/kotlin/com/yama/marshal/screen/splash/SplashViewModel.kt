@@ -23,9 +23,7 @@ class SplashViewModel : YamaViewModel(), UserDataViewModel {
         get() = _currentViewState
 
     override val userRepository = UserRepository()
-
-    override val companyRepository: CompanyRepository = CompanyRepository()
-
+    
     fun startData() = viewModelScope.launch {
         _currentViewState.value = SplashViewState.Loading
 
@@ -40,8 +38,6 @@ class SplashViewModel : YamaViewModel(), UserDataViewModel {
                 return@launch
             }
         }
-
-        MarshalNotificationService.start()
 
         _currentViewState.value = SplashViewState.OK
     }

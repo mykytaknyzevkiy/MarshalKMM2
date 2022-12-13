@@ -1,5 +1,6 @@
 package com.yama.marshal.data.model
 
+import com.yama.marshal.data.entity.CartItem
 import com.yama.marshal.tool.isCartFlag
 import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
@@ -22,7 +23,8 @@ data class CartFullDetail(
     val idDeviceModel: Int,
     val assetControlOverride: Int?,
     val lastActivity: GMTDate?,
-    val controllerAccess: Int
+    val controllerAccess: Int,
+    val isFlag: Boolean = prefs.isCartFlag(id)
 ) {
     enum class State {
         inUse,
@@ -56,8 +58,13 @@ data class CartFullDetail(
     val isMessagingAvailable: Boolean
         get() = listOf(3,6,8).contains(idDeviceModel)
 
-    var isFlag: Boolean = prefs.isCartFlag(id)
-
     val isShutdownEnable: Boolean
         get() = controllerAccess > 0
+
+    fun isContentEqual(item: CartItem) =
+        this.cartName == item.cartName ||
+                this.hasControlAccess == (item.controllerAccess == 1) ||
+                this.idDeviceModel == item.idDeviceModel ||
+                this.controllerAccess == item.controllerAccess ||
+                this.lastActivity == item.lastActivity
 }

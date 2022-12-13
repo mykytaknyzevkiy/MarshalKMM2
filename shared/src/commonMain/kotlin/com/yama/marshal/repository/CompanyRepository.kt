@@ -1,5 +1,6 @@
 package com.yama.marshal.repository
 
+import androidx.compose.runtime.mutableStateListOf
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
 import com.yama.marshal.data.entity.*
@@ -11,12 +12,12 @@ import com.yama.marshal.network.model.*
 import com.yama.marshal.tool.companyID
 import com.yama.marshal.tool.parseDate
 import com.yama.marshal.tool.prefs
+import com.yama.marshal.tool.setCartFlag
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
-class CompanyRepository {
-    companion object {
-        private const val TAG = "CompanyRepository"
-    }
+object CompanyRepository {
+    private const val TAG = "CompanyRepository"
 
     data class CartFullFlow(
         val carts: List<CartItem>,
@@ -101,6 +102,10 @@ class CompanyRepository {
     }
 
     suspend fun loadCartsRound(): Boolean {
+        Logger.i(tag = TAG, message = {
+            "loadCartsRound"
+        })
+
         dnaService
             .companyCartsRoundDetails(body = CompanyCartsRoundDetailsRequest(idCompany = prefs.companyID))
             .let {
@@ -137,6 +142,10 @@ class CompanyRepository {
             }
             .also {
                 Database.updateCartsRound(it)
+
+                Logger.i(tag = TAG, message = {
+                    "carts round success saved"
+                })
             }
 
         return true
@@ -226,6 +235,111 @@ class CompanyRepository {
         }
     }
 
+    suspend fun processNotification(paceNotification: MarshalNotification.PaceNotification) {
+
+    }
+
+    fun flagCart(cartID: Int) {
+        Logger.i(TAG, message = { "On flag cart with id id $cartID" })
+
+        prefs.setCartFlag(cartID)
+
+        val index = _cartsFullDetail.indexOfFirst { it.id == cartID }
+
+        if (index < 0) {
+            Logger.e(TAG, message = {"Cannot find cart by id $cartID to flag cart"})
+            return
+        }
+
+        _cartsFullDetail[index] = _cartsFullDetail[index].copy(
+            isFlag = true
+        )
+    }
+
+    fun launchCartsUpdater(scope: CoroutineScope) {
+        Database.cartList
+            .onEachList { cart ->
+                if (_cartsFullDetail.any { it.id == cart.id }) {
+                    val oldCart = _cartsFullDetail.find { it.id == cart.id } ?: return@onEachList
+                    val realIndex = _cartsFullDetail.indexOf(oldCart)
+
+                    if (!oldCart.isContentEqual(cart)) {
+                        Logger.i(TAG, message = { "onUpdate cart id ${oldCart.id} by cartList callback" })
+
+                        _cartsFullDetail[realIndex] = oldCart.copy(
+                            cartName = cart.cartName,
+                            hasControlAccess = cart.controllerAccess == 1,
+                            idDeviceModel = cart.idDeviceModel ?: 0,
+                            controllerAccess = cart.controllerAccess ?: 0,
+                            lastActivity = cart.lastActivity
+                        )
+                    }
+                }
+                else {
+                    Logger.i(TAG, message = { "on add cart id ${cart.id} by cartList callback" })
+
+                    _cartsFullDetail.add(
+                        CartFullDetail(
+                            id = cart.id,
+                            course = null,
+                            cartName = cart.cartName,
+                            startTime = null,
+                            currPosTime = null,
+                            currPosLon = null,
+                            currPosLat = null,
+                            currPosHole = null,
+                            totalNetPace = null,
+                            totalElapsedTime = null,
+                            returnAreaSts = 0,
+                            holesPlayed = 0,
+                            idTrip = -1,
+                            hasControlAccess = cart.controllerAccess == 1,
+                            idDeviceModel = cart.idDeviceModel ?: 0,
+                            assetControlOverride = null,
+                            lastActivity = cart.lastActivity,
+                            controllerAccess = cart.controllerAccess ?: 0
+                        )
+                    )
+                }
+            }
+            .launchIn(scope)
+
+        Database.cartRoundList
+            .combine(courseList) {a, b -> Pair(a, b)}
+            .onEach { data ->
+                for (cartRound in data.first) {
+                    val oldCart = _cartsFullDetail.findLast { it.id == cartRound.id }
+
+                    if (oldCart == null) {
+                        Logger.e(TAG, message = { "Cannot find cart id ${cartRound.id} by cart round callback" })
+                        continue
+                    }
+
+                    val index = _cartsFullDetail.indexOf(oldCart)
+
+                    val course = data.second.find { c -> c.id == cartRound.idCourse }
+
+                    Logger.i(TAG, message = { "onUpdate cart id ${oldCart.id} by cart round callback" })
+
+                    _cartsFullDetail[index] = oldCart.copy(
+                        course = course,
+                        startTime = cartRound.roundStartTime,
+                        currPosTime = cartRound.currPosTime,
+                        currPosLon = cartRound.currPosLon,
+                        currPosLat = cartRound.currPosLat,
+                        currPosHole = cartRound.currPosHole,
+                        totalNetPace = cartRound.totalNetPace,
+                        totalElapsedTime = cartRound.totalElapsedTime,
+                        returnAreaSts = cartRound.onDest ?: 0,
+                        holesPlayed = cartRound.holesPlayed ?: 0,
+                        idTrip = cartRound.idTrip ?: -1,
+                        assetControlOverride = cartRound.assetControlOverride,
+                    )
+                }
+            }
+            .launchIn(scope)
+    }
+
     val holeList = Database.cartReport
 
     val courseList = Database
@@ -250,53 +364,15 @@ class CompanyRepository {
             }
         }
 
-    val cartsFullDetail = Database
-        .cartRoundList
-        .combine(Database.cartList) { rounds, carts ->
-            CartFullFlow(
-                carts = carts,
-                cartRounds = rounds,
-                courseList = emptyList()
-            )
-        }
-        .combine(courseList) { d, courses ->
-            d.apply {
-                courseList = courses
-            }
-        }
-        .map { fD ->
-            fD.carts.map {
-                val cartRound = fD.cartRounds.findLast { c-> c.id == it.id }
-                val course = fD.courseList.find { c -> c.id == cartRound?.idCourse }
-
-                CartFullDetail(
-                    id = it.id,
-                    course = course,
-                    cartName = it.cartName,
-                    startTime = cartRound?.roundStartTime,
-                    currPosTime = cartRound?.currPosTime,
-                    currPosLon = cartRound?.currPosLon,
-                    currPosLat = cartRound?.currPosLat,
-                    currPosHole = cartRound?.currPosHole,
-                    totalNetPace = cartRound?.totalNetPace,
-                    totalElapsedTime = cartRound?.totalElapsedTime,
-                    returnAreaSts = cartRound?.onDest ?: 0,
-                    holesPlayed =cartRound?.holesPlayed ?: 0,
-                    idTrip = cartRound?.idTrip ?: -1,
-                    hasControlAccess = it.controllerAccess == 1,
-                    idDeviceModel = it.idDeviceModel ?: 0,
-                    assetControlOverride = cartRound?.assetControlOverride,
-                    lastActivity = cartRound?.roundStartTime ?: it.lastActivity,
-                    controllerAccess = it.controllerAccess ?: 0
-                )
-            }
-        }
-
     val companyMessages = Database
         .companyMessages
         .filterList {
             it.message.isNotBlank()
         }
+
+    private val _cartsFullDetail = mutableStateListOf<CartFullDetail>()
+    val cartsFullDetail: List<CartFullDetail>
+        get() = _cartsFullDetail
 }
 
 fun <T> Flow<List<T>>.filterList(predicate: (T) -> Boolean) = this.map {
@@ -309,4 +385,8 @@ fun <T, R> Flow<List<T>>.mapList(transform: (T) -> R) = this.map { list ->
     list.map {
         transform(it)
     }
+}
+
+fun <T> Flow<List<T>>.onEachList(action: (T) -> Unit) = this.onEach { c ->
+    c.onEach(action)
 }

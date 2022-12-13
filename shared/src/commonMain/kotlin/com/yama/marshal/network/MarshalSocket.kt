@@ -17,9 +17,9 @@ abstract class MarshalSocketIO: CoroutineScope {
         onError(throwable.message ?: "Unknown")
     }
 
-    private val _onNotification = MutableSharedFlow<MarshalNotification>()
-    val onNotification: SharedFlow<MarshalNotification>
-        get() = _onNotification
+    private val _onMessage = MutableSharedFlow<String>()
+    val onMessage: SharedFlow<String>
+        get() = _onMessage
 
     protected fun onError(message: String) {
         Logger.e(TAG, message = { "onError $message" })
@@ -55,11 +55,7 @@ abstract class MarshalSocketIO: CoroutineScope {
                 Logger.e(TAG, message = { "Login fault" })
         }
         else if (jsonArray != null)
-            MarshalNotification.parse(jsonArray).let {
-                it.forEach { n ->
-                    _onNotification.emit(n)
-                }
-            }
+            _onMessage.emit(json)
         else
             Logger.e(TAG, message = { "Cannot parse json" })
     }

@@ -20,16 +20,20 @@ interface SortType {
     val label: String
     val weight: Float
 
-    enum class SortFleet(override val label: String,
-                         override val weight: Float): SortType {
+    enum class SortFleet(
+        override val label: String,
+        override val weight: Float
+    ) : SortType {
         CAR(Strings.fleet_list_screen_table_row_car_label, 0.8f),
         START_TIME(Strings.fleet_list_screen_table_row_start_time_label, 0.7f),
         PLACE_OF_PLAY(Strings.fleet_list_screen_table_row_place_of_place_label, 1f),
         HOLE(Strings.fleet_list_screen_table_row_hole_label, 0.5f)
     }
 
-    enum class SortHole(override val label: String,
-                        override val weight: Float): SortType {
+    enum class SortHole(
+        override val label: String,
+        override val weight: Float
+    ) : SortType {
         HOLE(Strings.hole_screen_table_row_hole_label, 0.3f),
         PACE_OF_PLAY(Strings.hole_screen_table_row_pace_of_play_label, 1f)
     }
@@ -44,8 +48,6 @@ class MainViewModel : YamaViewModel() {
     }.map {
         it.format("hh:mm a")
     }
-
-    private val companyRepository = CompanyRepository()
 
     private val _currentFleetSort = MutableStateFlow(SortType.SortFleet.CAR)
     val currentFleetSort: StateFlow<SortType.SortFleet>
@@ -63,16 +65,15 @@ class MainViewModel : YamaViewModel() {
     val courseList: StateFlow<List<CourseFullDetail>>
         get() = _courseList
 
-    private val _fleetList = mutableStateListOf<CartFullDetail>()
     val fleetList: List<CartFullDetail>
-        get() = _fleetList
+        get() = CompanyRepository.cartsFullDetail
 
     private val _holeList = mutableStateListOf<HoleEntity>()
     val holeList: List<HoleEntity>
         get() = _holeList
 
     fun load() {
-        companyRepository
+        CompanyRepository
             .courseList
             .map {
                 ArrayList<CourseFullDetail>().apply {
@@ -96,24 +97,7 @@ class MainViewModel : YamaViewModel() {
             }
             .launchIn(viewModelScope)
 
-        companyRepository
-            .cartsFullDetail
-            .flowOn(Dispatchers.Default)
-            .map {
-                it.filter { c ->
-                    c.lastActivity != null && !c.lastActivity.isBeforeDate(GMTDate())
-                }
-            }
-            .map {
-                it.sortedWith(FleetSorter(_currentFleetSort.value))
-            }
-            .onEach {
-                _fleetList.clear()
-                _fleetList.addAll(it)
-            }
-            .launchIn(viewModelScope)
-
-        companyRepository
+        CompanyRepository
             .holeList
             .onEach {
                 _holeList.clear()
@@ -124,10 +108,6 @@ class MainViewModel : YamaViewModel() {
 
     fun updateFleetSort(type: SortType.SortFleet) {
         _currentFleetSort.value = type
-
-        viewModelScope.launch(Dispatchers.Default) {
-            _fleetList.sortWith(FleetSorter(type))
-        }
     }
 
     fun updateHoleSort(type: SortType.SortHole) {
@@ -141,11 +121,7 @@ class MainViewModel : YamaViewModel() {
     }
 
     fun flagCart(cart: CartFullDetail) {
-        prefs.setCartFlag(cart.id)
-
-        cart.isFlag = true
-
-        updateFleetSort(_currentFleetSort.value)
+        CompanyRepository.flagCart(cart.id)
     }
 
 }

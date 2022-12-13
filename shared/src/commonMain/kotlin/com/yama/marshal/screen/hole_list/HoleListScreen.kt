@@ -12,6 +12,7 @@ import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
 import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.screen.main.SortType
+import com.yama.marshal.tool.HoleSorter
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.ui.navigation.NavigationController
 import kotlinx.coroutines.flow.StateFlow
@@ -65,5 +66,5 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
     override val route: String = ROUTE
 
-
+    override fun sorter(type: SortType.SortHole): Comparator<HoleEntity> = HoleSorter(type)
 }

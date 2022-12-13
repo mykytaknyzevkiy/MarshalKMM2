@@ -25,13 +25,14 @@ import com.yama.marshal.screen.main.*
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.screen.send_message.SendMessageScreen
+import com.yama.marshal.tool.*
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
-import com.yama.marshal.tool.format
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
+import io.ktor.util.date.*
 import kotlinx.coroutines.flow.*
 import kotlin.math.roundToInt
 
@@ -241,4 +242,9 @@ internal class FleetListScreen(navigationController: NavigationController,
         courseFullDetail.id.isNullOrBlank() || item.course?.id == courseFullDetail.id
 
     override fun keyItem(index: Int, item: CartFullDetail): Any = item.id
+
+    override fun sorter(type: SortType.SortFleet): Comparator<CartFullDetail> = FleetSorter(type)
+
+    override fun nFilter(it: CartFullDetail): Boolean = it.lastActivity != null
+            && !it.lastActivity.isBeforeDate(GMTDate())
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.yama.marshal.data.entity.CartItem
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
@@ -85,11 +86,14 @@ internal abstract class MainContentScreen<SORT_TYPE : SortType, ITEM>(
         val selectedCourse by remember(viewModel) {
             viewModel.selectedCourse
         }.collectAsState()
+        val currentSort by remember(viewModel) { currentSortState }.collectAsState()
 
         if (selectedCourse != null)
             MarshalList(
                 modifier = Modifier.fillMaxWidth().weight(1f),
-                list = itemList.filter { filterByCourse(selectedCourse!!, it) },
+                list = itemList
+                    .filter { filterByCourse(selectedCourse!!, it) && nFilter(it) }
+                    .sortedWith(sorter(currentSort)),
                 key = {index, item -> keyItem(index, item)},
                 itemContent = { item, position ->
                     ItemViewHolder(item, position)
@@ -100,6 +104,10 @@ internal abstract class MainContentScreen<SORT_TYPE : SortType, ITEM>(
     abstract fun filterByCourse(courseFullDetail: CourseFullDetail, item: ITEM): Boolean
 
     abstract fun keyItem(index: Int, item: ITEM): Any
+
+    abstract fun sorter(type: SORT_TYPE): Comparator<ITEM>
+
+    open fun nFilter(it: ITEM): Boolean = true
 }
 
 @Composable

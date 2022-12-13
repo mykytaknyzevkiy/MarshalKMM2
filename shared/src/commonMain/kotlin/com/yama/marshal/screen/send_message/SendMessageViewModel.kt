@@ -14,8 +14,6 @@ sealed class SendMessageViewState {
 }
 
 class SendMessageViewModel : YamaViewModel() {
-    private val companyRepository = CompanyRepository()
-
     private val _messagesList = mutableStateListOf<CompanyMessage>()
     val messages: List<CompanyMessage>
         get() = _messagesList
@@ -25,7 +23,7 @@ class SendMessageViewModel : YamaViewModel() {
         get() = _currentState
 
     fun loadMessages() {
-        companyRepository
+        CompanyRepository
             .companyMessages
             .onEach {
                 _messagesList.clear()
@@ -41,12 +39,12 @@ class SendMessageViewModel : YamaViewModel() {
         _currentState.emit(SendMessageViewState.Loading)
 
         val isSuccess = if (_messagesList.any { it.message == message })
-            companyRepository.sendMessageToCarts(
+            CompanyRepository.sendMessageToCarts(
                 cartIds = intArrayOf(cartID),
                 idMessage = _messagesList.find { it.message == message }?.id ?: return@launch
             )
         else
-            companyRepository.sendMessageToCarts(
+            CompanyRepository.sendMessageToCarts(
                 cartIds = intArrayOf(cartID),
                 message = message
             )
