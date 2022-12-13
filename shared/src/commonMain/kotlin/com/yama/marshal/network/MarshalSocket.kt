@@ -1,24 +1,71 @@
 package com.yama.marshal.network
 
 import co.touchlab.kermit.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import com.yama.marshal.network.model.MarshalNotification
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.serialization.json.*
+import kotlin.coroutines.CoroutineContext
 
-abstract class MarshalSocketIO {
+abstract class MarshalSocketIO: CoroutineScope {
     companion object {
         private const val TAG = "MarshalSocket"
     }
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Default + CoroutineExceptionHandler { _, throwable ->
+        onError(throwable.message ?: "Unknown")
+    }
+
+    private val _onNotification = MutableSharedFlow<MarshalNotification>()
+    val onNotification: SharedFlow<MarshalNotification>
+        get() = _onNotification
 
     protected fun onError(message: String) {
         Logger.e(TAG, message = { "onError $message" })
     }
 
-    protected fun onMessage(json: String) {
+    protected fun onMessage(json: String) = launch {
         Logger.i(TAG, message = { "onMessage $json" })
+
+        val responseJson = try {
+            Json.parseToJsonElement(json)
+        } catch (e: Exception) {
+            onError(message = "Parse responseJson to jsonElement ${e.message}")
+            return@launch
+        }
+
+        val jsonObject = try {
+            responseJson.jsonObject
+        } catch (e: Exception) {
+            null
+        }
+        val jsonArray = try {
+            responseJson.jsonArray
+        } catch (e: Exception) {
+            null
+        }
+
+        if (jsonObject != null) {
+            Logger.i(TAG, message = { "Parse json object" })
+            val sts = jsonObject.getValue("sts").jsonPrimitive.int
+            if (sts == 1)
+                Logger.i(TAG, message = { "Login success" })
+            else
+                Logger.e(TAG, message = { "Login fault" })
+        }
+        else if (jsonArray != null)
+            MarshalNotification.parse(jsonArray).let {
+                it.forEach { n ->
+                    _onNotification.emit(n)
+                }
+            }
+        else
+            Logger.e(TAG, message = { "Cannot parse json" })
     }
 }
 
-expect class MarshalSocket() : CoroutineScope, MarshalSocketIO {
+expect class MarshalSocket() : MarshalSocketIO {
 
     fun connect(): Job
 

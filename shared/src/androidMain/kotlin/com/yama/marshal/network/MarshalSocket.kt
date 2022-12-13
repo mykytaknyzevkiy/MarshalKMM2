@@ -31,13 +31,9 @@ import javax.net.ssl.SSLContext
 import kotlin.coroutines.CoroutineContext
 
 @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
-actual class MarshalSocket: CoroutineScope, MarshalSocketIO(), IOCallback {
+actual class MarshalSocket:MarshalSocketIO(), IOCallback {
     companion object {
         private const val TAG = "MarshalSocket"
-    }
-
-    override val coroutineContext: CoroutineContext = Dispatchers.IO + CoroutineExceptionHandler { _, throwable ->
-        onError(throwable.localizedMessage ?: "Unknown")
     }
 
     override fun onDisconnect() {
@@ -51,7 +47,7 @@ actual class MarshalSocket: CoroutineScope, MarshalSocketIO(), IOCallback {
     }
 
     override fun onMessage(p0: String?, p1: IOAcknowledge?) {
-        Logger.i(TAG, message = {"onMessage $p0"})
+        onMessage(p0 ?: return)
     }
 
     override fun onMessage(p0: JSONObject?, p1: IOAcknowledge?) {}
