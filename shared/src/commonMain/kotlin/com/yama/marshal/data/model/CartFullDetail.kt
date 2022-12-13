@@ -1,6 +1,7 @@
 package com.yama.marshal.data.model
 
 import com.yama.marshal.data.entity.CartItem
+import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.tool.isCartFlag
 import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
@@ -53,10 +54,10 @@ data class CartFullDetail(
         }
 
     val isCartInShutdownMode: Boolean
-        get() = listOf(1,2).contains(assetControlOverride)
+        get() = listOf(1, 2).contains(assetControlOverride)
 
     val isMessagingAvailable: Boolean
-        get() = listOf(3,6,8).contains(idDeviceModel)
+        get() = listOf(3, 6, 8).contains(idDeviceModel)
 
     val isShutdownEnable: Boolean
         get() = controllerAccess > 0
@@ -67,4 +68,18 @@ data class CartFullDetail(
                 this.idDeviceModel == item.idDeviceModel ||
                 this.controllerAccess == item.controllerAccess ||
                 this.lastActivity == item.lastActivity
+
+    fun isContentEqual(cartRound: CartRoundItem) =
+        course?.id == cartRound.idCourse &&
+                startTime == cartRound.roundStartTime &&
+                currPosTime == cartRound.currPosTime &&
+                currPosLon == cartRound.currPosLon &&
+                currPosLat == cartRound.currPosLat &&
+                currPosHole == cartRound.currPosHole &&
+                totalNetPace == cartRound.totalNetPace &&
+                totalElapsedTime == cartRound.totalElapsedTime &&
+                returnAreaSts == (cartRound.onDest ?: 0) &&
+                holesPlayed == (cartRound.holesPlayed ?: 0) &&
+                idTrip == (cartRound.idTrip ?: -1) &&
+                assetControlOverride == cartRound.assetControlOverride
 }

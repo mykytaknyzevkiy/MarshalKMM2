@@ -30,9 +30,9 @@ sealed class MarshalNotification(
                 parseDate("HHmmss", time)
             }
 
-            val date = json["T"]!!.jsonPrimitive.content.let(parseTime)
-            val idCart = json["A"]!!.jsonPrimitive.int
-            val idCourse = json["Cr"]!!.jsonPrimitive.content
+            val date = json["T"]?.jsonPrimitive?.content?.let(parseTime) ?: return null
+            val idCart = json["A"]?.jsonPrimitive?.int ?: return null
+            val idCourse = json["Cr"]?.jsonPrimitive?.content ?: return null
 
             return when (json["C"]?.jsonPrimitive?.int) {
                 1 -> PaceNotification(

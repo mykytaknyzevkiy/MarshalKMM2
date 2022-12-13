@@ -3,6 +3,7 @@ package com.yama.marshal.network
 import co.touchlab.kermit.Logger
 import com.yama.marshal.network.model.MarshalNotification
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.serialization.json.*
@@ -18,7 +19,7 @@ abstract class MarshalSocketIO: CoroutineScope {
     }
 
     private val _onMessage = MutableSharedFlow<String>()
-    val onMessage: SharedFlow<String>
+    val onMessage: Flow<String>
         get() = _onMessage
 
     protected fun onError(message: String) {

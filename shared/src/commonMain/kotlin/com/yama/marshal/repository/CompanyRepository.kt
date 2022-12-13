@@ -257,7 +257,7 @@ object CompanyRepository {
     }
 
     fun launchCartsUpdater(scope: CoroutineScope) {
-        Database.cartList
+        /*Database.cartList
             .onEachList { cart ->
                 if (_cartsFullDetail.any { it.id == cart.id }) {
                     val oldCart = _cartsFullDetail.find { it.id == cart.id } ?: return@onEachList
@@ -302,22 +302,70 @@ object CompanyRepository {
                     )
                 }
             }
-            .launchIn(scope)
+            .launchIn(scope)*/
 
         Database.cartRoundList
-            .combine(courseList) {a, b -> Pair(a, b)}
+            .combine(Database.cartList) { rounds, carts ->
+                CartFullFlow(
+                    carts = carts,
+                    cartRounds = rounds,
+                    courseList = emptyList()
+                )
+            }
+            .combine(courseList) { d, courses ->
+                d.apply {
+                    courseList = courses
+                }
+            }
             .onEach { data ->
-                for (cartRound in data.first) {
-                    val oldCart = _cartsFullDetail.findLast { it.id == cartRound.id }
+                val cartList = data.carts
+
+                if (_cartsFullDetail.size < cartList.size) {
+                    _cartsFullDetail.addAll(
+                        cartList
+                            .filter { c -> !_cartsFullDetail.any { it.id == c.id} }
+                            .map { cart ->
+                                CartFullDetail(
+                                    id = cart.id,
+                                    course = null,
+                                    cartName = cart.cartName,
+                                    startTime = null,
+                                    currPosTime = null,
+                                    currPosLon = null,
+                                    currPosLat = null,
+                                    currPosHole = null,
+                                    totalNetPace = null,
+                                    totalElapsedTime = null,
+                                    returnAreaSts = 0,
+                                    holesPlayed = 0,
+                                    idTrip = -1,
+                                    hasControlAccess = cart.controllerAccess == 1,
+                                    idDeviceModel = cart.idDeviceModel ?: 0,
+                                    assetControlOverride = null,
+                                    lastActivity = cart.lastActivity,
+                                    controllerAccess = cart.controllerAccess ?: 0
+                                )
+                            }
+                    )
+                }
+                else if (_cartsFullDetail.size > cartList.size) {
+                    _cartsFullDetail.removeAll {
+                        cartList.any { c -> c.id ==  it.id}
+                    }
+                }
+
+                for (cartRound in data.cartRounds) {
+                    val oldCart = _cartsFullDetail.find { it.id == cartRound.id }
 
                     if (oldCart == null) {
                         Logger.e(TAG, message = { "Cannot find cart id ${cartRound.id} by cart round callback" })
                         continue
-                    }
+                    } else if (oldCart.isContentEqual(cartRound))
+                        continue
 
                     val index = _cartsFullDetail.indexOf(oldCart)
 
-                    val course = data.second.find { c -> c.id == cartRound.idCourse }
+                    val course = data.courseList.find { c -> c.id == cartRound.idCourse }
 
                     Logger.i(TAG, message = { "onUpdate cart id ${oldCart.id} by cart round callback" })
 

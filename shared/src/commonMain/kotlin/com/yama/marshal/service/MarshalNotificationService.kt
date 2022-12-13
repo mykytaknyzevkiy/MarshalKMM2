@@ -28,6 +28,9 @@ object MarshalNotificationService : CoroutineScope {
     private val marshalSocket = MarshalSocket()
 
     private val onNotification = marshalSocket.onMessage
+        .catch {
+            Logger.e(TAG, throwable = it)
+        }
         .map {
             val responseJson = try {
                 Json.parseToJsonElement(it)
@@ -55,12 +58,12 @@ object MarshalNotificationService : CoroutineScope {
     fun start() = this.launch(Dispatchers.Default) {
         CompanyRepository.launchCartsUpdater(this)
 
-        //fenceNotificationManager.launchIn(this)
+        fenceNotificationManager.launchIn(this)
         
         marshalSocket.connect()
 
         while (true) {
-            delay(2 * 1000L)
+            delay(5 * 60 * 1000L)
 
             CompanyRepository.loadCarts()
             CompanyRepository.loadCartsRound()
