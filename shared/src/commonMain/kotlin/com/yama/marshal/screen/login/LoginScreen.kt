@@ -48,7 +48,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding * 3))
 
                 val userName = remember {
-                    mutableStateOf("igolfsaltcreek")
+                    mutableStateOf("SyncwiseDisney")
                 }
 
                 UserNameField(userName)

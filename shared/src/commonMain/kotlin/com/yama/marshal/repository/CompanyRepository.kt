@@ -15,6 +15,7 @@ import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.setCartFlag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
+import kotlin.jvm.Synchronized
 
 object CompanyRepository {
     private const val TAG = "CompanyRepository"
@@ -235,8 +236,149 @@ object CompanyRepository {
         }
     }
 
-    suspend fun processNotification(paceNotification: MarshalNotification.PaceNotification) {
+    @Synchronized
+    fun processNotification(paceNotification: MarshalNotification.PaceNotification) {
+        Logger.i(TAG, message = {
+            "process PaceNotification $paceNotification"
+        })
 
+        val idCart = paceNotification.idCart
+
+        val cart = _cartsFullDetail.find { it.id == idCart }
+
+        if (cart == null) {
+            Logger.e(TAG, message = {
+                "Cannot find cart with id $idCart"
+            })
+            return
+        }
+
+        val index = _cartsFullDetail.indexOf(cart)
+
+        if (cart.currPosHole == paceNotification.currentHole
+            && cart.holesPlayed == paceNotification.holesPlayed
+            && cart.totalNetPace == paceNotification.totalPace
+            && cart.startTime == paceNotification.roundDate)
+            return
+
+        _cartsFullDetail[index] = cart.copy(
+            currPosHole = paceNotification.currentHole,
+            holesPlayed = paceNotification.holesPlayed,
+            totalNetPace = paceNotification.totalPace,
+            startTime = paceNotification.roundDate
+        )
+
+        Logger.i(TAG, message = {
+            "process PaceNotification updated"
+        })
+    }
+
+    @Synchronized
+    fun processNotification(fenceNotification: MarshalNotification.FenceNotification) {
+        Logger.i(TAG, message = {
+            "process FenceNotification $fenceNotification"
+        })
+
+        val idCart = fenceNotification.idCart
+
+        val cart = _cartsFullDetail.find { it.id == idCart }
+
+        if (cart == null) {
+            Logger.e(TAG, message = {
+                "Cannot find cart with id $idCart"
+            })
+            return
+        }
+
+        //TODO add ass alert
+    }
+
+    @Synchronized
+    fun processNotification(data: MarshalNotification.ReturnAreaNotification) {
+        Logger.i(TAG, message = {
+            "process ReturnAreaNotification $data"
+        })
+
+        val idCart = data.idCart
+
+        val cart = _cartsFullDetail.find { it.id == idCart }
+
+        if (cart == null) {
+            Logger.e(TAG, message = {
+                "Cannot find cart with id $idCart"
+            })
+            return
+        }
+
+        val index = _cartsFullDetail.indexOf(cart)
+
+        if (cart.returnAreaSts == data.status)
+            return
+
+        _cartsFullDetail[index] = cart.copy(
+            returnAreaSts = data.status
+        )
+
+        Logger.i(TAG, message = {
+            "process ReturnAreaNotification updated"
+        })
+    }
+
+    @Synchronized
+    fun processNotification(data: MarshalNotification.BatteryAlertNotification) {
+        Logger.i(TAG, message = {
+            "process BatteryAlertNotification $data"
+        })
+
+        val idCart = data.idCart
+
+        val cart = _cartsFullDetail.find { it.id == idCart }
+
+        if (cart == null) {
+            Logger.e(TAG, message = {
+                "Cannot find cart with id $idCart"
+            })
+            return
+        }
+
+        //TODO(Add to alerts)
+    }
+
+    @Synchronized
+    fun processNotification(data: MarshalNotification.EndTripNotification) {
+        Logger.i(TAG, message = {
+            "process EndTripNotification $data"
+        })
+
+        val idCart = data.idCart
+
+        val cart = _cartsFullDetail.find { it.id == idCart }
+
+        if (cart == null) {
+            Logger.e(TAG, message = {
+                "Cannot find cart with id $idCart"
+            })
+            return
+        }
+
+        val index = _cartsFullDetail.indexOf(cart)
+
+        if (cart.currPosHole == null
+            && cart.course == null
+            && cart.returnAreaSts == 0
+            && cart.idTrip == -1)
+            return
+
+        _cartsFullDetail[index] = cart.copy(
+            currPosHole = null,
+            course = null,
+            returnAreaSts = 0,
+            idTrip = -1
+        )
+
+        Logger.i(TAG, message = {
+            "process EndTripNotification update"
+        })
     }
 
     fun flagCart(cartID: Int) {
@@ -418,9 +560,46 @@ object CompanyRepository {
             it.message.isNotBlank()
         }
 
-    private val _cartsFullDetail = mutableStateListOf<CartFullDetail>()
-    val cartsFullDetail: List<CartFullDetail>
+    private val _cartsFullDetail = MutableStateFlow(emptyList<CartFullDetail>())
+
+    val cartsFullDetail: StateFlow<List<CartFullDetail>>
         get() = _cartsFullDetail
+
+    private fun StateFlow<List<CartFullDetail>>.find(predicate: (CartFullDetail) -> Boolean) =
+        this.value.find(predicate)
+
+    private fun StateFlow<List<CartFullDetail>>.indexOf(element: @UnsafeVariance CartFullDetail) =
+        this.value.indexOf(element)
+
+    private operator fun MutableStateFlow<List<CartFullDetail>>.set(index: Int, element: CartFullDetail) {
+        val data = this.value.toMutableList()
+        data[index] = element
+        this.value = data
+    }
+
+    private operator fun MutableStateFlow<List<CartFullDetail>>.get(index: Int) =
+        this.value[index]
+
+    private fun StateFlow<List<CartFullDetail>>.indexOfFirst(predicate: (CartFullDetail) -> Boolean) =
+        this.value.indexOfFirst(predicate)
+
+    private val StateFlow<List<CartFullDetail>>.size
+        get() = this.value.size
+
+    private fun MutableStateFlow<List<CartFullDetail>>.addAll(list: List<CartFullDetail>) {
+        val data = this.value.toMutableList()
+        data.addAll(list)
+        this.value = data
+    }
+
+    private fun StateFlow<List<CartFullDetail>>.any(predicate: (CartFullDetail) -> Boolean) =
+        this.value.any(predicate)
+
+    private fun MutableStateFlow<List<CartFullDetail>>.removeAll(predicate: (CartFullDetail) -> Boolean) {
+        val data = this.value.toMutableList()
+        data.removeAll(predicate)
+        this.value = data
+    }
 }
 
 fun <T> Flow<List<T>>.filterList(predicate: (T) -> Boolean) = this.map {

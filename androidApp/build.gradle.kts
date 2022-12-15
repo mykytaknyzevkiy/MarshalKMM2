@@ -18,7 +18,7 @@ android {
         applicationId = "com.l1inc.yamatrackmarshal"
         minSdk = 21
         targetSdk = 33
-        versionCode = 13
+        versionCode = 14
         versionName = "2.0"
     }
     buildFeatures {

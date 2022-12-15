@@ -1,8 +1,13 @@
 package com.yama.marshal.screen.hole_list
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -12,27 +17,29 @@ import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
 import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.screen.main.SortType
+import com.yama.marshal.tool.FleetSorter
 import com.yama.marshal.tool.HoleSorter
 import com.yama.marshal.tool.PaceValueFormatter
+import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.view.MarshalList
 import kotlinx.coroutines.flow.StateFlow
 
 internal class HoleListScreen(navigationController: NavigationController, viewModel: MainViewModel) :
-    MainContentScreen<SortType.SortHole, HoleEntity>(navigationController, viewModel) {
+    MainContentScreen(navigationController, viewModel)  {
     companion object {
         const val ROUTE = "hole_list"
     }
 
-    override val currentSortState: StateFlow<SortType.SortHole>
-        get() = viewModel.currentHoleSort
-
-    override val sortList: Array<SortType.SortHole> = SortType.SortHole.values()
-
-    override val itemList: List<HoleEntity>
-        get() = viewModel.holeList
+    override val route: String = ROUTE
 
     @Composable
-    override fun ItemViewHolder(item: HoleEntity, position: Int) {
+    override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
+
+    }
+
+    @Composable
+    fun ItemViewHolder(item: HoleEntity, position: Int) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = item.id.toString(),
@@ -58,13 +65,4 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             )
         }
     }
-
-    override fun filterByCourse(courseFullDetail: CourseFullDetail, item: HoleEntity): Boolean =
-        courseFullDetail.id.isNullOrBlank() || item.idCourse == courseFullDetail.id
-
-    override fun keyItem(index: Int, item: HoleEntity): Any =  item.id
-
-    override val route: String = ROUTE
-
-    override fun sorter(type: SortType.SortHole): Comparator<HoleEntity> = HoleSorter(type)
 }

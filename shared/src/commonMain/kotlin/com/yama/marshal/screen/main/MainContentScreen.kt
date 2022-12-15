@@ -24,30 +24,15 @@ import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.StateFlow
 
-internal abstract class MainContentScreen<SORT_TYPE : SortType, ITEM>(
+internal abstract class MainContentScreen(
     navigationController: NavigationController,
     override val viewModel: MainViewModel
 ) : YamaScreen(navigationController) {
-
-    protected abstract val currentSortState: StateFlow<SORT_TYPE>
-    protected abstract val sortList: Array<SORT_TYPE>
-
-    protected abstract val itemList: List<ITEM>
-
-    private fun updateSort(type: SORT_TYPE)  {
-        when (type) {
-            is SortType.SortFleet -> viewModel.updateFleetSort(type)
-            is SortType.SortHole -> viewModel.updateHoleSort(type)
-        }
-    }
-
     @Composable
-    protected abstract fun ItemViewHolder(item: ITEM, position: Int)
-
-    @Composable
-    private fun TableRow() {
-        val currentSort by currentSortState.collectAsState()
-
+    protected fun <SORT_TYPE : SortType> TableRow(sortList: Array<SORT_TYPE>,
+                                                  currentSort: SORT_TYPE,
+                                                  updateSort: (type: SORT_TYPE) -> Unit
+    ) {
         val textLabel: @Composable RowScope.(type: SORT_TYPE, isLast: Boolean) -> Unit =
             { type, isLast ->
                 Box(
@@ -78,36 +63,6 @@ internal abstract class MainContentScreen<SORT_TYPE : SortType, ITEM>(
             }
         }
     }
-
-    @Composable
-    override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        TableRow()
-
-        val selectedCourse by remember(viewModel) {
-            viewModel.selectedCourse
-        }.collectAsState()
-        val currentSort by remember(viewModel) { currentSortState }.collectAsState()
-
-        if (selectedCourse != null)
-            MarshalList(
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                list = itemList
-                    .filter { filterByCourse(selectedCourse!!, it) && nFilter(it) }
-                    .sortedWith(sorter(currentSort)),
-                key = {index, item -> keyItem(index, item)},
-                itemContent = { item, position ->
-                    ItemViewHolder(item, position)
-                }
-            )
-    }
-
-    abstract fun filterByCourse(courseFullDetail: CourseFullDetail, item: ITEM): Boolean
-
-    abstract fun keyItem(index: Int, item: ITEM): Any
-
-    abstract fun sorter(type: SORT_TYPE): Comparator<ITEM>
-
-    open fun nFilter(it: ITEM): Boolean = true
 }
 
 @Composable

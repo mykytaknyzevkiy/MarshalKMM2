@@ -10,14 +10,39 @@ sealed class MarshalNotification(
     open val idCourse: String
 ) {
     companion object {
+        private val parseTime = { time: String ->
+            parseDate("HHmmss", time)
+        }
+
         internal fun parse(jsonArray: JsonArray): List<MarshalNotification> {
             if (jsonArray.size <= 1)
                 return emptyList()
 
             val notifications = arrayListOf<MarshalNotification>()
 
+            var date: GMTDate? = null
+            var idCart: Int? = null
+            var idCourse: String? = null
+
             for (jsonElement in jsonArray) {
-                parse(jsonElement.jsonObject)?.also {
+                val json = jsonElement.jsonObject
+
+                json["T"]?.jsonPrimitive?.content?.let(parseTime)?.also {
+                    date = it
+                }
+
+                json["A"]?.jsonPrimitive?.int?.also {
+                    idCart = it
+                }
+
+                json["Cr"]?.jsonPrimitive?.content?.also {
+                    idCourse = it
+                }
+
+                if (date == null || idCart == null || idCourse == null)
+                    continue
+                else
+                    parse(json, date!!, idCart!!, idCourse!!)?.also {
                     notifications.add(it)
                 }
             }
@@ -25,73 +50,69 @@ sealed class MarshalNotification(
             return notifications
         }
 
-        private fun parse(json: JsonObject): MarshalNotification? {
-            val parseTime = { time: String ->
-                parseDate("HHmmss", time)
-            }
+        private fun parse(json: JsonObject, date: GMTDate, idCart: Int, idCourse: String): MarshalNotification? {
+            return try {
+                when (json["C"]?.jsonPrimitive?.int) {
+                    1 -> PaceNotification(
+                        currentHole = json["H"]!!.jsonPrimitive.int,
+                        currentPace = json["CP"]!!.jsonPrimitive.int,
+                        holePace = json["HP"]!!.jsonPrimitive.int,
+                        holesPlayed = json["TH"]!!.jsonPrimitive.int,
+                        totalPace = json["TP"]!!.jsonPrimitive.int,
+                        roundDate = json["RS"]!!.jsonPrimitive.content.let {
+                            parseTime(it)
+                        },
+                        date = date,
+                        idCart = idCart,
+                        idCourse = idCourse
+                    )
 
-            val date = json["T"]?.jsonPrimitive?.content?.let(parseTime) ?: return null
-            val idCart = json["A"]?.jsonPrimitive?.int ?: return null
-            val idCourse = json["Cr"]?.jsonPrimitive?.content ?: return null
+                    2 -> FenceNotification(
+                        idFence = json["F"]!!.jsonPrimitive.int,
+                        date = date,
+                        idCart = idCart,
+                        idCourse = idCourse
+                    )
 
-            return when (json["C"]?.jsonPrimitive?.int) {
-                1 -> PaceNotification(
-                    currentHole = json["H"]!!.jsonPrimitive.int,
-                    currentPace = json["CP"]!!.jsonPrimitive.int,
-                    holePace = json["HP"]!!.jsonPrimitive.int,
-                    holesPlayed = json["TH"]!!.jsonPrimitive.int,
-                    totalPace = json["TP"]!!.jsonPrimitive.int,
-                    roundDate = json["RS"]!!.jsonPrimitive.content.let {
-                        parseTime(it)
-                    },
-                    date = date,
-                    idCart = idCart,
-                    idCourse = idCourse
-                )
+                    3 -> OffPathNotification(
+                        date = date,
+                        idCart = idCart,
+                        idCourse = idCourse,
+                        status = json["S"]!!.jsonPrimitive.int
+                    )
 
-                2 -> FenceNotification(
-                    idFence = json["F"]!!.jsonPrimitive.int,
-                    date = date,
-                    idCart = idCart,
-                    idCourse = idCourse
-                )
+                    4 -> BatteryAlertNotification(
+                        date = date,
+                        idCart = idCart,
+                        idCourse = idCourse,
+                        level = json["L"]!!.jsonPrimitive.int,
+                        threshold = json["L"]!!.jsonPrimitive.int
+                    )
 
-                3 -> OffPathNotification(
-                    date = date,
-                    idCart = idCart,
-                    idCourse = idCourse,
-                    status = json["S"]!!.jsonPrimitive.int
-                )
+                    5 -> EndTripNotification(
+                        date = date,
+                        idCart = idCart,
+                        idCourse = idCourse
+                    )
 
-                4 -> BatteryAlertNotification(
-                    date = date,
-                    idCart = idCart,
-                    idCourse = idCourse,
-                    level = json["L"]!!.jsonPrimitive.int,
-                    threshold = json["L"]!!.jsonPrimitive.int
-                )
+                    6 -> MarshalMessageNotification(
+                        date = date,
+                        idCart = idCart,
+                        idCourse = idCourse,
+                        message = json["M"]!!.jsonPrimitive.content
+                    )
 
-                5 -> EndTripNotification(
-                    date = date,
-                    idCart = idCart,
-                    idCourse = idCourse
-                )
+                    7 -> ReturnAreaNotification(
+                        date = date,
+                        idCart = idCart,
+                        idCourse = idCourse,
+                        status = json["S"]!!.jsonPrimitive.int
+                    )
 
-                6 -> MarshalMessageNotification(
-                    date = date,
-                    idCart = idCart,
-                    idCourse = idCourse,
-                    message = json["M"]!!.jsonPrimitive.content
-                )
-
-                7 -> ReturnAreaNotification(
-                    date = date,
-                    idCart = idCart,
-                    idCourse = idCourse,
-                    status = json["S"]!!.jsonPrimitive.int
-                )
-
-                else -> null
+                    else -> null
+                }
+            } catch (e: Exception) {
+                null
             }
         }
     }

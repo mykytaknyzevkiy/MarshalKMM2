@@ -94,15 +94,17 @@ class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail>
     }
 
     private fun byHole(a: CartFullDetail, b: CartFullDetail): Int {
-        return if (a.currPosHole == null)
+        return if (a.currPosHole != null && b.currPosHole == null)
+            -1
+        else if (a.currPosHole == null && b.currPosHole != null)
             1
-        else if (b.currPosHole == null)
-            -1
-        else if (a.currPosHole == b.currPosHole) {
+        else if (a.currPosHole == b.currPosHole)
             0
-        } else if (a.currPosHole < b.currPosHole) {
+        else if (a.currPosHole == null && b.currPosHole == null)
+            0
+        else if (a.currPosHole!! < b.currPosHole!! )
             -1
-        } else {
+        else {
             1
         }
     }

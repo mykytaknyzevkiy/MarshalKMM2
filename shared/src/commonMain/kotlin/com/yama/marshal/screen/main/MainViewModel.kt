@@ -65,8 +65,17 @@ class MainViewModel : YamaViewModel() {
     val courseList: StateFlow<List<CourseFullDetail>>
         get() = _courseList
 
-    val fleetList: List<CartFullDetail>
-        get() = CompanyRepository.cartsFullDetail
+    val fleetList = CompanyRepository
+        .cartsFullDetail
+        .combine(_selectedCourse) { a, b ->
+            if (b?.id.isNullOrBlank())
+                a
+        else
+            a.filter { c -> c.course?.id == b?.id }
+        }
+        .combine(_currentFleetSort) { a, b ->
+            a.sortedWith(FleetSorter(b))
+        }
 
     private val _holeList = mutableStateListOf<HoleEntity>()
     val holeList: List<HoleEntity>

@@ -51,16 +51,17 @@ internal class SendMessageScreen(navigationController: NavigationController)
 
             MarshalList(
                 modifier = Modifier.fillMaxWidth().weight(1f),
-                list = viewModel.messages
-            ) { message, _ ->
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .clickable { sendSendMessageText.value = message.message },
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Text(message.message, modifier = Modifier.padding(Sizes.screenPadding))
+                list = viewModel.messages,
+                itemContent = { message ->
+                    Box(modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { sendSendMessageText.value = message.message },
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(message.message, modifier = Modifier.padding(Sizes.screenPadding))
+                    }
                 }
-            }
+            )
         }
 
         LaunchedEffect(viewModel) {
