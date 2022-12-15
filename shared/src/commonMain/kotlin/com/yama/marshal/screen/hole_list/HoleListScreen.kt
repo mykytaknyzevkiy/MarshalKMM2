@@ -47,13 +47,13 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
         val holeList by remember(viewModel) { viewModel.holeList }.collectAsState(emptyList())
 
-        MarshalList(
+        /*MarshalList(
             modifier = Modifier.fillMaxSize(),
             itemContent = {
                 ItemViewHolder(it)
             },
             list = holeList
-        )
+        )*/
     }
 
     @Composable

@@ -36,16 +36,17 @@ internal class FleetListScreen(
             viewModel.currentFleetSort
         }.collectAsState()
 
-        val itemList by remember(viewModel) {
-            viewModel.fleetList
-        }.collectAsState(emptyList())
-
         TableRow(
             sortList = remember {
                 SortType.SortFleet.values()
             },
             currentSort = currentSort
         ) { viewModel.updateSort(it) }
+
+        val itemList by remember(viewModel) {
+            viewModel.fleetList
+        }
+            .collectAsState(emptyList())
 
         MarshalList(
             modifier = Modifier.fillMaxSize(),
@@ -54,7 +55,7 @@ internal class FleetListScreen(
             itemContent = {
                 ItemViewHolder(it)
             },
-            itemAction = { item ->
+            itemActions = { item ->
                 ArrayList<MarshalListItemAction>().apply {
                     add(
                         MarshalListItemAction(

@@ -49,7 +49,7 @@ internal class SendMessageScreen(navigationController: NavigationController)
             if (currentState is SendMessageViewState.Loading)
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 
-            MarshalList(
+            /*MarshalList(
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 list = viewModel.messages,
                 itemContent = { message ->
@@ -61,7 +61,7 @@ internal class SendMessageScreen(navigationController: NavigationController)
                         Text(message.message, modifier = Modifier.padding(Sizes.screenPadding))
                     }
                 }
-            )
+            )*/
         }
 
         LaunchedEffect(viewModel) {

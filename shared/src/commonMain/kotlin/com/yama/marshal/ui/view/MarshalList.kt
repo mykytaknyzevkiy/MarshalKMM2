@@ -5,7 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +26,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.toOffset
+import com.yama.marshal.screen.map.MapScreen
+import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.tool.Orientation
@@ -42,7 +50,7 @@ internal inline fun <E> MarshalList(
     bgNegative: Color = YamaColor.itemColor(1),
     noinline key: ((position: Int, item: E) -> Any)? = null,
     crossinline customItemBgColor: @DisallowComposableCalls (item: E) -> Color? = { null },
-    crossinline itemAction: @DisallowComposableCalls (item: E) -> List<MarshalListItemAction> = { emptyList() },
+    crossinline itemActions: @DisallowComposableCalls (item: E) -> List<MarshalListItemAction> = { emptyList() },
     crossinline itemContent: @Composable RowScope.(item: E) -> Unit
 ) {
     val maxItemCount = remember(orientation) {
@@ -89,10 +97,8 @@ internal inline fun <E> MarshalList(
                     }
                 }
 
-                val actions by remember {
-                    derivedStateOf {
-                        itemAction(item)
-                    }
+                val actions = remember(item) {
+                    itemActions(item)
                 }
 
                 val maxOffset by remember {
@@ -103,9 +109,10 @@ internal inline fun <E> MarshalList(
 
                 var offsetX by remember { mutableStateOf(0f) }
 
-                Actions(actions) {
-                    offsetX = 0f
-                }
+                if (offsetX > 0f)
+                    Actions(actions) {
+                        offsetX = 0f
+                    }
 
                 val itemOffset = remember(offsetX) {
                     IntOffset(offsetX.roundToInt(), 0)
@@ -153,13 +160,13 @@ internal inline fun <E> MarshalList(
 }
 
 @Composable
-private fun Actions(actions: List<MarshalListItemAction>, onClick: () -> Unit) = Row {
-    actions.forEach {
-        ActionBtn(color = it.color, icon = it.icon, click = {
-            it.onClick()
-            onClick()
-        })
-    }
+private fun Actions(actions: List<MarshalListItemAction>, onClick: () -> Unit) = LazyRow {
+        items(actions) {
+            ActionBtn(color = it.color, icon = it.icon, click = {
+                it.onClick()
+                onClick()
+            })
+        }
 }
 
 @Composable
