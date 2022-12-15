@@ -8,13 +8,9 @@ import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.tool.*
 import com.yama.marshal.tool.Strings
-import com.yama.marshal.tool.prefs
-import com.yama.marshal.tool.setCartFlag
 import io.ktor.util.date.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 interface SortType {
     val label: String
@@ -77,9 +73,17 @@ class MainViewModel : YamaViewModel() {
             a.sortedWith(FleetSorter(b))
         }
 
-    private val _holeList = mutableStateListOf<HoleEntity>()
-    val holeList: List<HoleEntity>
-        get() = _holeList
+    val holeList = CompanyRepository
+        .holeList
+        .combine(_selectedCourse) {a, b ->
+            if (b?.id.isNullOrBlank())
+                a
+            else
+                a.filter { it.idCourse == b?.id }
+        }
+        .combine(_currentHoleSort) { a, b ->
+            a.sortedWith(HoleSorter(b))
+        }
 
     fun load() {
         CompanyRepository
@@ -105,24 +109,14 @@ class MainViewModel : YamaViewModel() {
                     _selectedCourse.emit(if (it.size == 1) it.first() else it[1])
             }
             .launchIn(viewModelScope)
-
-        CompanyRepository
-            .holeList
-            .onEach {
-                _holeList.clear()
-                _holeList.addAll(it.sortedWith(HoleSorter(_currentHoleSort.value)))
-            }
-            .launchIn(viewModelScope)
     }
 
-    fun updateFleetSort(type: SortType.SortFleet) {
+    fun updateSort(type: SortType.SortFleet) {
         _currentFleetSort.value = type
     }
 
-    fun updateHoleSort(type: SortType.SortHole) {
+    fun updateSort(type: SortType.SortHole) {
         _currentHoleSort.value = type
-
-        _holeList.sortWith(HoleSorter(type))
     }
 
     fun selectCourse(course: CourseFullDetail) {

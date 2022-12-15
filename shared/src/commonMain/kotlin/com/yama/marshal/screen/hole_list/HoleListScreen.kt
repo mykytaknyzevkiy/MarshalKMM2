@@ -2,6 +2,7 @@ package com.yama.marshal.screen.hole_list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,34 +36,49 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
+        val currentSort by remember(viewModel) { viewModel.currentHoleSort }.collectAsState()
 
+        TableRow(
+            sortList = SortType.SortHole.values(),
+            currentSort = currentSort
+        ) {
+            viewModel.updateSort(it)
+        }
+
+        val holeList by remember(viewModel) { viewModel.holeList }.collectAsState(emptyList())
+
+        MarshalList(
+            modifier = Modifier.fillMaxSize(),
+            itemContent = {
+                ItemViewHolder(it)
+            },
+            list = holeList
+        )
     }
 
     @Composable
-    fun ItemViewHolder(item: HoleEntity, position: Int) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = item.id.toString(),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(SortType.SortHole.HOLE.weight)
-            )
+    private fun RowScope.ItemViewHolder(item: HoleEntity) {
+        Text(
+            text = item.id.toString(),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(SortType.SortHole.HOLE.weight)
+        )
 
-            NSpacer()
+        NSpacer()
 
-            Text(
-                text = PaceValueFormatter.getString(item.differentialPace, PaceValueFormatter.PaceType.Full),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(SortType.SortHole.PACE_OF_PLAY.weight / 2),
-                color = PaceValueFormatter.getColor(item.differentialPace)
-            )
+        Text(
+            text = PaceValueFormatter.getString(item.differentialPace, PaceValueFormatter.PaceType.Full),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(SortType.SortHole.PACE_OF_PLAY.weight / 2),
+            color = PaceValueFormatter.getColor(item.differentialPace)
+        )
 
-            NSpacer()
+        NSpacer()
 
-            Text(
-                text = PaceValueFormatter.getStringForCurrentPace(item.averagePace),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(SortType.SortHole.PACE_OF_PLAY.weight / 2)
-            )
-        }
+        Text(
+            text = PaceValueFormatter.getStringForCurrentPace(item.averagePace),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(SortType.SortHole.PACE_OF_PLAY.weight / 2)
+        )
     }
 }

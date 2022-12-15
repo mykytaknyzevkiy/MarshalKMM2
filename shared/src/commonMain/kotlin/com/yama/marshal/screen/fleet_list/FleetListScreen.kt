@@ -1,43 +1,24 @@
 package com.yama.marshal.screen.fleet_list
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import com.yama.marshal.data.model.CartFullDetail
-import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.screen.main.*
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.map.MapScreen
-import com.yama.marshal.screen.send_message.SendMessageScreen
 import com.yama.marshal.tool.*
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
-import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.MarshalListItemAction
-import io.ktor.util.date.*
-import kotlinx.coroutines.flow.*
-import kotlin.math.roundToInt
 
 internal class FleetListScreen(
     navigationController: NavigationController,
@@ -64,7 +45,7 @@ internal class FleetListScreen(
                 SortType.SortFleet.values()
             },
             currentSort = currentSort
-        ) { viewModel.updateFleetSort(it) }
+        ) { viewModel.updateSort(it) }
 
         MarshalList(
             modifier = Modifier.fillMaxSize(),
