@@ -20,11 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.times
 import androidx.compose.ui.unit.toOffset
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.ui.navigation.NavArg
@@ -63,18 +65,18 @@ internal inline fun <E> MarshalList(
         }
     }
 
-    LazyColumn(modifier = modifier.let {
+    LazyColumn(modifier = modifier.let { m ->
         if (isDrawBg.value)
-            it.drawBehind {
+            m.drawBehind {
                 repeat(maxItemCount) {
                     drawRect(
                         color = if (it % 2 == 0) bgPositive else bgNegative,
-                        topLeft = Offset(x = 0f, y = it * holderHeight.value)
+                        topLeft = Offset(x = 0f, y = (it * holderHeight).toPx()),
                     )
                 }
             }
         else
-            it
+            m
     }) {
         itemsIndexed(list, key = key) { position, item ->
             val bgColor = remember(position) {
@@ -101,10 +103,8 @@ internal inline fun <E> MarshalList(
                     itemActions(item)
                 }
 
-                val maxOffset by remember {
-                    derivedStateOf {
-                        (holderHeight * actions.size).value.toDouble()
-                    }
+                val maxOffset = remember(actions) {
+                    holderHeight * actions.size
                 }
 
                 var offsetX by remember { mutableStateOf(0f) }
@@ -133,22 +133,16 @@ internal inline fun <E> MarshalList(
                                 val original = Offset(offsetX, 0f)
                                 val summed = original + Offset(x = x, y = 0f)
 
-                                if (summed.x in 0.0..maxOffset)
+                                if (summed.x in 0.0f..maxOffset.toPx())
                                     offsetX = summed.x
                             },
                             onDragEnd = {
-                                if (offsetX < maxOffset / 2f)
+                                if (offsetX < (maxOffset.toPx()) / 2f)
                                     offsetX = 0f
-                                else if (offsetX > maxOffset / 2f)
-                                    offsetX = maxOffset.toFloat()
+                                else if (offsetX > (maxOffset.toPx()) / 2f)
+                                    offsetX = maxOffset.toPx()
                             }
                         )
-                    }
-                    .clickable {
-                        offsetX = if (offsetX >= maxOffset)
-                            0f
-                        else
-                            maxOffset.toFloat()
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
