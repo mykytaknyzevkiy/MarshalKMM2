@@ -6,8 +6,14 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.*
 import kotlin.coroutines.CoroutineContext
+
+@kotlinx.serialization.Serializable
+internal class NotificationLoginRequest(@SerialName("username") val userName: String,
+                               @SerialName("apikey") val apiKey: String,
+                               @SerialName("signature") val signature: String)
 
 abstract class MarshalSocketIO: CoroutineScope {
     companion object {

@@ -66,7 +66,7 @@ internal abstract class MainContentScreen(
 }
 
 @Composable
-fun NSpacer() {
+internal fun NSpacer() {
     Spacer(
         modifier = Modifier.width(1.dp).fillMaxHeight().padding(vertical = Sizes.screenPadding / 2).background(Color.LightGray)
     )

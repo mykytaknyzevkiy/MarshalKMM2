@@ -1,0 +1,429 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		39324A3029507C0A007668CB /* Marshall.h in Headers */ = {isa = PBXBuildFile; fileRef = 39324A2F29507C0A007668CB /* Marshall.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		39324A4D29508621007668CB /* SocketF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39324A4C29508621007668CB /* SocketF.swift */; };
+		39324A502950876D007668CB /* SocketFDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39324A4F2950876D007668CB /* SocketFDelegate.swift */; };
+		39B2B3A12950B6B000F45167 /* FSocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B3992950B3C400F45167 /* FSocket.xcframework */; };
+		39B2B3A22950B6B100F45167 /* FSocket.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B3992950B3C400F45167 /* FSocket.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		39B2B3A32950B6B500F45167 /* socket_IO.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B39A2950B3C500F45167 /* socket_IO.xcframework */; };
+		39B2B3A42950B6B600F45167 /* socket_IO.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B39A2950B3C500F45167 /* socket_IO.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		39B2B3A52950B6B900F45167 /* SocketRocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B39F2950B67B00F45167 /* SocketRocket.xcframework */; };
+		39B2B3A62950B6BA00F45167 /* SocketRocket.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B39F2950B67B00F45167 /* SocketRocket.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		39B2B3A82950B84000F45167 /* Pods_iGolf_Marshall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B3A72950B84000F45167 /* Pods_iGolf_Marshall.xcframework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		39324A4629507E9A007668CB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				39B2B3A62950B6BA00F45167 /* SocketRocket.xcframework in Embed Frameworks */,
+				39B2B3A42950B6B600F45167 /* socket_IO.xcframework in Embed Frameworks */,
+				39B2B3A22950B6B100F45167 /* FSocket.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		39324A2C29507C0A007668CB /* Marshall.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Marshall.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		39324A2F29507C0A007668CB /* Marshall.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Marshall.h; sourceTree = "<group>"; };
+		39324A3729507C33007668CB /* FSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FSocket.framework; path = ../../../../../Desktop/FSocket.framework; sourceTree = "<group>"; };
+		39324A4C29508621007668CB /* SocketF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketF.swift; sourceTree = "<group>"; };
+		39324A4F2950876D007668CB /* SocketFDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketFDelegate.swift; sourceTree = "<group>"; };
+		39B2B3992950B3C400F45167 /* FSocket.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FSocket.xcframework; sourceTree = "<group>"; };
+		39B2B39A2950B3C500F45167 /* socket_IO.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = socket_IO.xcframework; sourceTree = "<group>"; };
+		39B2B39F2950B67B00F45167 /* SocketRocket.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = SocketRocket.xcframework; sourceTree = "<group>"; };
+		39B2B3A72950B84000F45167 /* Pods_iGolf_Marshall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Pods_iGolf_Marshall.xcframework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		39324A2929507C0A007668CB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39B2B3A52950B6B900F45167 /* SocketRocket.xcframework in Frameworks */,
+				39B2B3A32950B6B500F45167 /* socket_IO.xcframework in Frameworks */,
+				39B2B3A12950B6B000F45167 /* FSocket.xcframework in Frameworks */,
+				39B2B3A82950B84000F45167 /* Pods_iGolf_Marshall.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		39324A2229507C0A007668CB = {
+			isa = PBXGroup;
+			children = (
+				39B2B3562950AF3B00F45167 /* libs */,
+				39324A2E29507C0A007668CB /* Marshall */,
+				39324A2D29507C0A007668CB /* Products */,
+				39324A3629507C32007668CB /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		39324A2D29507C0A007668CB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				39324A2C29507C0A007668CB /* Marshall.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		39324A2E29507C0A007668CB /* Marshall */ = {
+			isa = PBXGroup;
+			children = (
+				39324A4C29508621007668CB /* SocketF.swift */,
+				39324A4F2950876D007668CB /* SocketFDelegate.swift */,
+				39324A2F29507C0A007668CB /* Marshall.h */,
+			);
+			path = Marshall;
+			sourceTree = "<group>";
+		};
+		39324A3629507C32007668CB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				39B2B3972950B18D00F45167 /* arm64 */,
+				39324A3729507C33007668CB /* FSocket.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		39B2B3562950AF3B00F45167 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				39B2B3A72950B84000F45167 /* Pods_iGolf_Marshall.xcframework */,
+				39B2B3992950B3C400F45167 /* FSocket.xcframework */,
+				39B2B39A2950B3C500F45167 /* socket_IO.xcframework */,
+				39B2B39F2950B67B00F45167 /* SocketRocket.xcframework */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		39B2B3972950B18D00F45167 /* arm64 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = arm64;
+			path = ../../../../../Desktop/arm64;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		39324A2729507C0A007668CB /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39324A3029507C0A007668CB /* Marshall.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		39324A2B29507C0A007668CB /* Marshall */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 39324A3329507C0A007668CB /* Build configuration list for PBXNativeTarget "Marshall" */;
+			buildPhases = (
+				39324A2729507C0A007668CB /* Headers */,
+				39324A2829507C0A007668CB /* Sources */,
+				39324A2929507C0A007668CB /* Frameworks */,
+				39324A2A29507C0A007668CB /* Resources */,
+				39324A4629507E9A007668CB /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Marshall;
+			productName = Marshall;
+			productReference = 39324A2C29507C0A007668CB /* Marshall.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		39324A2329507C0A007668CB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					39324A2B29507C0A007668CB = {
+						CreatedOnToolsVersion = 14.2;
+						LastSwiftMigration = 1420;
+					};
+				};
+			};
+			buildConfigurationList = 39324A2629507C0A007668CB /* Build configuration list for PBXProject "Marshall" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 39324A2229507C0A007668CB;
+			productRefGroup = 39324A2D29507C0A007668CB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				39324A2B29507C0A007668CB /* Marshall */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		39324A2A29507C0A007668CB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		39324A2829507C0A007668CB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39324A502950876D007668CB /* SocketFDelegate.swift in Sources */,
+				39324A4D29508621007668CB /* SocketF.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		39324A3129507C0A007668CB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		39324A3229507C0A007668CB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		39324A3429507C0A007668CB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 65BT94VC7B;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/socket.IO",
+					"$(PROJECT_DIR)/SocketRocket",
+					"$(PROJECT_DIR)/libs/arm64",
+					"$(PROJECT_DIR)/libs/x86",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.igolf.Marshall;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		39324A3529507C0A007668CB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 65BT94VC7B;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/socket.IO",
+					"$(PROJECT_DIR)/SocketRocket",
+					"$(PROJECT_DIR)/libs/arm64",
+					"$(PROJECT_DIR)/libs/x86",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.igolf.Marshall;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		39324A2629507C0A007668CB /* Build configuration list for PBXProject "Marshall" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39324A3129507C0A007668CB /* Debug */,
+				39324A3229507C0A007668CB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		39324A3329507C0A007668CB /* Build configuration list for PBXNativeTarget "Marshall" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39324A3429507C0A007668CB /* Debug */,
+				39324A3529507C0A007668CB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 39324A2329507C0A007668CB /* Project object */;
+}

@@ -1,0 +1,4 @@
+framework module FSocket {
+  header "FSocket-Swift.h"
+  requires objc
+}

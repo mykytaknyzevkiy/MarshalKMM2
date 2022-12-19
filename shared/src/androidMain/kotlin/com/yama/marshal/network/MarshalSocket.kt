@@ -115,11 +115,6 @@ actual class MarshalSocket:MarshalSocketIO(), IOCallback {
         )
     }
 
-    @kotlinx.serialization.Serializable
-    class NotificationLoginRequest(@SerialName("username") val userName: String,
-                                   @SerialName("apikey") val apiKey: String,
-                                   @SerialName("signature") val signature: String)
-
     @RequiresApi(Build.VERSION_CODES.FROYO)
     private fun makePaddedSignature(stringToSign: String, secret: String): String {
         val mac: Mac = Mac.getInstance("HMACSHA256")

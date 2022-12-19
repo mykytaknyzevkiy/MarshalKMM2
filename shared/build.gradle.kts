@@ -5,6 +5,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization").version("1.7.20")
+    kotlin("native.cocoapods")
 }
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
@@ -25,6 +26,17 @@ kotlin {
             freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
             embedBitcode = org.jetbrains.kotlin.gradle.plugin.mpp.Framework.BitcodeEmbeddingMode.DISABLE
         }
+    }
+
+    cocoapods {
+        ios.deploymentTarget = "16.2"
+
+        version = "1.0"
+
+        summary = "This is sample Summary"
+        homepage = "Home URL"
+
+        pod(name = "Marshall", path = File(projectDir, "ios/Marshall"))
     }
 
     sourceSets {

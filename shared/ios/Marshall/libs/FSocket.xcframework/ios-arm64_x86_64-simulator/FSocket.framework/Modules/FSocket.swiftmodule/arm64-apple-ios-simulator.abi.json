@@ -1,0 +1,510 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "FSocket",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "NSocketDeleagte",
+        "printedName": "NSocketDeleagte",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "onConnected",
+            "printedName": "onConnected()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FSocket15NSocketDeleagteP11onConnectedyyF",
+            "mangledName": "$s7FSocket15NSocketDeleagteP11onConnectedyyF",
+            "moduleName": "FSocket",
+            "genericSig": "<τ_0_0 where τ_0_0 : FSocket.NSocketDeleagte>",
+            "sugared_genericSig": "<Self where Self : FSocket.NSocketDeleagte>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onError",
+            "printedName": "onError(error:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FSocket15NSocketDeleagteP7onError5errorySS_tF",
+            "mangledName": "$s7FSocket15NSocketDeleagteP7onError5errorySS_tF",
+            "moduleName": "FSocket",
+            "genericSig": "<τ_0_0 where τ_0_0 : FSocket.NSocketDeleagte>",
+            "sugared_genericSig": "<Self where Self : FSocket.NSocketDeleagte>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "onMessage",
+            "printedName": "onMessage(message:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FSocket15NSocketDeleagteP9onMessage7messagey10Foundation4DataV_tF",
+            "mangledName": "$s7FSocket15NSocketDeleagteP9onMessage7messagey10Foundation4DataV_tF",
+            "moduleName": "FSocket",
+            "genericSig": "<τ_0_0 where τ_0_0 : FSocket.NSocketDeleagte>",
+            "sugared_genericSig": "<Self where Self : FSocket.NSocketDeleagte>",
+            "protocolReq": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:7FSocket15NSocketDeleagteP",
+        "mangledName": "$s7FSocket15NSocketDeleagteP",
+        "moduleName": "FSocket",
+        "genericSig": "<τ_0_0 : ObjectiveC.NSObject>",
+        "sugared_genericSig": "<Self : ObjectiveC.NSObject>",
+        "declAttributes": [
+          "AccessControl"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "FSocket",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "socket_IO",
+        "printedName": "socket_IO",
+        "declKind": "Import",
+        "moduleName": "FSocket"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "NSocket",
+        "printedName": "NSocket",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "connect",
+            "printedName": "connect(url:port:delegate:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSocketDeleagte",
+                "printedName": "FSocket.NSocketDeleagte",
+                "usr": "s:7FSocket15NSocketDeleagteP"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FSocket7NSocketC7connect3url4port8delegateySS_SiAA0B8Deleagte_ptF",
+            "mangledName": "$s7FSocket7NSocketC7connect3url4port8delegateySS_SiAA0B8Deleagte_ptF",
+            "moduleName": "FSocket",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "disconnect",
+            "printedName": "disconnect()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FSocket7NSocketC10disconnectyyF",
+            "mangledName": "$s7FSocket7NSocketC10disconnectyyF",
+            "moduleName": "FSocket",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "sendEvent",
+            "printedName": "sendEvent(event:data:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSDictionary",
+                "printedName": "Foundation.NSDictionary",
+                "usr": "c:objc(cs)NSDictionary"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:7FSocket7NSocketC9sendEvent5event4dataySS_So12NSDictionaryCtF",
+            "mangledName": "$s7FSocket7NSocketC9sendEvent5event4dataySS_So12NSDictionaryCtF",
+            "moduleName": "FSocket",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSocket",
+                "printedName": "FSocket.NSocket",
+                "usr": "c:@M@FSocket@objc(cs)NSocket"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@FSocket@objc(cs)NSocket(im)init",
+            "mangledName": "$s7FSocket7NSocketCACycfc",
+            "moduleName": "FSocket",
+            "overriding": true,
+            "implicit": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "socketIODidConnect",
+            "printedName": "socketIODidConnect(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "socket_IO.SocketIO?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "SocketIO",
+                    "printedName": "socket_IO.SocketIO",
+                    "usr": "c:objc(cs)SocketIO"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@FSocket@objc(cs)NSocket(im)socketIODidConnect:",
+            "mangledName": "$s7FSocket7NSocketC18socketIODidConnectyySo8SocketIOCSgF",
+            "moduleName": "FSocket",
+            "objc_name": "socketIODidConnect:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "socketIO",
+            "printedName": "socketIO(_:onError:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "socket_IO.SocketIO?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "SocketIO",
+                    "printedName": "socket_IO.SocketIO",
+                    "usr": "c:objc(cs)SocketIO"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "Swift.Error?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Error",
+                    "printedName": "Swift.Error",
+                    "usr": "s:s5ErrorP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@FSocket@objc(cs)NSocket(im)socketIO:onError:",
+            "mangledName": "$s7FSocket7NSocketC8socketIO_7onErrorySo06SocketD0CSg_s0F0_pSgtF",
+            "moduleName": "FSocket",
+            "objc_name": "socketIO:onError:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "socketIO",
+            "printedName": "socketIO(_:didReceiveMessage:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "socket_IO.SocketIO?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "SocketIO",
+                    "printedName": "socket_IO.SocketIO",
+                    "usr": "c:objc(cs)SocketIO"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "socket_IO.SocketIOPacket?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "SocketIOPacket",
+                    "printedName": "socket_IO.SocketIOPacket",
+                    "usr": "c:objc(cs)SocketIOPacket"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@FSocket@objc(cs)NSocket(im)socketIO:didReceiveMessage:",
+            "mangledName": "$s7FSocket7NSocketC8socketIO_17didReceiveMessageySo06SocketD0CSg_So0H8IOPacketCSgtF",
+            "moduleName": "FSocket",
+            "objc_name": "socketIO:didReceiveMessage:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "socketIODidDisconnect",
+            "printedName": "socketIODidDisconnect(_:disconnectedWithError:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "socket_IO.SocketIO?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "SocketIO",
+                    "printedName": "socket_IO.SocketIO",
+                    "usr": "c:objc(cs)SocketIO"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ImplicitlyUnwrappedOptional",
+                "printedName": "Swift.Error?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Error",
+                    "printedName": "Swift.Error",
+                    "usr": "s:s5ErrorP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@FSocket@objc(cs)NSocket(im)socketIODidDisconnect:disconnectedWithError:",
+            "mangledName": "$s7FSocket7NSocketC21socketIODidDisconnect_21disconnectedWithErrorySo8SocketIOCSg_s0H0_pSgtF",
+            "moduleName": "FSocket",
+            "objc_name": "socketIODidDisconnect:disconnectedWithError:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@FSocket@objc(cs)NSocket",
+        "mangledName": "$s7FSocket7NSocketC",
+        "moduleName": "FSocket",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": []
+}
