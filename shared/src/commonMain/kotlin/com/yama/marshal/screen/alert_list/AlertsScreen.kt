@@ -2,6 +2,8 @@ package com.yama.marshal.screen.alert_list
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
@@ -22,6 +24,7 @@ import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.MarshalListItemAction
@@ -118,7 +121,7 @@ internal class AlertsScreen(
         }.collectAsState(null)
 
         Text(
-            text = cart?.cartName ?: "",
+            text = cart?.cartName ?: "---",
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(0.5f)
         )
@@ -131,7 +134,8 @@ internal class AlertsScreen(
                 is AlertModel.Pace -> Icons.Default.Schedule
                 is AlertModel.Battery -> Icons.Default.BatteryAlert
             },
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.size(Sizes.screenPadding).padding(horizontal = Sizes.screenPadding)
         )
 
         NSpacer()
@@ -154,12 +158,11 @@ internal class AlertsScreen(
                     item.geofence
                 }.collectAsState(null)
 
-                if (geofence != null)
-                    Text(
-                        text = geofence?.name ?: "---",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(0.6f)
-                    )
+                Text(
+                    text = geofence?.name ?: "---",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(0.6f)
+                )
             }
             is AlertModel.Pace -> Text(
                 text = PaceValueFormatter.getString(item.netPace, PaceValueFormatter.PaceType.Full),
