@@ -45,6 +45,12 @@ internal object Strings {
 
     const val hole_screen_table_row_hole_label = "Hole"
     const val hole_screen_table_row_pace_of_play_label = "Pace of play"
+
+    const val alerts_item_type_fence_title = "GEO-FENCE"
+    const val alerts_item_type_pence_title = "PACE OF PLAY"
+    const val alerts_item_type_battery_title = "LOW BATTERY"
+
+
 } 
 
 @Composable

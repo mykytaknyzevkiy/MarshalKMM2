@@ -304,6 +304,7 @@ object CompanyRepository: CoroutineScope {
         }.also {
             if (it == null)
                 _alerts.add(AlertModel.Pace(
+                    courseID = paceNotification.idCourse,
                     date = paceNotification.date,
                     course = findCourse(paceNotification.idCourse),
                     cart = findCart(paceNotification.idCart),
@@ -347,6 +348,7 @@ object CompanyRepository: CoroutineScope {
         }.also {
             if (it == null)
                 _alerts.add(AlertModel.Fence(
+                    courseID = fenceNotification.idCourse,
                     date = fenceNotification.date,
                     course = findCourse(fenceNotification.idCourse),
                     cart = findCart(fenceNotification.idCart),
@@ -410,6 +412,7 @@ object CompanyRepository: CoroutineScope {
         }.also {
             if (it == null)
                 _alerts.add(AlertModel.Battery(
+                    courseID = data.idCourse,
                     date = data.date,
                     course = findCourse(data.idCourse),
                     cart = findCart(data.idCart),

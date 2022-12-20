@@ -1,13 +1,13 @@
 package com.yama.marshal.screen.main
 
-import androidx.compose.runtime.mutableStateListOf
-import com.yama.marshal.data.entity.HoleEntity
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.screen.YamaViewModel
-import com.yama.marshal.tool.*
+import com.yama.marshal.tool.FleetSorter
+import com.yama.marshal.tool.HoleSorter
 import com.yama.marshal.tool.Strings
+import com.yama.marshal.tool.format
 import io.ktor.util.date.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -85,6 +85,12 @@ class MainViewModel : YamaViewModel() {
             a.sortedWith(HoleSorter(b))
         }
 
+    val alertList = CompanyRepository
+        .alerts
+        .combine(_selectedCourse) { a, b ->
+            a.filter { b?.id.isNullOrBlank() || it.courseID == b?.id }
+        }
+
     fun load() {
         CompanyRepository
             .courseList
@@ -126,5 +132,4 @@ class MainViewModel : YamaViewModel() {
     fun flagCart(cart: CartFullDetail) {
         CompanyRepository.flagCart(cart.id)
     }
-
 }

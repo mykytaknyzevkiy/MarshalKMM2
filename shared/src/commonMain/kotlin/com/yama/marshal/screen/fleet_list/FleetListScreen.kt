@@ -45,8 +45,7 @@ internal class FleetListScreen(
 
         val itemList by remember(viewModel) {
             viewModel.fleetList
-        }
-            .collectAsState(emptyList())
+        }.collectAsState(emptyList())
 
         MarshalList(
             modifier = Modifier.fillMaxSize(),
