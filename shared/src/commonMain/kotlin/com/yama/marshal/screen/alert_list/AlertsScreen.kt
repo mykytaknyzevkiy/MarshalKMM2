@@ -22,6 +22,7 @@ import com.yama.marshal.screen.main.SortType
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
+import com.yama.marshal.tool.format
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
@@ -48,7 +49,6 @@ internal class AlertsScreen(
         MarshalList(
             modifier = Modifier.fillMaxSize(),
             list = itemList,
-            key = { _, item -> item.date.timestamp },
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -123,7 +123,7 @@ internal class AlertsScreen(
         Text(
             text = cart?.cartName ?: "---",
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.4f)
         )
 
         NSpacer()
@@ -135,7 +135,8 @@ internal class AlertsScreen(
                 is AlertModel.Battery -> Icons.Default.BatteryAlert
             },
             contentDescription = null,
-            modifier = Modifier.size(Sizes.screenPadding).padding(horizontal = Sizes.screenPadding)
+            modifier = Modifier
+                .weight(0.1f)
         )
 
         NSpacer()
@@ -182,5 +183,11 @@ internal class AlertsScreen(
         }
 
         NSpacer()
+
+        Text(
+            text = item.date.format("hh:mm a"),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(0.2f)
+        )
     }
 }

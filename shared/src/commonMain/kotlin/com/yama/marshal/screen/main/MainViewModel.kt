@@ -90,6 +90,9 @@ class MainViewModel : YamaViewModel() {
         .combine(_selectedCourse) { a, b ->
             a.filter { b?.id.isNullOrBlank() || it.courseID == b?.id }
         }
+        .map {
+            it.sortedByDescending { a -> a.date.timestamp }
+        }
 
     fun load() {
         CompanyRepository
