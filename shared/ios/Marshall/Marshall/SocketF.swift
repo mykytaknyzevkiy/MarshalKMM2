@@ -6,54 +6,63 @@
 //
 
 import UIKit
-import FSocket
+import socket_IO
 
 public class SocketF: NSObject {
     private var delegate: SocketFDelegate!
     
-    private let nSocket = NSocket()
-
+    private var socket: SocketIO!
+    
     public func setDelegate(delegate: SocketFDelegate) {
         self.delegate = delegate
     }
     
     public func connect(url: String, port: Int) {
-        nSocket.connect(url: url, port: port, delegate: self)
+        socket = nil
+        
+        socket = SocketIO(delegate: self)
+        
+        socket.useSecure = true
+        socket.connect(toHost: url, onPort: port)
     }
     
     public func disconnect() {
-        nSocket.disconnect()
+        socket.disconnect()
     }
     
     public func sendEvent(event: String, json: String) {
         let data = json.data(using: .utf8)!
         
         if let nsDir = try? JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-            nSocket.sendEvent(event: event, data: nsDir)
+            socket.sendEvent(event, withData: nsDir)
         }
     }
 }
 
-extension SocketF: NSocketDeleagte {
-    public func onConnected() {
+extension SocketF: SocketIODelegate {
+    public func socketIODidConnect(_ socket: SocketIO!) {
         delegate.onConnected()
-        
     }
     
-    public func onError(error: String) {
-        delegate.onError(error: error)
+    public func socketIO(_ socket: SocketIO!, onError error: Error!) {
+        delegate.onError(error: error.localizedDescription)
     }
     
-    public func onMessage(message: Data) {
-        if let jsonObject = try? JSONSerialization.jsonObject(with: message, options: []) {
-            if let jsonData = try? JSONSerialization.data(
-                withJSONObject: jsonObject,
-                options: JSONSerialization.WritingOptions.prettyPrinted
-            ) as NSData {
-                let body = NSString(data: jsonData as Data, encoding: NSUTF8StringEncoding)! as String
-                
-                delegate.onMessage(json: body)
+    public func socketIO(_ socket: SocketIO!, didReceiveMessage packet: SocketIOPacket!) {
+        if let data = packet.packetData {
+            if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) {
+                if let jsonData = try? JSONSerialization.data(
+                    withJSONObject: jsonObject,
+                    options: JSONSerialization.WritingOptions.prettyPrinted
+                ) as NSData {
+                    let body = NSString(data: jsonData as Data, encoding: NSUTF8StringEncoding)! as String
+                    
+                    delegate.onMessage(json: body)
+                }
             }
         }
+    }
+    
+    public func socketIODidDisconnect(_ socket: SocketIO!, disconnectedWithError error: Error!) {
     }
 }
