@@ -49,4 +49,12 @@ class SocketManager: NSObject, SocketIODelegate {
         print(error.localizedDescription)
         delegate.onError(error: error.localizedDescription)
     }
+    
+    func sendEvent(event: String, json: String) {
+        let data = json.data(using: .utf8)!
+            
+        if let nsDir = try? JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
+            self.socketIO.sendEvent(event, withData: nsDir)
+        }
+    }
 }

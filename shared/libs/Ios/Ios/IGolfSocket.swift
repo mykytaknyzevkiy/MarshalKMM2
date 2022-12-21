@@ -8,18 +8,24 @@
 import UIKit
 
 @objc
-public class IGolfSocket: NSObject, SocketManagerDelegate {
+public class IGolfSocket: NSObject {
     
     @objc
-    public func v1() {
+    public func v3() {
         
     }
     
     private let socket = SocketManager()
+    private var delegate: SocketManagerDelegate!
     
     public override init() {
         super.init()
-        socket.setDelegate(delegate: self)
+    }
+    
+    @objc
+    public func setDelegate(delegate: SocketManagerDelegate) {
+        self.delegate = delegate
+        socket.setDelegate(delegate: self.delegate)
     }
     
     @objc
@@ -27,15 +33,8 @@ public class IGolfSocket: NSObject, SocketManagerDelegate {
         socket.connect(url: url, port: port)
     }
     
-    public func didConnected() {
-        
-    }
-    
-    public func onError(error: String) {
-        
-    }
-    
-    public func onMessage(message: String) {
-        
+    @objc
+    public func sendEvent(event: String, json: String) {
+        socket.sendEvent(event: event, json: json)
     }
 }

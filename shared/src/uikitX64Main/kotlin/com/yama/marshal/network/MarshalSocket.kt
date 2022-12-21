@@ -11,8 +11,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.CoroutineContext
 import cocoapods.Ios.IGolfSocket
+import cocoapods.Ios.SocketManagerDelegateProtocol
 
-actual class MarshalSocket: CoroutineScope, MarshalSocketIO() {
+actual class MarshalSocket: CoroutineScope, MarshalSocketIO(), SocketManagerDelegateProtocol {
     companion object {
         private const val TAG = "MarshalSocket"
     }
@@ -68,5 +69,17 @@ actual class MarshalSocket: CoroutineScope, MarshalSocketIO() {
             "signAuth",
             Json.encodeToString(payload)
         )
+    }
+
+    override fun didConnected() {
+        login()
+    }
+
+    override fun onErrorWithError(error: String) {
+        this.onError(error)
+    }
+
+    override fun onMessageWithMessage(message: String) {
+        this.onMessage(message)
     }
 }
