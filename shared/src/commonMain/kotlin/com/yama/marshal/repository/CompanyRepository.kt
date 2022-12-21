@@ -1,30 +1,32 @@
 package com.yama.marshal.repository
 
-import androidx.compose.runtime.mutableStateListOf
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
 import com.yama.marshal.data.entity.*
+import com.yama.marshal.data.entity.GeofenceItem
+import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.network.AuthManager
 import com.yama.marshal.network.DNAService
 import com.yama.marshal.network.model.*
-import com.yama.marshal.tool.companyID
-import com.yama.marshal.tool.parseDate
-import com.yama.marshal.tool.prefs
-import com.yama.marshal.tool.setCartFlag
+import com.yama.marshal.tool.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.Synchronized
 
-object CompanyRepository {
-    private const val TAG = "CompanyRepository"
-
+object CompanyRepository: CoroutineScope {
     data class CartFullFlow(
         val carts: List<CartItem>,
         val cartRounds: List<CartRoundItem> ,
         var courseList: List<CourseFullDetail>
     )
+
+    private const val TAG = "CompanyRepository"
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Default
 
     private val dnaService = DNAService()
 
@@ -212,6 +214,33 @@ object CompanyRepository {
         return true
     }
 
+    suspend fun loadGeofenceList(): Boolean {
+        dnaService
+            .geofenceList(GeofenceListRequest(idCompany = prefs.companyID, isActive = 1))
+            .let {
+                if (it == null) {
+                    Logger.e(TAG, message = {
+                        "Cannot loadMessages"
+                    })
+                    return false
+                }
+                it
+            }
+            .list
+            .map {
+                GeofenceItem(
+                    id = it.id,
+                    name = it.name,
+                    type = it.type
+                )
+            }
+            .also {
+                Database.updateGeofenceList(it)
+            }
+
+        return true
+    }
+
     suspend fun sendMessageToCarts(cartIds: IntArray, idMessage: Int): Boolean {
         dnaService.sendMessageToCarts(
             body = CartMessageSentRequest(
@@ -268,6 +297,21 @@ object CompanyRepository {
             startTime = paceNotification.roundDate
         )
 
+        //Update alerts
+        _alerts.find {
+            it is AlertModel.Pace
+                    && it.date.timestamp == paceNotification.date.timestamp
+        }.also {
+            if (it == null)
+                _alerts.add(AlertModel.Pace(
+                    courseID = paceNotification.idCourse,
+                    date = paceNotification.date,
+                    course = findCourse(paceNotification.idCourse),
+                    cart = findCart(paceNotification.idCart),
+                    netPace = paceNotification.totalPace
+                ))
+        }
+
         Logger.i(TAG, message = {
             "process PaceNotification updated"
         })
@@ -290,7 +334,27 @@ object CompanyRepository {
             return
         }
 
-        //TODO add ass alert
+        if (fenceNotification.idCart < 0) {
+            Logger.e(TAG, message = {
+                "Ignore fence $fenceNotification"
+            })
+            return
+        }
+
+        //Update alerts
+        _alerts.find {
+            it is AlertModel.Fence
+                    && it.date.timestamp == fenceNotification.date.timestamp
+        }.also {
+            if (it == null)
+                _alerts.add(AlertModel.Fence(
+                    courseID = fenceNotification.idCourse,
+                    date = fenceNotification.date,
+                    course = findCourse(fenceNotification.idCourse),
+                    cart = findCart(fenceNotification.idCart),
+                    geofence = findGeofence(fenceNotification.idFence)
+                ))
+        }
     }
 
     @Synchronized
@@ -341,7 +405,19 @@ object CompanyRepository {
             return
         }
 
-        //TODO(Add to alerts)
+        //Update alerts
+        _alerts.find {
+            it is AlertModel.Battery
+                    && it.date.timestamp == data.date.timestamp
+        }.also {
+            if (it == null)
+                _alerts.add(AlertModel.Battery(
+                    courseID = data.idCourse,
+                    date = data.date,
+                    course = findCourse(data.idCourse),
+                    cart = findCart(data.idCart),
+                ))
+        }
     }
 
     @Synchronized
@@ -530,7 +606,53 @@ object CompanyRepository {
             .launchIn(scope)
     }
 
+    private fun findCart(id: Int) = cartsFullDetail.map { l ->
+        l.find { it.id == id }
+    }.onEach {
+        if (it == null)
+            loadCarts()
+    }.filter {
+        it != null
+    }.map {
+        it!!
+    }
+
+    private fun findCourse(id: String) = courseList.map { l ->
+        l.find { it.id == id }
+    }.onEach {
+        if (it == null)
+            loadCourses()
+    }.filter {
+        it != null
+    }.map {
+        it!!
+    }
+
+    private fun findGeofence(id: Int) = geofenceList.map { l ->
+        l.find { it.id == id }
+    }.onEach {
+        if (it == null)
+            loadGeofenceList()
+    }.filter {
+        it != null
+    }.map {
+        it!!
+    }
+
+    private fun findHole(id: Int) = holeList.map { l ->
+        l.find { it.id == id }
+    }.onEach {
+        if (it == null)
+            loadCartReport()
+    }.filter {
+        it != null
+    }.map {
+        it!!
+    }
+
     val holeList = Database.cartReport
+
+    private val geofenceList = Database.geofenceList
 
     val courseList = Database
         .courseList
@@ -561,45 +683,12 @@ object CompanyRepository {
         }
 
     private val _cartsFullDetail = MutableStateFlow(emptyList<CartFullDetail>())
-
     val cartsFullDetail: StateFlow<List<CartFullDetail>>
         get() = _cartsFullDetail
 
-    private fun StateFlow<List<CartFullDetail>>.find(predicate: (CartFullDetail) -> Boolean) =
-        this.value.find(predicate)
-
-    private fun StateFlow<List<CartFullDetail>>.indexOf(element: @UnsafeVariance CartFullDetail) =
-        this.value.indexOf(element)
-
-    private operator fun MutableStateFlow<List<CartFullDetail>>.set(index: Int, element: CartFullDetail) {
-        val data = this.value.toMutableList()
-        data[index] = element
-        this.value = data
-    }
-
-    private operator fun MutableStateFlow<List<CartFullDetail>>.get(index: Int) =
-        this.value[index]
-
-    private fun StateFlow<List<CartFullDetail>>.indexOfFirst(predicate: (CartFullDetail) -> Boolean) =
-        this.value.indexOfFirst(predicate)
-
-    private val StateFlow<List<CartFullDetail>>.size
-        get() = this.value.size
-
-    private fun MutableStateFlow<List<CartFullDetail>>.addAll(list: List<CartFullDetail>) {
-        val data = this.value.toMutableList()
-        data.addAll(list)
-        this.value = data
-    }
-
-    private fun StateFlow<List<CartFullDetail>>.any(predicate: (CartFullDetail) -> Boolean) =
-        this.value.any(predicate)
-
-    private fun MutableStateFlow<List<CartFullDetail>>.removeAll(predicate: (CartFullDetail) -> Boolean) {
-        val data = this.value.toMutableList()
-        data.removeAll(predicate)
-        this.value = data
-    }
+    private val _alerts = MutableStateFlow<List<AlertModel>>(emptyList())
+    val alerts: StateFlow<List<AlertModel>>
+        get() = _alerts
 }
 
 fun <T> Flow<List<T>>.filterList(predicate: (T) -> Boolean) = this.map {

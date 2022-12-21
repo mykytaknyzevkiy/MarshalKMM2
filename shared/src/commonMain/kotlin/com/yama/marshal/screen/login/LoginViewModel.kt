@@ -42,6 +42,11 @@ interface UserDataViewModel {
                 return false
         }
 
+        CompanyRepository.loadGeofenceList().also {
+            if (!it)
+                return false
+        }
+
         MarshalNotificationService.start()
 
         return true

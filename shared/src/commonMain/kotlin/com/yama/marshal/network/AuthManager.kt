@@ -96,5 +96,7 @@ enum class Action(val actionName: String, val isPrivate: Boolean) {
     CartMessageSent("CartMessageSend", true),
     CartLastLocation("CartLastLocation", true),
     CourseGPSVectorDetails("CourseGPSVectorDetails", false),
-    CartDetailsUpdate("CartDetailsUpdate", true)
+    CartDetailsUpdate("CartDetailsUpdate", true),
+    CourseGeofenceList("CourseGeofenceList", true),
+
 }

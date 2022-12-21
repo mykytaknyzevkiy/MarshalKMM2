@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
+import com.yama.marshal.screen.alert_list.AlertsScreen
 import com.yama.marshal.screen.fleet_list.FleetListScreen
 import com.yama.marshal.screen.hole_list.HoleListScreen
 import com.yama.marshal.tool.Strings
@@ -46,6 +47,7 @@ internal class MainScreen(navigationController: NavigationController) :
 
     private val fleetListScreen = FleetListScreen(navigationController, viewModel)
     private val holeListScreen = HoleListScreen(navigationController, viewModel)
+    private val alertListScreen = AlertsScreen(navigationController, viewModel)
 
     @Composable
     override fun titleContent() {
@@ -78,7 +80,7 @@ internal class MainScreen(navigationController: NavigationController) :
                 NavHost(
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     navigationController = mainNavigationController,
-                    screens = arrayOf(fleetListScreen, holeListScreen)
+                    screens = arrayOf(fleetListScreen, holeListScreen, alertListScreen)
                 )
 
                 menuNavigation()
@@ -135,7 +137,9 @@ internal class MainScreen(navigationController: NavigationController) :
             YamaColor.alert_navigation_card_bg,
             Strings.main_screen_navigation_item_alert_label,
             Icons.Default.Warning,
-        ) {}
+        ) {
+            mainNavigationController.navigateTo(AlertsScreen.ROUTE)
+        }
     }
 
     @Composable

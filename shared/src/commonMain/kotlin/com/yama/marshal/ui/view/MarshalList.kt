@@ -51,8 +51,8 @@ internal inline fun <E> MarshalList(
     bgPositive: Color = YamaColor.itemColor(0),
     bgNegative: Color = YamaColor.itemColor(1),
     noinline key: ((position: Int, item: E) -> Any)? = null,
-    crossinline customItemBgColor: @DisallowComposableCalls (item: E) -> Color? = { null },
-    crossinline itemActions: @DisallowComposableCalls (item: E) -> List<MarshalListItemAction> = { emptyList() },
+    crossinline customItemBgColor: @Composable (item: E) -> Color? = { null },
+    crossinline itemActions: @Composable (item: E) -> List<MarshalListItemAction> = { emptyList() },
     crossinline itemContent: @Composable RowScope.(item: E) -> Unit
 ) {
     val maxItemCount = remember(orientation) {
@@ -93,15 +93,9 @@ internal inline fun <E> MarshalList(
                     drawRect(bgColor)
                 }
             ) {
-                val itemBgColor by remember {
-                    derivedStateOf {
-                        customItemBgColor(item)
-                    }
-                }
+                val itemBgColor = customItemBgColor(item)
 
-                val actions = remember(item) {
-                    itemActions(item)
-                }
+                val actions = itemActions(item)
 
                 val maxOffset = remember(actions) {
                     holderHeight * actions.size

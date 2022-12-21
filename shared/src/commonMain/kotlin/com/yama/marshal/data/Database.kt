@@ -25,6 +25,10 @@ internal object Database {
     val companyMessages: StateFlow<List<CompanyMessage>>
         get() = _companyMessages
 
+    private val _geofenceList = MutableStateFlow<List<GeofenceItem>>(emptyList())
+    val geofenceList: StateFlow<List<GeofenceItem>>
+        get() = _geofenceList
+
     suspend fun updateCourses(data: List<CourseEntity>) {
         _courseList.emit(data)
     }
@@ -43,5 +47,9 @@ internal object Database {
 
     suspend fun updateCompanyMessages(data: List<CompanyMessage>) {
         _companyMessages.emit(data)
+    }
+
+    suspend fun updateGeofenceList(data: List<GeofenceItem>) {
+        _geofenceList.emit(data)
     }
 }
