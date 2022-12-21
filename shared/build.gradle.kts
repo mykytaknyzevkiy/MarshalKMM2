@@ -36,7 +36,7 @@ kotlin {
         summary = "This is sample Summary"
         homepage = "Home URL"
 
-        pod(name = "Marshall", path = File(projectDir, "ios/Marshall"))
+        pod(name = "Ios", path = File(projectDir, "libs/Ios"))
     }
 
     sourceSets {

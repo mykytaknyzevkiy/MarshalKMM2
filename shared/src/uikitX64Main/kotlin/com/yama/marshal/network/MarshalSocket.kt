@@ -10,7 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.CoroutineContext
-import cocoapods.Marshall.SocketF
+import cocoapods.Ios.IGolfSocket
+
 actual class MarshalSocket: CoroutineScope, MarshalSocketIO() {
     companion object {
         private const val TAG = "MarshalSocket"
