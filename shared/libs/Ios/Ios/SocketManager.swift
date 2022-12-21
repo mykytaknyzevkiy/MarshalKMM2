@@ -10,6 +10,11 @@ import socket_IO
 
 class SocketManager: NSObject, SocketIODelegate {
     private var socketIO: SocketIO!
+    private var delegate: SocketManagerDelegate!
+    
+    func setDelegate(delegate: SocketManagerDelegate) {
+        self.delegate = delegate
+    }
     
     func connect(url: String, port: Int) {
         self.socketIO = nil
@@ -20,13 +25,28 @@ class SocketManager: NSObject, SocketIODelegate {
     
     func socketIODidConnect(_ socket: SocketIO!) {
         print("socket did connect")
+        delegate.didConnected()
     }
     
     func socketIO(_ socket: SocketIO!, didReceiveMessage packet: SocketIOPacket!) {
         print("socket didReceiveMessage")
+        
+        if let data = packet.packetData {
+                    if let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) {
+                        if let jsonData = try? JSONSerialization.data(
+                            withJSONObject: jsonObject,
+                            options: JSONSerialization.WritingOptions.prettyPrinted
+                        ) as NSData {
+                            let body = NSString(data: jsonData as Data, encoding: NSUTF8StringEncoding)! as String
+                            
+                            delegate.onMessage(message: body)
+                        }
+                    }
+                }
     }
     
     func socketIO(_ socket: SocketIO!, onError error: Error!) {
         print(error.localizedDescription)
+        delegate.onError(error: error.localizedDescription)
     }
 }

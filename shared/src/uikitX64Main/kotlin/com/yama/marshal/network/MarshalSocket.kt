@@ -21,7 +21,13 @@ actual class MarshalSocket: CoroutineScope, MarshalSocketIO() {
         onError(throwable.message ?: "Unknown")
     }
 
+    private val iosSocket = IGolfSocket()
+
     actual fun connect() = launch {
+        iosSocket.connectWithUrl(
+            url = AuthManager.MARSHAL_NOTIFICATION_ENDPOINT,
+            port = AuthManager.MARSHAL_NOTIFICATION_PORT.toLong()
+        )
     }
 
     actual fun disconnect() {

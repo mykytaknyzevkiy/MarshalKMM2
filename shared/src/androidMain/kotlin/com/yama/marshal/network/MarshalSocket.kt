@@ -7,6 +7,7 @@ import co.touchlab.kermit.Logger
 import com.yama.marshal.network.AuthManager.ApplicationAPIKey
 import com.yama.marshal.network.AuthManager.ApplicationSecretKey
 import com.yama.marshal.network.AuthManager.MARSHAL_NOTIFICATION_ENDPOINT
+import com.yama.marshal.network.AuthManager.MARSHAL_NOTIFICATION_PORT
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.secretKey
 import com.yama.marshal.tool.userName
@@ -67,7 +68,7 @@ actual class MarshalSocket:MarshalSocketIO(), IOCallback {
         SocketIO.setDefaultSSLSocketFactory(SSLContext.getDefault())
 
         socketIO = try {
-            SocketIO(MARSHAL_NOTIFICATION_ENDPOINT)
+            SocketIO("$MARSHAL_NOTIFICATION_ENDPOINT:$MARSHAL_NOTIFICATION_PORT")
         } catch (e: Exception) {
             onError(e.localizedMessage ?: "Unknown")
             return@launch

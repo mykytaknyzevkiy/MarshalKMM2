@@ -14,6 +14,7 @@
 		39B2B44E2953667600F45167 /* Pods_iGolf_Marshall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */; };
 		39B2B450295366AB00F45167 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B44F295366AB00F45167 /* SocketManager.swift */; };
 		39B2B4522953686300F45167 /* IGolfSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B4512953686300F45167 /* IGolfSocket.swift */; };
+		39B2B45429536C2700F45167 /* SocketManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Pods_iGolf_Marshall.xcframework; sourceTree = "<group>"; };
 		39B2B44F295366AB00F45167 /* SocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
 		39B2B4512953686300F45167 /* IGolfSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGolfSocket.swift; sourceTree = "<group>"; };
+		39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManagerDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				39B2B43F2953666300F45167 /* Ios.h */,
 				39B2B44F295366AB00F45167 /* SocketManager.swift */,
 				39B2B4512953686300F45167 /* IGolfSocket.swift */,
+				39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */,
 			);
 			path = Ios;
 			sourceTree = "<group>";
@@ -162,6 +165,7 @@
 			files = (
 				39B2B4522953686300F45167 /* IGolfSocket.swift in Sources */,
 				39B2B450295366AB00F45167 /* SocketManager.swift in Sources */,
+				39B2B45429536C2700F45167 /* SocketManagerDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

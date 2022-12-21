@@ -18,7 +18,9 @@ object AuthManager {
     private const val timeStampDateFormatPattern = "yyMMddHHmmssZZZZ"
     const val timeStampDateFormatDataPattern = "yyMMddHHmmss"
     const val ApplicationAPIKey = "uUqnXUKU86kghJk"
-    const val MARSHAL_NOTIFICATION_ENDPOINT = "https://pace-push.syncwise360.com:9001"
+
+    const val MARSHAL_NOTIFICATION_ENDPOINT = "https://pace-push.syncwise360.com"
+    const val MARSHAL_NOTIFICATION_PORT = 9001
 
     fun getUrlForAction(action: Action): String {
         val urlBuilder = StringBuilder()
