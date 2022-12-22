@@ -17,6 +17,19 @@
 		39B2B45429536C2700F45167 /* SocketManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3F93A63429547DE2000CFD4A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		39B2B43C2953666300F45167 /* Ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39B2B43F2953666300F45167 /* Ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Ios.h; sourceTree = "<group>"; };
@@ -105,6 +118,7 @@
 				39B2B4382953666300F45167 /* Sources */,
 				39B2B4392953666300F45167 /* Frameworks */,
 				39B2B43A2953666300F45167 /* Resources */,
+				3F93A63429547DE2000CFD4A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -303,6 +317,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/libs",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -333,6 +351,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/libs",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

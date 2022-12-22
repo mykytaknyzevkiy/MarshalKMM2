@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "Ios"
-  s.version          = '1.0.3'
+  s.version          = '1.0.4'
   s.summary          = 'A short description of NekLibary.'
 
   s.description      = <<-DESC
@@ -19,5 +19,5 @@ TODO: Add long description of the pod here.
   s.swift_version = '5.0'
 
   s.source_files     = 'Ios/*.{swift,h,m}'
-  s.vendored_frameworks = 'libs/*.xcframework'
+  s.vendored_frameworks = 'libs/*.*'
   end
