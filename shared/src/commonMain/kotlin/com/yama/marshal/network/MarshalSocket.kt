@@ -1,12 +1,19 @@
 package com.yama.marshal.network
 
 import co.touchlab.kermit.Logger
+import com.appmattus.crypto.Algorithm
 import com.yama.marshal.network.model.MarshalNotification
+import com.yama.marshal.tool.prefs
+import com.yama.marshal.tool.secretKey
+import com.yama.marshal.tool.userName
+import io.ktor.utils.io.charsets.*
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import kotlin.coroutines.CoroutineContext
 
@@ -66,13 +73,58 @@ abstract class MarshalSocketIO: CoroutineScope {
         else
             Logger.e(TAG, message = { "Cannot parse json" })
     }
+
+    abstract fun disconnect()
+
+    abstract fun sendMessage(topic: String, json: String)
+
+    protected fun onConnected() {
+        Logger.i(TAG, message = {
+            "onConnected"
+        })
+
+        login()
+    }
+
+    private fun login() = launch {
+        val userName = prefs.userName
+        val userSecretKey = prefs.secretKey
+
+        if (userName == null || userSecretKey == null) {
+            onError("userName is null")
+            disconnect()
+            return@launch
+        }
+
+        val charSet = Charset.forName("UTF-8")
+
+        val signature = Algorithm
+            .SHA_256
+            .createHmac(key = (AuthManager.ApplicationSecretKey + userSecretKey).toByteArray(charset = charSet))
+            .digest(userName.toByteArray(charSet))
+            .let {
+                io.ktor.utils.io.core.String(com.yama.marshal.tool.Base64.encoderPadding.encode(it))
+            }
+            .replace('+', '-').replace('/', '_')
+
+        val payload = NotificationLoginRequest(
+            userName,
+            AuthManager.ApplicationAPIKey,
+            signature
+        )
+
+        sendMessage(
+            "signAuth",
+            Json.encodeToString(payload)
+        )
+    }
 }
 
 expect class MarshalSocket() : MarshalSocketIO {
 
     fun connect(): Job
 
-    fun disconnect()
+    override fun disconnect()
 
-    fun sendMessage(topic: String, json: String)
+    override fun sendMessage(topic: String, json: String)
 }

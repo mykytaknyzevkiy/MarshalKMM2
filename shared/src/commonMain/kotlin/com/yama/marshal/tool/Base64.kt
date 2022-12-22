@@ -64,6 +64,8 @@ object Base64 {
      */
     val encoder = Encoder(null, -1, false)
 
+    val encoderPadding = Encoder(null, -1, true)
+
     /**
      * Returns a [Decoder] that decodes using the
      * [Basic](#basic) type base64 encoding scheme.

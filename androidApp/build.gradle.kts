@@ -5,12 +5,12 @@ plugins {
 
 android {
     signingConfigs {
-        /*create("release") {
+        create("release") {
             storeFile = file("C:\\Users\\neka1\\Documents\\YamaTrack\\app\\rsa\\ytr.keystore")
             storePassword = "igolfdev591"
             keyAlias = "android"
             keyPassword = "igolfdev591"
-        }*/
+        }
     }
     namespace = "com.yama.marshal_app"
     compileSdk = 33
@@ -35,7 +35,7 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            //signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
