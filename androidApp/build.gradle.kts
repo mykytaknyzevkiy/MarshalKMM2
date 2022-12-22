@@ -6,7 +6,7 @@ plugins {
 android {
     signingConfigs {
         create("release") {
-            storeFile = file("C:\\Users\\neka1\\Documents\\YamaTrack\\app\\rsa\\ytr.keystore")
+            storeFile = File(projectDir, "rsa/ytr.keystore")
             storePassword = "igolfdev591"
             keyAlias = "android"
             keyPassword = "igolfdev591"
