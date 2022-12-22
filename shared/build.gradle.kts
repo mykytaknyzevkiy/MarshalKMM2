@@ -111,18 +111,19 @@ kotlin {
 
 android {
     namespace = "com.yama.marshal"
-    
+
     compileSdk = 33
 
     defaultConfig {
         targetSdk = 33
         minSdk = 23
 
-        ndk {
-            abiFilters.add("armeabi-v7a")
-            abiFilters.add("x86")
-            abiFilters.add("armeabi")
-            abiFilters.add("mips")
+        ndk.abiFilters.apply {
+            add("armeabi-v7a")
+            add("x86")
+            add("armeabi")
+            add("mips")
+            add("arm64-v8a")
         }
     }
 

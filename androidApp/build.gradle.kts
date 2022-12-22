@@ -26,6 +26,7 @@ android {
             abiFilters.add("x86")
             abiFilters.add("armeabi")
             abiFilters.add("mips")
+            //abiFilters.add("arm64-v8a")
         }
     }
     buildFeatures {
