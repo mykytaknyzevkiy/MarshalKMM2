@@ -36,6 +36,22 @@ kotlin {
         summary = "This is sample Summary"
         homepage = "Home URL"
 
+        framework {
+            baseName = "Shared"
+
+            isStatic = false
+
+            transitiveExport = false
+
+            this.embedBitcode = org.jetbrains.kotlin.gradle.plugin.mpp.Framework.BitcodeEmbeddingMode.DISABLE
+            this.freeCompilerArgs += listOf(
+                "-linker-option", "-framework", "-linker-option", "Metal",
+                "-linker-option", "-framework", "-linker-option", "CoreText",
+                "-linker-option", "-framework", "-linker-option", "CoreGraphics"
+            )
+            this.freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
+        }
+
         pod(name = "Ios", path = File(projectDir, "libs/Ios"))
     }
 

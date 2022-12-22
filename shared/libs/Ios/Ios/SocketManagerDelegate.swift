@@ -7,14 +7,10 @@
 
 import Foundation
 
-@objc
-public protocol SocketManagerDelegate {
-    @objc
+protocol SocketManagerDelegate {
     func didConnected()
     
-    @objc
     func onError(error: String)
     
-    @objc
     func onMessage(message: String)
 }

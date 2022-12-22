@@ -1,7 +1,6 @@
 package com.yama.marshal.network
 
 import cocoapods.Ios.IGolfSocket
-import cocoapods.Ios.SocketManagerDelegateProtocol
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,23 +16,7 @@ actual class MarshalSocket: CoroutineScope, MarshalSocketIO() {
         onError(throwable.message ?: "Unknown")
     }
 
-    private val iosSocket = IGolfSocket().apply {
-        setDelegateWithDelegate(iosSocketDelegate)
-    }
-
-    private val iosSocketDelegate = object : SocketManagerDelegateProtocol {
-        override fun didConnected() {
-            this@MarshalSocket.onConnected()
-        }
-
-        override fun onErrorWithError(error: String) {
-            this@MarshalSocket.onError(error)
-        }
-
-        override fun onMessageWithMessage(message: String) {
-            this@MarshalSocket.onMessage(message)
-        }
-    }
+    private val iosSocket = IGolfSocket()
 
     actual fun connect() = launch {
         iosSocket.connectWithUrl(
