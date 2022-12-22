@@ -1,10 +1,11 @@
 package com.yama.marshal.network
 
 import com.appmattus.crypto.Algorithm
-import com.yama.marshal.tool.Base64
+import com.yama.marshal.tool.*
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.secretKey
 import com.yama.marshal.tool.userName
+import io.ktor.util.date.*
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
 
@@ -64,7 +65,7 @@ object AuthManager {
     }
 
     private fun getTimestamp(): String {
-        return /*GMTDate().format(timeStampDateFormatPattern)*/ "221202200656GMT+02:00"
+        return GMTDate().format(timeStampDateFormatPattern)
     }
 }
 

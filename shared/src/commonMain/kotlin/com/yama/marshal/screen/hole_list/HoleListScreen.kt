@@ -47,19 +47,19 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
         val holeList by remember(viewModel) { viewModel.holeList }.collectAsState(emptyList())
 
-        /*MarshalList(
+        MarshalList(
             modifier = Modifier.fillMaxSize(),
             itemContent = {
                 ItemViewHolder(it)
             },
             list = holeList
-        )*/
+        )
     }
 
     @Composable
-    private fun RowScope.ItemViewHolder(item: HoleEntity) {
+    private fun RowScope.ItemViewHolder(item: CourseFullDetail.HoleData) {
         Text(
-            text = item.id.toString(),
+            text = item.holeNumber.toString(),
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(SortType.SortHole.HOLE.weight)
         )

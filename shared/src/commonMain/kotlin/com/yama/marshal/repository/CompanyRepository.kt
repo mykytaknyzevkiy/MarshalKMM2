@@ -9,18 +9,21 @@ import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.network.AuthManager
 import com.yama.marshal.network.DNAService
+import com.yama.marshal.network.IGolfService
 import com.yama.marshal.network.model.*
 import com.yama.marshal.tool.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.Synchronized
 
-object CompanyRepository: CoroutineScope {
+object CompanyRepository : CoroutineScope {
     data class CartFullFlow(
         val carts: List<CartItem>,
-        val cartRounds: List<CartRoundItem> ,
+        val cartRounds: List<CartRoundItem>,
         var courseList: List<CourseFullDetail>
     )
 
@@ -29,6 +32,7 @@ object CompanyRepository: CoroutineScope {
     override val coroutineContext: CoroutineContext = Dispatchers.Default
 
     private val dnaService = DNAService()
+    private val iGolfService = IGolfService()
 
     suspend fun loadCourses(): Boolean {
         Logger.i(tag = TAG, message = {
@@ -51,6 +55,33 @@ object CompanyRepository: CoroutineScope {
                     playersNumber = it.playersNumber,
                     layoutHoles = it.layoutHoles
                 )
+            }
+            .map {
+                val courseResponse = iGolfService.courseVectors(
+                    CourseGPSVectorDetailsRequest(idCourse = it.id)
+                )
+
+                if (courseResponse == null) {
+                    Logger.e(TAG, message = {
+                        "Cannot load GPSVector for course ${it.id}"
+                    })
+                    return false
+                }
+
+                val vectors = Json
+                    .parseToJsonElement(courseResponse)
+                    .jsonObject["vectorGPSObject"]
+                    .also { jsonElement ->
+                        if (jsonElement == null) {
+                            Logger.e(TAG, message = {
+                                "Cannot load GPSVector for course ${it.id}"
+                            })
+                            return false
+                        }
+                    }
+                    .toString()
+
+                it.copy(vectors = vectors)
             }
             .also {
                 Database.updateCourses(it)
@@ -287,7 +318,8 @@ object CompanyRepository: CoroutineScope {
         if (cart.currPosHole == paceNotification.currentHole
             && cart.holesPlayed == paceNotification.holesPlayed
             && cart.totalNetPace == paceNotification.totalPace
-            && cart.startTime == paceNotification.roundDate)
+            && cart.startTime == paceNotification.roundDate
+        )
             return
 
         _cartsFullDetail[index] = cart.copy(
@@ -303,13 +335,15 @@ object CompanyRepository: CoroutineScope {
                     && it.date.timestamp == paceNotification.date.timestamp
         }.also {
             if (it == null)
-                _alerts.add(AlertModel.Pace(
-                    courseID = paceNotification.idCourse,
-                    date = paceNotification.date,
-                    course = findCourse(paceNotification.idCourse),
-                    cart = findCart(paceNotification.idCart),
-                    netPace = paceNotification.totalPace
-                ))
+                _alerts.add(
+                    AlertModel.Pace(
+                        courseID = paceNotification.idCourse,
+                        date = paceNotification.date,
+                        course = findCourse(paceNotification.idCourse),
+                        cart = findCart(paceNotification.idCart),
+                        netPace = paceNotification.totalPace
+                    )
+                )
         }
 
         Logger.i(TAG, message = {
@@ -347,13 +381,15 @@ object CompanyRepository: CoroutineScope {
                     && it.date.timestamp == fenceNotification.date.timestamp
         }.also {
             if (it == null)
-                _alerts.add(AlertModel.Fence(
-                    courseID = fenceNotification.idCourse,
-                    date = fenceNotification.date,
-                    course = findCourse(fenceNotification.idCourse),
-                    cart = findCart(fenceNotification.idCart),
-                    geofence = findGeofence(fenceNotification.idFence)
-                ))
+                _alerts.add(
+                    AlertModel.Fence(
+                        courseID = fenceNotification.idCourse,
+                        date = fenceNotification.date,
+                        course = findCourse(fenceNotification.idCourse),
+                        cart = findCart(fenceNotification.idCart),
+                        geofence = findGeofence(fenceNotification.idFence)
+                    )
+                )
         }
     }
 
@@ -411,12 +447,14 @@ object CompanyRepository: CoroutineScope {
                     && it.date.timestamp == data.date.timestamp
         }.also {
             if (it == null)
-                _alerts.add(AlertModel.Battery(
-                    courseID = data.idCourse,
-                    date = data.date,
-                    course = findCourse(data.idCourse),
-                    cart = findCart(data.idCart),
-                ))
+                _alerts.add(
+                    AlertModel.Battery(
+                        courseID = data.idCourse,
+                        date = data.date,
+                        course = findCourse(data.idCourse),
+                        cart = findCart(data.idCart),
+                    )
+                )
         }
     }
 
@@ -442,7 +480,8 @@ object CompanyRepository: CoroutineScope {
         if (cart.currPosHole == null
             && cart.course == null
             && cart.returnAreaSts == 0
-            && cart.idTrip == -1)
+            && cart.idTrip == -1
+        )
             return
 
         _cartsFullDetail[index] = cart.copy(
@@ -465,7 +504,7 @@ object CompanyRepository: CoroutineScope {
         val index = _cartsFullDetail.indexOfFirst { it.id == cartID }
 
         if (index < 0) {
-            Logger.e(TAG, message = {"Cannot find cart by id $cartID to flag cart"})
+            Logger.e(TAG, message = { "Cannot find cart by id $cartID to flag cart" })
             return
         }
 
@@ -541,7 +580,7 @@ object CompanyRepository: CoroutineScope {
                 if (_cartsFullDetail.size < cartList.size) {
                     _cartsFullDetail.addAll(
                         cartList
-                            .filter { c -> !_cartsFullDetail.any { it.id == c.id} }
+                            .filter { c -> !_cartsFullDetail.any { it.id == c.id } }
                             .map { cart ->
                                 CartFullDetail(
                                     id = cart.id,
@@ -565,10 +604,9 @@ object CompanyRepository: CoroutineScope {
                                 )
                             }
                     )
-                }
-                else if (_cartsFullDetail.size > cartList.size) {
+                } else if (_cartsFullDetail.size > cartList.size) {
                     _cartsFullDetail.removeAll {
-                        cartList.any { c -> c.id ==  it.id}
+                        cartList.any { c -> c.id == it.id }
                     }
                 }
 
@@ -576,7 +614,9 @@ object CompanyRepository: CoroutineScope {
                     val oldCart = _cartsFullDetail.find { it.id == cartRound.id }
 
                     if (oldCart == null) {
-                        Logger.e(TAG, message = { "Cannot find cart id ${cartRound.id} by cart round callback" })
+                        Logger.e(
+                            TAG,
+                            message = { "Cannot find cart id ${cartRound.id} by cart round callback" })
                         continue
                     } else if (oldCart.isContentEqual(cartRound))
                         continue
@@ -585,7 +625,9 @@ object CompanyRepository: CoroutineScope {
 
                     val course = data.courseList.find { c -> c.id == cartRound.idCourse }
 
-                    Logger.i(TAG, message = { "onUpdate cart id ${oldCart.id} by cart round callback" })
+                    Logger.i(
+                        TAG,
+                        message = { "onUpdate cart id ${oldCart.id} by cart round callback" })
 
                     _cartsFullDetail[index] = oldCart.copy(
                         course = course,
@@ -617,7 +659,7 @@ object CompanyRepository: CoroutineScope {
         it!!
     }
 
-    private fun findCourse(id: String) = courseList.map { l ->
+    fun findCourse(id: String) = courseList.map { l ->
         l.find { it.id == id }
     }.onEach {
         if (it == null)
@@ -639,18 +681,33 @@ object CompanyRepository: CoroutineScope {
         it!!
     }
 
-    private fun findHole(id: Int) = holeList.map { l ->
-        l.find { it.id == id }
-    }.onEach {
-        if (it == null)
-            loadCartReport()
-    }.filter {
-        it != null
-    }.map {
-        it!!
-    }
+    fun findHole(id: Int, courseID: String) = holeList
+        .map { l ->
+            l.find { it.holeNumber == id && it.idCourse == courseID }
+        }
+        .onEach {
+            if (it == null)
+                loadCartReport()
+        }
+        .filter {
+            it != null
+        }
+        .map {
+            it!!
+        }
 
-    val holeList = Database.cartReport
+    val holeList = Database
+        .cartReport
+        .mapList { h ->
+            CourseFullDetail.HoleData(
+                holeNumber = h.id,
+                defaultPace = h.defaultPace,
+                averagePace = h.averagePace,
+                differentialPace = h.differentialPace,
+                idCourse = h.idCourse
+            )
+        }
+
 
     private val geofenceList = Database.geofenceList
 
@@ -664,14 +721,8 @@ object CompanyRepository: CoroutineScope {
                     defaultCourse = it.defaultCourse,
                     playersNumber = it.playersNumber,
                     layoutHoles = it.layoutHoles,
-                    holes = b.filter { h -> h.idCourse == it.id }.map { h ->
-                        CourseFullDetail.HoleData(
-                            holeNumber = h.id,
-                            defaultPace = h.defaultPace,
-                            averagePace = h.averagePace,
-                            differentialPace = h.differentialPace
-                        )
-                    }
+                    holes = b.filter { h -> h.idCourse == it.id },
+                    vectors = it.vectors
                 )
             }
         }

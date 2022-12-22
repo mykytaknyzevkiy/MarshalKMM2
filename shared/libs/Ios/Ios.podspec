@@ -1,23 +1,18 @@
-Pod::Spec.new do |s|
-  s.name             = "Ios"
-  s.version          = '1.0.8'
-  s.summary          = 'A short description of NekLibary.'
+Pod::Spec.new do |spec|
+  spec.name                     = 'Ios'
+  spec.version                  = '1.0'
+  spec.homepage                 = 'Home URL'
+  spec.source                   = { :http=> ''}
+  spec.authors                  = ''
+  spec.license                  = ''
+  spec.summary                  = 'This is sample Summary'
+  spec.vendored_frameworks      = 'libs/*.*'
+  spec.ios.deployment_target    = '14.1'
+  spec.swift_version            = '5.0'
+  spec.source_files             = 'Ios/*.{swift,h,m}'
 
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
 
-  s.homepage         = 'https://github.com/nekbakhtzabirov/NekLibary'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'nekbakhtzabirov' => 'nekbakht.zabirov@pixelsmatter.com' }
-  s.source           = { :git => 'https://github.com/nekbakhtzabirov/NekLibary.git', :tag => s.version.to_s }
+  #s.requires_arc     = true
+  #s.platform         = :ios, '14.1'
 
-  s.requires_arc     = true
-  s.platform         = :ios, '16.2'
-
-  s.swift_version = '5.0'
-
-  s.source_files     = 'Ios/*.{swift,h,m}'
-  s.vendored_frameworks = 'libs/*.*'
-  end
+end

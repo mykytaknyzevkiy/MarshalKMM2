@@ -5,5 +5,6 @@ data class CourseEntity internal constructor(
     val courseName: String,
     val defaultCourse: Int = 0,
     val playersNumber: Int = 0,
-    val layoutHoles: Int? = null
+    val layoutHoles: Int? = null,
+    var vectors: String = ""
 )

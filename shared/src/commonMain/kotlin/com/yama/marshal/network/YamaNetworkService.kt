@@ -39,6 +39,10 @@ abstract class YamaNetworkService(val host: String) {
         return if (response.status == HttpStatusCode.OK) {
             val resBody = response.bodyAsText()
 
+            Logger.d(TAG, message = {
+                "response for action $action response is $resBody"
+            })
+
             try {
                 Json {
                     ignoreUnknownKeys = true
@@ -49,6 +53,41 @@ abstract class YamaNetworkService(val host: String) {
                 }, throwable = e)
                 null
             }
+        } else {
+            Logger.e(tag = TAG, message = {
+                "Error to make post request for action: $action, url: $url. HttpStatus ${response.status}"
+            })
+            null
+        }
+    }
+
+    suspend inline fun <reified P> postStr(action: Action, payload: P): String? {
+        val url = Url(host + AuthManager.getUrlForAction(action))
+
+        Logger.i(tag = TAG, message = {
+            "on post str request with url $url and data ${Json.encodeToString(payload)}"
+        })
+
+        val response = try {
+            client.post(url = url) {
+                contentType(ContentType.Application.Json)
+                setBody(Json.encodeToString(payload))
+            }
+        } catch (e: Exception) {
+            Logger.e(TAG, message = {
+                "Make request $url"
+            }, throwable = e)
+            return null
+        }
+
+        return if (response.status == HttpStatusCode.OK) {
+            val resBody = response.bodyAsText()
+
+            Logger.d(TAG, message = {
+                "response for action $action response is $resBody"
+            })
+
+            resBody
         } else {
             Logger.e(tag = TAG, message = {
                 "Error to make post request for action: $action, url: $url. HttpStatus ${response.status}"

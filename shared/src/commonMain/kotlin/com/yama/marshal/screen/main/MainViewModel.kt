@@ -106,7 +106,8 @@ class MainViewModel : YamaViewModel() {
                             defaultCourse = 0,
                             playersNumber = 0,
                             layoutHoles = null,
-                            holes = emptyList()
+                            holes = emptyList(),
+                            vectors = ""
                         )
                     )
                     addAll(it)

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 data class NavArg(
     internal val key: String,
-    internal val value: Any
+    internal val value: Any?
 )
 
 data class StackRoute internal constructor(

@@ -11,6 +11,7 @@ import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.main.*
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.map.MapScreen
+import com.yama.marshal.screen.send_message.SendMessageScreen
 import com.yama.marshal.tool.*
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
@@ -32,6 +33,10 @@ internal class FleetListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
+        val selectedCourse by remember(viewModel) {
+            viewModel.selectedCourse
+        }.collectAsState()
+
         val currentSort by remember(viewModel) {
             viewModel.currentFleetSort
         }.collectAsState()
@@ -61,24 +66,27 @@ internal class FleetListScreen(
                             icon = Icons.Default.Place,
                             color = YamaColor.view_cart_btn_bg_color,
                             onClick = {
-                                navigationController.navigateTo(
-                                    MapScreen.route,
-                                    listOf(NavArg(key = MapScreen.ARG_CART_ID, value = item.id))
-                                )
+                                if (selectedCourse != null)
+                                    navigationController.navigateTo(
+                                        MapScreen.route,
+                                        listOf(
+                                            NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
+                                            NavArg(key = MapScreen.ARG_COURSE_ID, value = selectedCourse?.id)
+                                        )
+                                    )
                             }
                         )
                     )
 
-                    if (!item.isFlag)
-                        add(
-                            MarshalListItemAction(
-                                icon = Icons.Default.Flag,
-                                color = YamaColor.flag_cart_btn_bg_color,
-                                onClick = {
-                                    viewModel.flagCart(item)
-                                }
-                            )
+                    add(
+                        MarshalListItemAction(
+                            icon = Icons.Default.Flag,
+                            color = YamaColor.flag_cart_btn_bg_color,
+                            onClick = {
+                                viewModel.flagCart(item)
+                            }
                         )
+                    )
 
                     if (item.isMessagingAvailable)
                         add(
@@ -86,7 +94,12 @@ internal class FleetListScreen(
                                 icon = Icons.Default.Email,
                                 color = YamaColor.message_cart_btn_bg_color,
                                 onClick = {
-                                    viewModel.flagCart(item)
+                                    navigationController.navigateTo(
+                                        SendMessageScreen.ROUTE,
+                                        listOf(
+                                            NavArg(key = SendMessageScreen.ARG_CART_ID, value = item.id),
+                                        )
+                                    )
                                 }
                             )
                         )

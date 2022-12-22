@@ -2,6 +2,7 @@ package com.yama.marshal.tool
 
 import com.yama.marshal.data.entity.HoleEntity
 import com.yama.marshal.data.model.CartFullDetail
+import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.screen.main.SortType.SortHole
 import com.yama.marshal.screen.main.SortType.SortFleet
 import com.yama.marshal.screen.main.SortType.SortHole.*
@@ -130,22 +131,22 @@ class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail>
     }
 }
 
-class HoleSorter(private val sortHole: SortHole) : Comparator<HoleEntity> {
-    override fun compare(a: HoleEntity, b: HoleEntity): Int = when (sortHole) {
+class HoleSorter(private val sortHole: SortHole) : Comparator<CourseFullDetail.HoleData> {
+    override fun compare(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int = when (sortHole) {
         HOLE -> byID(a, b)
         PACE_OF_PLAY -> holeByPaceOfPlay(a, b)
     }
 
-    private fun byID(a: HoleEntity, b: HoleEntity): Int {
-        return if (a.id < b.id)
+    private fun byID(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int {
+        return if (a.holeNumber < b.holeNumber)
             -1
-        else if (a.id > b.id)
+        else if (a.holeNumber > b.holeNumber)
             1
         else
             0
     }
 
-    private fun holeByPaceOfPlay(a: HoleEntity, b: HoleEntity): Int {
+    private fun holeByPaceOfPlay(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int {
         if (a.differentialPace == b.differentialPace)
             return 0
         return if (a.differentialPace > b.differentialPace) -1 else 1

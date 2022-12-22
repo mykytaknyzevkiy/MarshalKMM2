@@ -12,5 +12,4 @@ struct iOSApp: App {
 			ContentView()
 		}
 	}
-    
 }

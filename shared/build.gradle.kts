@@ -29,12 +29,14 @@ kotlin {
     }
 
     cocoapods {
-        ios.deploymentTarget = "16.2"
+        ios.deploymentTarget = "14.1"
 
-        version = "1.0"
+        version = "1.1"
 
         summary = "This is sample Summary"
         homepage = "Home URL"
+
+        //podfile = project.file("../iosApp/Podfile")
 
         framework {
             baseName = "Shared"
@@ -81,7 +83,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-                implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+                implementation(fileTree(mapOf("dir" to "libs/android", "include" to listOf("*.jar", "*.aar"))))
                 implementation("net.iharder:base64:2.3.8")
             }
         }
@@ -109,8 +111,21 @@ kotlin {
 
 android {
     namespace = "com.yama.marshal"
+    
     compileSdk = 33
-    defaultConfig.targetSdk = 33
+
+    defaultConfig {
+        targetSdk = 33
+        minSdk = 23
+
+        ndk {
+            abiFilters.add("armeabi-v7a")
+            abiFilters.add("x86")
+            abiFilters.add("armeabi")
+            abiFilters.add("mips")
+        }
+    }
+
     sourceSets["main"].apply {
         res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     }

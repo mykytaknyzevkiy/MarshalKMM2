@@ -16,10 +16,17 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.l1inc.yamatrackmarshal"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 33
         versionCode = 14
         versionName = "2.0"
+
+        ndk {
+            abiFilters.add("armeabi-v7a")
+            abiFilters.add("x86")
+            abiFilters.add("armeabi")
+            abiFilters.add("mips")
+        }
     }
     buildFeatures {
         compose = true
@@ -40,6 +47,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        getByName("debug") {
+            isMinifyEnabled = false
         }
     }
 }

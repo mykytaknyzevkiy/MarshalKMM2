@@ -27,7 +27,6 @@ internal class SendMessageScreen(navigationController: NavigationController)
     companion object {
         const val ROUTE = "send_message"
         const val ARG_CART_ID = "cart_id"
-        const val ARG_COURSE_ID = "course_id"
     }
 
     override val route: String = ROUTE
@@ -41,7 +40,6 @@ internal class SendMessageScreen(navigationController: NavigationController)
     @Composable
     override fun content(args: List<NavArg>) {
         cartID = args.findInt(ARG_CART_ID) ?: return
-        //val courseID = args.findString(ARG_COURSE_ID)
 
         val currentState by remember { viewModel.currentState }.collectAsState()
 
@@ -49,7 +47,7 @@ internal class SendMessageScreen(navigationController: NavigationController)
             if (currentState is SendMessageViewState.Loading)
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 
-            /*MarshalList(
+            MarshalList(
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 list = viewModel.messages,
                 itemContent = { message ->
@@ -61,7 +59,7 @@ internal class SendMessageScreen(navigationController: NavigationController)
                         Text(message.message, modifier = Modifier.padding(Sizes.screenPadding))
                     }
                 }
-            )*/
+            )
         }
 
         LaunchedEffect(viewModel) {
