@@ -1,8 +1,12 @@
 package com.yama.marshal.screen.fleet_list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,9 +21,9 @@ import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
-import com.yama.marshal.ui.view.MarshalListItemAction
 
 internal class FleetListScreen(
     navigationController: NavigationController,
@@ -60,50 +64,63 @@ internal class FleetListScreen(
                 ItemViewHolder(it)
             },
             itemActions = { item ->
-                ArrayList<MarshalListItemAction>().apply {
-                    add(
-                        MarshalListItemAction(
-                            icon = Icons.Default.Place,
-                            color = YamaColor.view_cart_btn_bg_color,
-                            onClick = {
-                                if (selectedCourse != null)
-                                    navigationController.navigateTo(
-                                        MapScreen.route,
-                                        listOf(
-                                            NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
-                                            NavArg(key = MapScreen.ARG_COURSE_ID, value = selectedCourse?.id)
-                                        )
+                item {
+                    IconButton(
+                        modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.view_cart_btn_bg_color),
+                        onClick = {
+                            if (item.currPosLat != null && item.currPosLon != null)
+                                navigationController.navigateTo(
+                                    MapScreen.route,
+                                    listOf(
+                                        NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
+                                        NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
                                     )
-                            }
+                                )
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.background,
                         )
-                    )
-
-                    add(
-                        MarshalListItemAction(
-                            icon = Icons.Default.Flag,
-                            color = YamaColor.flag_cart_btn_bg_color,
-                            onClick = {
-                                viewModel.flagCart(item)
-                            }
-                        )
-                    )
-
-                    if (item.isMessagingAvailable)
-                        add(
-                            MarshalListItemAction(
-                                icon = Icons.Default.Email,
-                                color = YamaColor.message_cart_btn_bg_color,
-                                onClick = {
-                                    navigationController.navigateTo(
-                                        SendMessageScreen.ROUTE,
-                                        listOf(
-                                            NavArg(key = SendMessageScreen.ARG_CART_ID, value = item.id),
-                                        )
-                                    )
-                                }
-                            )
-                        )
+                    }
                 }
+
+                item {
+                    IconButton(
+                        modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.flag_cart_btn_bg_color),
+                        onClick = {
+                            viewModel.flagCart(item)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Flag,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.background,
+                        )
+                    }
+                }
+
+                if (item.isMessagingAvailable)
+                    item {
+                        IconButton(
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.message_cart_btn_bg_color),
+                            onClick = {
+                                navigationController.navigateTo(
+                                    SendMessageScreen.ROUTE,
+                                    listOf(
+                                        NavArg(key = SendMessageScreen.ARG_CART_ID, value = item.id),
+                                    )
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Email,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.background,
+                            )
+                        }
+                    }
             },
             customItemBgColor = {
                 if (it.isCartInShutdownMode)

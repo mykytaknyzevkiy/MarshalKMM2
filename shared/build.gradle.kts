@@ -73,6 +73,9 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
                 implementation("co.touchlab:kermit:1.2.2")
                 implementation("com.appmattus.crypto:cryptohash:0.10.1")
+                implementation("com.google.code.gson:gson:2.8.2")
+                implementation("com.vividsolutions:jts:1.13")
+
             }
         }
         val commonTest by getting {
@@ -117,14 +120,6 @@ android {
     defaultConfig {
         targetSdk = 33
         minSdk = 23
-
-        ndk.abiFilters.apply {
-            add("armeabi-v7a")
-            add("x86")
-            add("armeabi")
-            add("mips")
-            add("arm64-v8a")
-        }
     }
 
     sourceSets["main"].apply {

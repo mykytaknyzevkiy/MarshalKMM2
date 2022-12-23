@@ -25,7 +25,8 @@ data class CartFullDetail(
     val assetControlOverride: Int?,
     val lastActivity: GMTDate?,
     val controllerAccess: Int,
-    val isFlag: Boolean = prefs.isCartFlag(id)
+    val isFlag: Boolean = prefs.isCartFlag(id),
+    val hole: CourseFullDetail.HoleData?
 ) {
     enum class State {
         inUse,

@@ -21,13 +21,13 @@ android {
         versionCode = 14
         versionName = "2.0"
 
-        ndk {
+        /*ndk {
             abiFilters.add("armeabi-v7a")
             abiFilters.add("x86")
             abiFilters.add("armeabi")
             abiFilters.add("mips")
             //abiFilters.add("arm64-v8a")
-        }
+        }*/
     }
     buildFeatures {
         compose = true
@@ -49,6 +49,7 @@ android {
                 "proguard-rules.pro"
             )
         }
+
         getByName("debug") {
             isMinifyEnabled = false
         }

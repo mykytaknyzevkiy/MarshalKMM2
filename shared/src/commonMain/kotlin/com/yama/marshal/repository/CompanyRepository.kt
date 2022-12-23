@@ -24,7 +24,8 @@ object CompanyRepository : CoroutineScope {
     data class CartFullFlow(
         val carts: List<CartItem>,
         val cartRounds: List<CartRoundItem>,
-        var courseList: List<CourseFullDetail>
+        var courseList: List<CourseFullDetail>,
+        var holes: List<CourseFullDetail.HoleData>
     )
 
     private const val TAG = "CompanyRepository"
@@ -566,13 +567,17 @@ object CompanyRepository : CoroutineScope {
                 CartFullFlow(
                     carts = carts,
                     cartRounds = rounds,
-                    courseList = emptyList()
+                    courseList = emptyList(),
+                    holes = emptyList()
                 )
             }
             .combine(courseList) { d, courses ->
                 d.apply {
                     courseList = courses
                 }
+            }
+            .combine(holeList) { a, b ->
+                a.copy(holes = b)
             }
             .onEach { data ->
                 val cartList = data.carts
@@ -600,7 +605,8 @@ object CompanyRepository : CoroutineScope {
                                     idDeviceModel = cart.idDeviceModel ?: 0,
                                     assetControlOverride = null,
                                     lastActivity = cart.lastActivity,
-                                    controllerAccess = cart.controllerAccess ?: 0
+                                    controllerAccess = cart.controllerAccess ?: 0,
+                                    hole = null
                                 )
                             }
                     )
@@ -642,13 +648,18 @@ object CompanyRepository : CoroutineScope {
                         holesPlayed = cartRound.holesPlayed ?: 0,
                         idTrip = cartRound.idTrip ?: -1,
                         assetControlOverride = cartRound.assetControlOverride,
+                        hole = cartRound.currPosHole?.let { holeID ->
+                            data.holes.find {
+                                it.holeNumber == holeID && it.idCourse == course?.id
+                            }
+                        }
                     )
                 }
             }
             .launchIn(scope)
     }
 
-    private fun findCart(id: Int) = cartsFullDetail.map { l ->
+    fun findCart(id: Int) = cartsFullDetail.map { l ->
         l.find { it.id == id }
     }.onEach {
         if (it == null)
@@ -707,7 +718,6 @@ object CompanyRepository : CoroutineScope {
                 idCourse = h.idCourse
             )
         }
-
 
     private val geofenceList = Database.geofenceList
 

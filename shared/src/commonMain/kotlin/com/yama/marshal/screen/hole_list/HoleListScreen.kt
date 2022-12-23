@@ -1,5 +1,6 @@
 package com.yama.marshal.screen.hole_list
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -18,6 +19,7 @@ import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
 import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.screen.main.SortType
+import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.tool.FleetSorter
 import com.yama.marshal.tool.HoleSorter
 import com.yama.marshal.tool.PaceValueFormatter
@@ -58,10 +60,20 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
     @Composable
     private fun RowScope.ItemViewHolder(item: CourseFullDetail.HoleData) {
+        val selectedCourse by remember(viewModel) { viewModel.selectedCourse }.collectAsState()
+
         Text(
             text = item.holeNumber.toString(),
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortHole.HOLE.weight)
+            modifier = Modifier.weight(SortType.SortHole.HOLE.weight).clickable {
+                navigationController.navigateTo(
+                    MapScreen.route,
+                    listOf(
+                        NavArg(key = MapScreen.ARG_HOLE_ID, value = item.holeNumber),
+                        NavArg(key = MapScreen.ARG_COURSE_ID, value = item.idCourse)
+                    )
+                )
+            }
         )
 
         NSpacer()

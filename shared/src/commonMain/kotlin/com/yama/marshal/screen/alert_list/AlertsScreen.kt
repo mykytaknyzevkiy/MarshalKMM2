@@ -1,11 +1,12 @@
 package com.yama.marshal.screen.alert_list
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.BatteryAlert
+import androidx.compose.material.icons.filled.LocationDisabled
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,22 +14,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
 import com.yama.marshal.screen.main.NSpacer
-import com.yama.marshal.screen.main.SortType
-import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
-import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
-import com.yama.marshal.ui.view.MarshalListItemAction
 
 internal class AlertsScreen(
     navigationController: NavigationController,
@@ -47,12 +46,12 @@ internal class AlertsScreen(
         }.collectAsState(emptyList())
 
         MarshalList(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().border(width = 1.dp, color = Color.LightGray),
             list = itemList,
             itemContent = {
                 ItemViewHolder(it)
             },
-            itemActions = { alert ->
+            /*itemActions = { alert ->
                 val cart by remember(alert) { alert.cart }
                     .collectAsState(null)
 
@@ -96,7 +95,7 @@ internal class AlertsScreen(
                                 )
                             )
                     }
-            },
+            },*/
             customItemBgColor = {
                 val cart by remember(it) {
                     it.cart

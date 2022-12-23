@@ -13,13 +13,13 @@ import androidx.compose.ui.unit.sp
 import com.yama.marshal.LocalAppDimens
 
 private val LightColorScheme = lightColorScheme(
-    background = Color(0xFFFFFBFE),
+    background = Color.White,
 
-    primary = Color.Red,
+    primary = Color(172, 173, 173, 1),
 
-    onPrimary = Color.White,
+    onPrimary = Color.Black,
 
-    secondary = Color.Blue,
+    secondary = Color.Black,
 
     onBackground = Color.Black,
 

@@ -43,7 +43,7 @@ internal abstract class MainContentScreen(
                 ) {
                     Text(
                         type.label.uppercase(),
-                        color = MaterialTheme.colorScheme.background.copy(alpha = if (currentSort == type) 1f else 0.6f),
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = if (currentSort == type) 1f else 0.6f),
                         textAlign = TextAlign.Center,
                     )
                 }
