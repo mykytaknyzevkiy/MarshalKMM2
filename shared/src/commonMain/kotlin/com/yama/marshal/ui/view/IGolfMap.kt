@@ -9,8 +9,15 @@ data class RenderData(
     val vectors: String
 )
 
+data class Cart(
+    val id: Int,
+    val name: String,
+    val location: Pair<Double, Double>
+)
+
 @Composable
 internal expect fun IGoldMap(modifier: Modifier,
                              renderData: RenderData,
-                             hole: Flow<Int>
+                             hole: Flow<Int>,
+                             carts: Flow<List<Cart>>
 )

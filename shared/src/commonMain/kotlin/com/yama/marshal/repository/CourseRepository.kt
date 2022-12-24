@@ -35,9 +35,6 @@ object CourseRepository : YamaRepository() {
                 idCourse = h.idCourse
             )
         }
-        .onStart {
-            loadHoles()
-        }
 
     val courseList = Database
         .courseList
@@ -53,9 +50,6 @@ object CourseRepository : YamaRepository() {
                     vectors = it.vectors
                 )
             }
-        }
-        .onStart {
-            loadCourses()
         }
 
     suspend fun loadCourses(): Boolean {

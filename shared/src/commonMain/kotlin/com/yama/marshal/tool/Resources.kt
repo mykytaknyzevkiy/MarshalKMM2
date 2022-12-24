@@ -50,7 +50,7 @@ internal object Strings {
     const val alerts_item_type_pence_title = "PACE OF PLAY"
     const val alerts_item_type_battery_title = "LOW BATTERY"
 
-
+    const val map_screen_cart_in_shut_down_label = "Car is in shutdown mode"
 } 
 
 @Composable

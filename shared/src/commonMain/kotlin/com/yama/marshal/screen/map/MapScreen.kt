@@ -1,20 +1,26 @@
 package com.yama.marshal.screen.map
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.yama.marshal.tool.PaceValueFormatter
+import com.yama.marshal.tool.Strings
+import com.yama.marshal.tool.mapList
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.navigation.findInt
 import com.yama.marshal.ui.navigation.findString
 import com.yama.marshal.ui.theme.Sizes
+import com.yama.marshal.ui.theme.YamaColor
+import com.yama.marshal.ui.view.Cart
 import com.yama.marshal.ui.view.IGoldMap
 import com.yama.marshal.ui.view.RenderData
 import com.yama.marshal.ui.view.YamaScreen
@@ -35,25 +41,28 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
 
     @Composable
     override fun titleContent() {
-        val course by remember(viewModel) {
-            viewModel.courseState
-        }.collectAsState()
         val hole by remember(viewModel) {
             viewModel.holeState
         }.collectAsState()
 
-        Row {
-            if (course != null)
+        val carts by remember(viewModel) {
+            viewModel.cartsState
+        }.collectAsState()
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            if (carts.size == 1) {
+                val cart = carts.first()
                 Text(
-                    modifier = Modifier.padding(horizontal = Sizes.screenPadding),
-                    text = course!!.courseName.uppercase(),
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "Cart: ${cart.cartName}",
                     fontSize = Sizes.title,
                     textAlign = TextAlign.Center
                 )
+            }
 
             if (hole != null)
                 Text(
-                    modifier = Modifier.padding(horizontal = Sizes.screenPadding),
+                    modifier = Modifier.padding(horizontal = Sizes.screenPadding).align(Alignment.CenterEnd),
                     text = "Hole: ${hole?.holeNumber}",
                     fontSize = Sizes.title,
                     textAlign = TextAlign.Center
@@ -62,7 +71,7 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
     }
 
     @Composable
-    override fun content(args: List<NavArg>) {
+    override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
         val holeID = args.findInt(ARG_HOLE_ID)
         val courseID = args.findString(ARG_COURSE_ID) ?: return
         val cartID = args.findInt(ARG_CART_ID)
@@ -71,13 +80,19 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
             viewModel.courseState
         }.collectAsState()
 
+        val carts by remember(viewModel) {
+            viewModel.cartsState
+        }.collectAsState()
+
+        val hole by remember(viewModel) {
+            viewModel.holeState
+        }.collectAsState()
+
         if (course == null)
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        else
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        else {
             IGoldMap(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
                 renderData = RenderData(
                     idCourse = courseID,
                     vectors = course!!.vectors
@@ -86,8 +101,74 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
                     .holeState
                     .map { hole ->
                         hole?.holeNumber ?: -1
+                    },
+                carts = viewModel
+                    .cartsState
+                    .mapList {
+                        Cart(
+                            id = it.id,
+                            name = it.cartName,
+                            location = Pair(it.currPosLat ?: 0.0, it.currPosLon ?: 0.0)
+                        )
                     }
             )
+
+            if (carts.size == 1 && cartID != null) {
+                val cart = carts.first()
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Sizes.screenPadding * 3)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        if (cart.isCartInShutdownMode)
+                            YamaColor.shutdown_cart_btn_bg_color
+                        else
+                            PaceValueFormatter.getColor(cart.totalNetPace ?: 0)
+                    ),
+                    contentAlignment = Alignment.Center)
+                {
+                    Text(if (cart.isCartInShutdownMode)
+                        Strings.map_screen_cart_in_shut_down_label
+                    else PaceValueFormatter.getString(
+                        cart.totalNetPace ?: 0,
+                        PaceValueFormatter.PaceType.Short
+                    ), color = MaterialTheme.colorScheme.onPrimary)
+                }
+            }
+            else if (hole != null) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Sizes.screenPadding * 3)
+                    .align(Alignment.BottomCenter)
+                    .background(PaceValueFormatter.getColor(hole!!.differentialPace)),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        text = PaceValueFormatter.getStringForCurrentPace(hole!!.averagePace),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+
+                    Spacer(modifier = Modifier
+                        .fillMaxHeight()
+                        .size(1.dp)
+                        .background(Color.LightGray)
+                        .padding(vertical = Sizes.screenPadding / 2)
+                    )
+
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        text = PaceValueFormatter.getString(
+                            hole!!.differentialPace,
+                            PaceValueFormatter.PaceType.Short
+                        ),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+        }
 
         LaunchedEffect(viewModel) {
             viewModel.loadCourse(courseID)

@@ -77,10 +77,6 @@ object CartRepository: YamaRepository() {
             }
         }
         .flowOn(Dispatchers.Default)
-        .onStart {
-            loadCarts()
-            loadCartsRound()
-        }
 
     suspend fun loadCarts(): Boolean {
         Logger.i(tag = TAG, message = {

@@ -88,11 +88,11 @@ internal class MainScreen(navigationController: NavigationController) :
             menuNavigation()
         }
 
+        val courses by viewModel.courseList.collectAsState(emptyList())
+
         val onSelectCourse by onSelectCourseState.collectAsState()
 
         if (onSelectCourse) {
-            val courses by viewModel.courseList.collectAsState(emptyList())
-
             LazyColumn(
                 modifier = Modifier.padding(horizontal = Sizes.screenPadding)
                     .background(MaterialTheme.colorScheme.background).align(Alignment.TopStart)

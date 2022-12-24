@@ -70,11 +70,14 @@ internal class FleetListScreen(
                 ItemViewHolder(it)
             },
             itemActions = { item ->
-                item {
-                    IconButton(
-                        modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.view_cart_btn_bg_color),
-                        onClick = {
-                            if (item.currPosLat != null && item.currPosLon != null)
+                if (item.currPosLat != null
+                    && item.currPosLon != null
+                    && item.currPosHole != null
+                    && item.currPosHole > 0
+                ) item {
+                        IconButton(
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.view_cart_btn_bg_color),
+                            onClick = {
                                 navigationController.navigateTo(
                                     MapScreen.route,
                                     listOf(
@@ -82,15 +85,15 @@ internal class FleetListScreen(
                                         NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
                                     )
                                 )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Place,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Place,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                        )
                     }
-                }
 
                 item {
                     IconButton(
