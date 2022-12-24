@@ -37,10 +37,6 @@ internal class FleetListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        val selectedCourse by remember(viewModel) {
-            viewModel.selectedCourse
-        }.collectAsState()
-
         val currentSort by remember(viewModel) {
             viewModel.currentFleetSort
         }.collectAsState()
@@ -81,7 +77,7 @@ internal class FleetListScreen(
                         Icon(
                             imageVector = Icons.Default.Place,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.background,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
@@ -96,7 +92,7 @@ internal class FleetListScreen(
                         Icon(
                             imageVector = Icons.Default.Flag,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.background,
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
@@ -117,7 +113,7 @@ internal class FleetListScreen(
                             Icon(
                                 imageVector = Icons.Default.Email,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.background,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
                     }

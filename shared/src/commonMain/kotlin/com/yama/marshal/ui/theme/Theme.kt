@@ -13,17 +13,17 @@ import androidx.compose.ui.unit.sp
 import com.yama.marshal.LocalAppDimens
 
 private val LightColorScheme = lightColorScheme(
-    background = Color.White,
+    background = Color(172, 173, 173),
 
-    primary = Color(172, 173, 173, 1),
+    primary = Color(35, 100, 165),
 
-    onPrimary = Color.Black,
+    onPrimary = Color.White,
 
     secondary = Color.Black,
 
     onBackground = Color.Black,
 
-    error = Color(255, 95, 21)
+    error = Color.Red
 )
 
 @Composable

@@ -163,13 +163,13 @@ internal class MainScreen(navigationController: NavigationController) :
                 imageVector = icon,
                 modifier = Modifier.size(Sizes.button_icon_size),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.background
+                tint = MaterialTheme.colorScheme.onPrimary
             )
 
             Text(
                 label.uppercase(),
                 fontSize = LocalAppDimens.current.bodySmall,
-                color = MaterialTheme.colorScheme.background
+                color = MaterialTheme.colorScheme.onPrimary
             )
 
             Spacer(modifier  = Modifier.height(Sizes.screenPadding / 2))

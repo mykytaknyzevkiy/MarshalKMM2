@@ -95,11 +95,11 @@ internal class SendMessageScreen(navigationController: NavigationController)
             },
             onValueChange = { sendSendMessageText.value = it },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = MaterialTheme.colorScheme.background,
-                focusedBorderColor = MaterialTheme.colorScheme.background,
+                textColor = MaterialTheme.colorScheme.onPrimary,
+                focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedBorderColor = Color.LightGray,
                 placeholderColor = Color.LightGray,
-                focusedTrailingIconColor = MaterialTheme.colorScheme.background,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedTrailingIconColor = Color.LightGray
             ),
             //enabled = currentState !is SendMessageViewState.Loading
