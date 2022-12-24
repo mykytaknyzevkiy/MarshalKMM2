@@ -2,7 +2,7 @@ package com.yama.marshal.network
 
 import co.touchlab.kermit.Logger
 import com.appmattus.crypto.Algorithm
-import com.yama.marshal.network.model.MarshalNotification
+import com.yama.marshal.network.unit.AuthManager
 import com.yama.marshal.tool.prefs
 import com.yama.marshal.tool.secretKey
 import com.yama.marshal.tool.userName
@@ -11,7 +11,6 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*

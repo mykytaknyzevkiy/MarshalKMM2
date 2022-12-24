@@ -9,18 +9,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.window.PopupPositionProvider
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.navigation.findInt
-import com.yama.marshal.ui.navigation.findString
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.Dialog
 import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 internal class SendMessageScreen(navigationController: NavigationController)
     : YamaScreen(navigationController) {

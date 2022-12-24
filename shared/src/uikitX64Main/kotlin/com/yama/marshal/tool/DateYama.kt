@@ -1,7 +1,9 @@
 package com.yama.marshal.tool
 
 import io.ktor.util.date.*
-import platform.Foundation.*
+import platform.Foundation.NSDate
+import platform.Foundation.NSDateFormatter
+import platform.Foundation.timeIntervalSince1970
 
 actual fun GMTDate.format(pattern: String): String {
     val date = NSDate(this.timestamp.toDouble())

@@ -2,13 +2,11 @@ package com.yama.marshal.screen.map
 
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
-import com.yama.marshal.repository.CompanyRepository
-import com.yama.marshal.repository.filterList
+import com.yama.marshal.repository.CartRepository
+import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.screen.YamaViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.yama.marshal.tool.filterList
+import kotlinx.coroutines.flow.*
 
 class MapViewModel : YamaViewModel() {
     private val _holeState = MutableStateFlow<CourseFullDetail.HoleData?>(null)
@@ -24,15 +22,15 @@ class MapViewModel : YamaViewModel() {
         get() = _cartsState
 
     fun loadHole(id: Int, courseID: String) {
-        CompanyRepository
+        CourseRepository
             .findHole(id, courseID)
             .onEach {
                 _holeState.emit(it)
             }
             .launchIn(viewModelScope)
 
-        CompanyRepository
-            .cartsFullDetail
+        CartRepository
+            .cartActiveList
             .filterList {
                 it.currPosHole == id
             }
@@ -43,7 +41,7 @@ class MapViewModel : YamaViewModel() {
     }
 
     fun loadCourse(id: String) {
-        CompanyRepository
+        CourseRepository
             .findCourse(id)
             .onEach {
                 _courseState.emit(it)
@@ -52,8 +50,10 @@ class MapViewModel : YamaViewModel() {
     }
 
     fun loadCart(id: Int) {
-        CompanyRepository
+        CartRepository
             .findCart(id)
+            .filter { it != null }
+            .map { it!! }
             .onEach {
                 _cartsState.value = listOf(it)
                 _holeState.value = it.hole

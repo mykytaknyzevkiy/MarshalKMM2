@@ -9,7 +9,7 @@ import kotlin.math.roundToInt
 
 internal object PaceValueFormatter {
 
-    enum class PaceType() {
+    enum class PaceType {
         Full,
         Short
     }

@@ -1,14 +1,10 @@
 package com.yama.marshal.repository
 
 import co.touchlab.kermit.Logger
-import com.yama.marshal.network.DNAService
-import com.yama.marshal.network.model.UserAccountDetailsRequest
-import com.yama.marshal.network.model.UserAccountLoginRequest
+import com.yama.marshal.network.model.request.UserAccountDetailsRequest
+import com.yama.marshal.network.model.request.UserAccountLoginRequest
+import com.yama.marshal.network.service.DNAService
 import com.yama.marshal.tool.*
-import com.yama.marshal.tool.prefs
-import com.yama.marshal.tool.secretKey
-import com.yama.marshal.tool.userID
-import com.yama.marshal.tool.userName
 
 class UserRepository {
     companion object {

@@ -13,7 +13,10 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -74,44 +77,38 @@ internal class MainScreen(navigationController: NavigationController) :
     }
 
     @Composable
-    override fun content(args: List<NavArg>) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                NavHost(
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    navigationController = mainNavigationController,
-                    screens = arrayOf(fleetListScreen, holeListScreen, alertListScreen)
-                )
+    override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            NavHost(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                navigationController = mainNavigationController,
+                screens = arrayOf(fleetListScreen, holeListScreen, alertListScreen)
+            )
 
-                menuNavigation()
-            }
+            menuNavigation()
+        }
 
-            val onSelectCourse by onSelectCourseState.collectAsState()
+        val onSelectCourse by onSelectCourseState.collectAsState()
 
-            if (onSelectCourse) {
-                val courses by viewModel.courseList.collectAsState()
+        if (onSelectCourse) {
+            val courses by viewModel.courseList.collectAsState(emptyList())
 
-                LazyColumn(
-                    modifier = Modifier.padding(horizontal = Sizes.screenPadding)
-                        .background(MaterialTheme.colorScheme.background).align(Alignment.TopStart)
-                ) {
-                    items(courses) {
-                        Box(
-                            modifier = Modifier.width(300.dp)
-                                .border(width = 1.dp, color = Color.LightGray).clickable {
-                                    onSelectCourseState.value = false
-                                    viewModel.selectCourse(it)
-                                }, contentAlignment = Alignment.CenterStart
-                        ) {
-                            Text(it.courseName, modifier = Modifier.padding(Sizes.screenPadding))
-                        }
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = Sizes.screenPadding)
+                    .background(MaterialTheme.colorScheme.background).align(Alignment.TopStart)
+            ) {
+                items(courses) {
+                    Box(
+                        modifier = Modifier.width(300.dp)
+                            .border(width = 1.dp, color = Color.LightGray).clickable {
+                                onSelectCourseState.value = false
+                                viewModel.selectCourse(it)
+                            }, contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(it.courseName, modifier = Modifier.padding(Sizes.screenPadding))
                     }
                 }
             }
-        }
-
-        LaunchedEffect(viewModel) {
-            viewModel.load()
         }
     }
 

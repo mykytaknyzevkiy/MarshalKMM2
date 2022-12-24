@@ -1,7 +1,8 @@
-package com.yama.marshal.network
+package com.yama.marshal.network.service
 
-import com.yama.marshal.network.model.CourseGPSVectorDetailsRequest
-import com.yama.marshal.network.model.CourseGPSVectorDetailsResponse
+import com.yama.marshal.network.model.request.CourseGPSVectorDetailsRequest
+import com.yama.marshal.network.unit.Action
+import com.yama.marshal.network.unit.YamaNetworkService
 
 class IGolfService : YamaNetworkService("https://api-connect.igolf.com/rest/action/") {
 

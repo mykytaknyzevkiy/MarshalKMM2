@@ -1,10 +1,7 @@
-package com.yama.marshal.network
+package com.yama.marshal.network.unit
 
 import com.appmattus.crypto.Algorithm
 import com.yama.marshal.tool.*
-import com.yama.marshal.tool.prefs
-import com.yama.marshal.tool.secretKey
-import com.yama.marshal.tool.userName
 import io.ktor.util.date.*
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*

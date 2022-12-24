@@ -1,7 +1,10 @@
-package com.yama.marshal.network
+package com.yama.marshal.network.service
 
 import co.touchlab.kermit.Logger
-import com.yama.marshal.network.model.*
+import com.yama.marshal.network.model.request.*
+import com.yama.marshal.network.model.response.*
+import com.yama.marshal.network.unit.Action
+import com.yama.marshal.network.unit.YamaNetworkService
 
 class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") {
     companion object {

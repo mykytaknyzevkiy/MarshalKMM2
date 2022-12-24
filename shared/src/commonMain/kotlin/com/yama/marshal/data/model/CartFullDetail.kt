@@ -2,13 +2,12 @@ package com.yama.marshal.data.model
 
 import com.yama.marshal.data.entity.CartItem
 import com.yama.marshal.data.entity.CartRoundItem
-import com.yama.marshal.tool.isCartFlag
-import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
 
 data class CartFullDetail(
     val id: Int,
     val course: CourseFullDetail?,
+    val currentCourseID: String?,
     val cartName: String,
     val startTime: GMTDate? = null,
     val currPosTime: String? = null,
@@ -25,7 +24,7 @@ data class CartFullDetail(
     val assetControlOverride: Int?,
     val lastActivity: GMTDate?,
     val controllerAccess: Int,
-    val isFlag: Boolean = prefs.isCartFlag(id),
+    val isFlag: Boolean,
     val hole: CourseFullDetail.HoleData?
 ) {
     enum class State {

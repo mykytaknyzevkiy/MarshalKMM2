@@ -3,8 +3,8 @@ package com.yama.marshal.network
 import android.os.Build
 import androidx.annotation.RequiresApi
 import co.touchlab.kermit.Logger
-import com.yama.marshal.network.AuthManager.MARSHAL_NOTIFICATION_ENDPOINT
-import com.yama.marshal.network.AuthManager.MARSHAL_NOTIFICATION_PORT
+import com.yama.marshal.network.unit.AuthManager.MARSHAL_NOTIFICATION_ENDPOINT
+import com.yama.marshal.network.unit.AuthManager.MARSHAL_NOTIFICATION_PORT
 import io.ktor.utils.io.core.*
 import io.socket.IOAcknowledge
 import io.socket.IOCallback

@@ -1,6 +1,8 @@
 package com.yama.marshal.screen.login
 
+import com.yama.marshal.repository.CartRepository
 import com.yama.marshal.repository.CompanyRepository
+import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.service.MarshalNotificationService
@@ -17,22 +19,22 @@ interface UserDataViewModel {
                 return false
         }
 
-        CompanyRepository.loadCourses().also {
+        CourseRepository.loadCourses().also {
             if (!it)
                 return false
         }
 
-        CompanyRepository.loadCarts().also {
+        CourseRepository.loadHoles().also {
             if (!it)
                 return false
         }
 
-        CompanyRepository.loadCartsRound().also {
+        CartRepository.loadCarts().also {
             if (!it)
                 return false
         }
 
-        CompanyRepository.loadCartReport().also {
+        CartRepository.loadCartsRound().also {
             if (!it)
                 return false
         }

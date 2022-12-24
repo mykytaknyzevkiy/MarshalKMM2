@@ -1,4 +1,4 @@
-package com.yama.marshal.network.model
+package com.yama.marshal.network.model.request
 
 import kotlinx.serialization.SerialName
 

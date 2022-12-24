@@ -1,6 +1,7 @@
 package com.yama.marshal.network
 
 import cocoapods.Ios.IGolfSocket
+import com.yama.marshal.network.unit.AuthManager
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

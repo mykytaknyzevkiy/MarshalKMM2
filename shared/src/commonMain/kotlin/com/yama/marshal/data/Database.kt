@@ -1,10 +1,17 @@
 package com.yama.marshal.data
 
+import co.touchlab.kermit.Logger
 import com.yama.marshal.data.entity.*
+import com.yama.marshal.data.model.AlertModel
+import com.yama.marshal.tool.indexOfFirst
+import com.yama.marshal.tool.set
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 
 internal object Database {
+    private const val TAG = "Database"
+
     private val _courseList = MutableStateFlow<List<CourseEntity>>(emptyList())
     val courseList: StateFlow<List<CourseEntity>>
         get() = _courseList
@@ -29,16 +36,44 @@ internal object Database {
     val geofenceList: StateFlow<List<GeofenceItem>>
         get() = _geofenceList
 
+    private val _alerts = MutableStateFlow<List<AlertModel>>(emptyList())
+    val alerts: StateFlow<List<AlertModel>>
+        get() = _alerts
+
+    suspend fun addAlert(data: AlertModel) {
+        _alerts.value.toMutableList().apply {
+            add(data)
+        }.also {
+            _alerts.emit(it)
+        }
+    }
+
     suspend fun updateCourses(data: List<CourseEntity>) {
         _courseList.emit(data)
+
+        Logger.i(tag = TAG, message = {
+            "courses success saved"
+        })
     }
 
     suspend fun updateCarts(data: List<CartItem>) {
         _cartList.emit(data)
+
+        Logger.i(tag = TAG, message = {
+            "carts success saved"
+        })
     }
 
     suspend fun updateCartsRound(data: List<CartRoundItem>) {
         _cartRoundList.emit(data)
+    }
+
+    suspend fun addCartRound(data: CartRoundItem) {
+        _cartRoundList.value.toMutableList().apply {
+            add(data)
+        }.also {
+            updateCartsRound(it)
+        }
     }
 
     suspend fun updateCartReport(data: List<HoleEntity>) {
@@ -52,4 +87,21 @@ internal object Database {
     suspend fun updateGeofenceList(data: List<GeofenceItem>) {
         _geofenceList.emit(data)
     }
+
+    fun updateCart(data: CartItem) {
+        val index = _cartList.indexOfFirst { it.id == data.id }
+
+        if (index < 0) {
+            Logger.e(TAG, message = {
+                "Cannot find cart to update in database"
+            })
+        }
+
+        _cartList[index] = data
+    }
+
+    fun cartBy(id: Int) = cartList
+        .map { l ->
+            l.find { it.id == id }
+        }
 }

@@ -1,5 +1,7 @@
 package com.yama.marshal.data.entity
 
+import com.yama.marshal.tool.isCartFlag
+import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
 
 data class CartItem(
@@ -11,6 +13,7 @@ data class CartItem(
     val controllerAccess: Int?,
     val assetControlOverride: Int?,
     val lastActivity: GMTDate?,
+    val isFlag: Boolean = prefs.isCartFlag(id)
 )
 
 data class CartRoundItem(
