@@ -2,14 +2,11 @@ package com.yama.marshal.data
 
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.entity.*
-import com.yama.marshal.repository.CartRepository
-import com.yama.marshal.repository.CourseRepository
-import com.yama.marshal.tool.find
+import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.tool.indexOfFirst
 import com.yama.marshal.tool.set
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 
 internal object Database {
@@ -39,6 +36,18 @@ internal object Database {
     val geofenceList: StateFlow<List<GeofenceItem>>
         get() = _geofenceList
 
+    private val _alerts = MutableStateFlow<List<AlertModel>>(emptyList())
+    val alerts: StateFlow<List<AlertModel>>
+        get() = _alerts
+
+    suspend fun addAlert(data: AlertModel) {
+        _alerts.value.toMutableList().apply {
+            add(data)
+        }.also {
+            _alerts.emit(it)
+        }
+    }
+
     suspend fun updateCourses(data: List<CourseEntity>) {
         _courseList.emit(data)
 
@@ -57,6 +66,14 @@ internal object Database {
 
     suspend fun updateCartsRound(data: List<CartRoundItem>) {
         _cartRoundList.emit(data)
+    }
+
+    suspend fun addCartRound(data: CartRoundItem) {
+        _cartRoundList.value.toMutableList().apply {
+            add(data)
+        }.also {
+            updateCartsRound(it)
+        }
     }
 
     suspend fun updateCartReport(data: List<HoleEntity>) {

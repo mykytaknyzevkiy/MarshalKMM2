@@ -1,13 +1,15 @@
 package com.yama.marshal.screen.map
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import co.touchlab.kermit.Logger
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.navigation.findInt
@@ -17,7 +19,6 @@ import com.yama.marshal.ui.view.IGoldMap
 import com.yama.marshal.ui.view.RenderData
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 
 internal class MapScreen(navigationController: NavigationController) : YamaScreen(navigationController) {
     companion object {

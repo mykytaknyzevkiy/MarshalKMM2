@@ -7,22 +7,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.yama.marshal.data.entity.CartItem
-import com.yama.marshal.data.model.CourseFullDetail
-import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
-import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
-import kotlinx.coroutines.flow.StateFlow
 
 internal abstract class MainContentScreen(
     navigationController: NavigationController,

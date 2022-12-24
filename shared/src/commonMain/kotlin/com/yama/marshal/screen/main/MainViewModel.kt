@@ -2,7 +2,9 @@ package com.yama.marshal.screen.main
 
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
+import com.yama.marshal.repository.CartRepository
 import com.yama.marshal.repository.CompanyRepository
+import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.tool.FleetSorter
 import com.yama.marshal.tool.HoleSorter
@@ -11,6 +13,7 @@ import com.yama.marshal.tool.format
 import io.ktor.util.date.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 interface SortType {
     val label: String
@@ -57,12 +60,28 @@ class MainViewModel : YamaViewModel() {
     val selectedCourse: StateFlow<CourseFullDetail?>
         get() = _selectedCourse
 
-    private val _courseList = MutableStateFlow(emptyList<CourseFullDetail>())
-    val courseList: StateFlow<List<CourseFullDetail>>
-        get() = _courseList
+    val courseList = CourseRepository
+        .courseList
+        .map {
+            it.toMutableList().apply {
+                add(0, CourseFullDetail(
+                    id = null,
+                    courseName = "All",
+                    defaultCourse = 0,
+                    playersNumber = 0,
+                    layoutHoles = null,
+                    holes = emptyList(),
+                    vectors = ""
+                ))
+            }
+        }
+        .onEach {
+            if (_selectedCourse.value == null)
+                _selectedCourse.emit(if (it.size == 1) it.first() else it[1])
+        }
 
-    val fleetList = CompanyRepository
-        .cartsFullDetail
+    val fleetList = CartRepository
+        .cartActiveList
         .combine(_selectedCourse) { a, b ->
             if (b?.id.isNullOrBlank())
                 a
@@ -73,7 +92,7 @@ class MainViewModel : YamaViewModel() {
             a.sortedWith(FleetSorter(b))
         }
 
-    val holeList = CompanyRepository
+    val holeList = CourseRepository
         .holeList
         .combine(_selectedCourse) {a, b ->
             if (b?.id.isNullOrBlank())
@@ -94,33 +113,6 @@ class MainViewModel : YamaViewModel() {
             it.sortedByDescending { a -> a.date.timestamp }
         }
 
-    fun load() {
-        CompanyRepository
-            .courseList
-            .map {
-                ArrayList<CourseFullDetail>().apply {
-                    add(
-                        CourseFullDetail(
-                            id = null,
-                            courseName = "All",
-                            defaultCourse = 0,
-                            playersNumber = 0,
-                            layoutHoles = null,
-                            holes = emptyList(),
-                            vectors = ""
-                        )
-                    )
-                    addAll(it)
-                }
-            }
-            .onEach {
-                _courseList.emit(it)
-                if (_selectedCourse.value == null)
-                    _selectedCourse.emit(if (it.size == 1) it.first() else it[1])
-            }
-            .launchIn(viewModelScope)
-    }
-
     fun updateSort(type: SortType.SortFleet) {
         _currentFleetSort.value = type
     }
@@ -133,7 +125,7 @@ class MainViewModel : YamaViewModel() {
         _selectedCourse.value = course
     }
 
-    fun flagCart(cart: CartFullDetail) {
-        CompanyRepository.flagCart(cart.id)
+    fun flagCart(cart: CartFullDetail) = viewModelScope.launch {
+        CartRepository.flagCart(cart.id)
     }
 }

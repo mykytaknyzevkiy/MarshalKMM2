@@ -186,4 +186,10 @@ object CartRepository: YamaRepository() {
         .map { l ->
             l.find { it.id == id }
         }
+        .onEach {
+            if (it == null) {
+                loadCarts()
+                loadCartsRound()
+            }
+        }
 }

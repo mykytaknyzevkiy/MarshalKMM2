@@ -1,11 +1,11 @@
 package com.yama.marshal.tool
 
-import com.yama.marshal.data.entity.HoleEntity
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
-import com.yama.marshal.screen.main.SortType.SortHole
 import com.yama.marshal.screen.main.SortType.SortFleet
-import com.yama.marshal.screen.main.SortType.SortHole.*
+import com.yama.marshal.screen.main.SortType.SortHole
+import com.yama.marshal.screen.main.SortType.SortHole.HOLE
+import com.yama.marshal.screen.main.SortType.SortHole.PACE_OF_PLAY
 
 class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail> {
     override fun compare(a: CartFullDetail, b: CartFullDetail): Int {

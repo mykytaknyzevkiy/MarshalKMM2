@@ -130,10 +130,10 @@ object Base64 {
                 val bits: Int = src[sp0++].toInt() and 0xff shl 16 or (
                         src[sp0++].toInt() and 0xff shl 8) or
                         (src[sp0++].toInt() and 0xff)
-                dst[dp0++] = toBase64[bits ushr 18 and 0x3f].toByte()
-                dst[dp0++] = toBase64[bits ushr 12 and 0x3f].toByte()
-                dst[dp0++] = toBase64[bits ushr 6 and 0x3f].toByte()
-                dst[dp0++] = toBase64[bits and 0x3f].toByte()
+                dst[dp0++] = toBase64[bits ushr 18 and 0x3f].code.toByte()
+                dst[dp0++] = toBase64[bits ushr 12 and 0x3f].code.toByte()
+                dst[dp0++] = toBase64[bits ushr 6 and 0x3f].code.toByte()
+                dst[dp0++] = toBase64[bits and 0x3f].code.toByte()
             }
         }
 
@@ -158,19 +158,19 @@ object Base64 {
             }
             if (sp < end) {               // 1 or 2 leftover bytes
                 val b0: Int = src[sp++].toInt() and 0xff
-                dst[dp++] = base64[b0 shr 2].toByte()
+                dst[dp++] = base64[b0 shr 2].code.toByte()
                 if (sp == end) {
-                    dst[dp++] = base64[b0 shl 4 and 0x3f].toByte()
+                    dst[dp++] = base64[b0 shl 4 and 0x3f].code.toByte()
                     if (doPadding) {
-                        dst[dp++] = '='.toByte()
-                        dst[dp++] = '='.toByte()
+                        dst[dp++] = '='.code.toByte()
+                        dst[dp++] = '='.code.toByte()
                     }
                 } else {
                     val b1: Int = src[sp++].toInt() and 0xff
-                    dst[dp++] = base64[b0 shl 4 and 0x3f or (b1 shr 4)].toByte()
-                    dst[dp++] = base64[b1 shl 2 and 0x3f].toByte()
+                    dst[dp++] = base64[b0 shl 4 and 0x3f or (b1 shr 4)].code.toByte()
+                    dst[dp++] = base64[b1 shl 2 and 0x3f].code.toByte()
                     if (doPadding) {
-                        dst[dp++] = '='.toByte()
+                        dst[dp++] = '='.code.toByte()
                     }
                 }
             }
@@ -256,14 +256,14 @@ object Base64 {
 
             init {
                 fromBase64.fill(-1)
-                for (i in Encoder.toBase64.indices) fromBase64[Encoder.toBase64[i].toInt()] = i
-                fromBase64['='.toInt()] = -2
+                for (i in Encoder.toBase64.indices) fromBase64[Encoder.toBase64[i].code] = i
+                fromBase64['='.code] = -2
             }
 
             init {
                 fromBase64URL.fill(-1)
-                for (i in Encoder.toBase64URL.indices) fromBase64URL[Encoder.toBase64URL[i].toInt()] = i
-                fromBase64URL['='.toInt()] = -2
+                for (i in Encoder.toBase64URL.indices) fromBase64URL[Encoder.toBase64URL[i].code] = i
+                fromBase64URL['='.code] = -2
             }
         }
 
@@ -301,9 +301,9 @@ object Base64 {
                     "Input byte[] should at least have 2 bytes for base64 bytes"
                 )
             }
-            if (src[sl - 1].toChar() == '=') {
+            if (src[sl - 1].toInt().toChar() == '=') {
                 paddings++
-                if (src[sl - 2].toChar() == '=') paddings++
+                if (src[sl - 2].toInt().toChar() == '=') paddings++
             }
             if (paddings == 0 && len and 0x3 != 0) paddings = 4 - (len and 0x3)
             return 3 * ((len + 3) / 4) - paddings
@@ -343,7 +343,7 @@ object Base64 {
                         // xx=   shiftto==6&&sp==sl missing last =
                         // xx=y  shiftto==6 last is not =
                         require(
-                            !(shiftto == 6 && (sp == sl || src[sp++].toChar() != '=') ||
+                            !(shiftto == 6 && (sp == sl || src[sp++].toInt().toChar() != '=') ||
                                     shiftto == 18)
                         ) { "Input byte array has wrong 4-byte ending unit" }
                         break

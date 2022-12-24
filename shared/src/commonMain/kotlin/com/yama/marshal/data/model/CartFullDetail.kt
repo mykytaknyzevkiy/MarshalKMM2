@@ -2,8 +2,6 @@ package com.yama.marshal.data.model
 
 import com.yama.marshal.data.entity.CartItem
 import com.yama.marshal.data.entity.CartRoundItem
-import com.yama.marshal.tool.isCartFlag
-import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
 
 data class CartFullDetail(

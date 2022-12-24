@@ -11,7 +11,10 @@ import co.touchlab.kermit.Logger
 import com.l1inc.viewer.Course3DRenderer
 import com.l1inc.viewer.Course3DRendererBase
 import com.l1inc.viewer.Course3DViewer
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 internal actual fun IGoldMap(

@@ -2,9 +2,9 @@ package com.yama.marshal.tool
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
 
 @Composable
 actual fun fontResources(

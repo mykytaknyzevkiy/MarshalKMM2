@@ -4,7 +4,10 @@ import androidx.compose.runtime.mutableStateListOf
 import com.yama.marshal.data.entity.CompanyMessage
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.screen.YamaViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 sealed class SendMessageViewState {
