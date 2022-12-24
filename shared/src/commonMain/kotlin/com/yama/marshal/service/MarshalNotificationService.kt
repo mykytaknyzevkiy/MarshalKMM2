@@ -2,7 +2,7 @@ package com.yama.marshal.service
 
 import co.touchlab.kermit.Logger
 import com.yama.marshal.network.MarshalSocket
-import com.yama.marshal.network.model.MarshalNotification
+import com.yama.marshal.network.model.request.MarshalNotification
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.filterList
 import com.yama.marshal.repository.mapList

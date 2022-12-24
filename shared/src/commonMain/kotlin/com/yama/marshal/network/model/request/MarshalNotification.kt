@@ -1,4 +1,4 @@
-package com.yama.marshal.network.model
+package com.yama.marshal.network.model.request
 
 import com.yama.marshal.tool.parseDate
 import io.ktor.util.date.*

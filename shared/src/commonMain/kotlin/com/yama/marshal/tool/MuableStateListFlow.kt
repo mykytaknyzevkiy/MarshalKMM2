@@ -1,7 +1,6 @@
 package com.yama.marshal.tool
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 
 fun <T> StateFlow<List<T>>.find(predicate: (T) -> Boolean) =
     this.value.find(predicate)
@@ -43,4 +42,20 @@ fun <T> MutableStateFlow<List<T>>.removeAll(predicate: (T) -> Boolean) {
     val data = this.value.toMutableList()
     data.removeAll(predicate)
     this.value = data
+}
+
+fun <T> Flow<List<T>>.filterList(predicate: (T) -> Boolean) = this.map {
+    it.filter { d ->
+        predicate(d)
+    }
+}
+
+fun <T, R> Flow<List<T>>.mapList(transform: (T) -> R) = this.map { list ->
+    list.map {
+        transform(it)
+    }
+}
+
+fun <T> Flow<List<T>>.onEachList(action: (T) -> Unit) = this.onEach { c ->
+    c.onEach(action)
 }
