@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context="com.l1inc.viewer.ViewerActivity">
+
+	<com.l1inc.viewer.Course3DViewer
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/courseViewer"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:text="Medium Text"
+		android:id="@+id/textViewFps"
+		android:textColor="#FFFFFF"/>
+
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Flyover"
+		android:id="@+id/buttonFlyover"
+		android:layout_gravity="right|top"/>
+
+	<TextView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:text="Medium Text"
+		android:id="@+id/textViewHole"
+		android:layout_gravity="bottom"
+		android:gravity="center_horizontal"
+		android:textColor="#ffffff"/>
+
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Previous hole"
+		android:id="@+id/buttonPrevHole"
+		android:layout_gravity="bottom|left"/>
+
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Next hole"
+		android:id="@+id/buttonNextHole"
+		android:layout_gravity="bottom|right"/>
+
+</FrameLayout>

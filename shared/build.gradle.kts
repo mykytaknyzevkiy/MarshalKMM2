@@ -83,9 +83,6 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
                 implementation("co.touchlab:kermit:1.2.2")
                 implementation("com.appmattus.crypto:cryptohash:0.10.1")
-                implementation("com.google.code.gson:gson:2.8.2")
-                implementation("com.vividsolutions:jts:1.13")
-
             }
         }
         val commonTest by getting {
@@ -93,11 +90,19 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-                implementation(fileTree(mapOf("dir" to "libs/android", "include" to listOf("*.jar", "*.aar"))))
-                implementation("net.iharder:base64:2.3.8")
+
+                implementation(fileTree(mapOf("dir" to "libs/android", "include" to listOf("*.jar"))))
+
+                /*
+                implementation("com.google.code.gson:gson:2.8.2")
+                implementation("com.vividsolutions:jts:1.13")
+                 */
+
+                implementation(project(":viewer"))
             }
         }
         val androidTest by getting

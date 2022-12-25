@@ -44,6 +44,7 @@ abstract class YamaNetworkService(val host: String) {
 
             try {
                 Json {
+                    this.allowStructuredMapKeys
                     ignoreUnknownKeys = true
                 }.decodeFromString(resBody)
             } catch (e: Exception) {

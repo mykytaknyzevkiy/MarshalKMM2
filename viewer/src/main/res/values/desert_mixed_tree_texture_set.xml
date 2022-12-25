@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer-array name="desert_mixed_tree_set">
+		<item>@drawable/v3d_tree_2</item>
+		<item>@drawable/v3d_tree_4</item>
+		<item>@drawable/v3d_tropical_tree_1</item>
+		<item>@drawable/v3d_tropical_tree_2</item>
+		<item>@drawable/v3d_tropical_tree_3</item>
+		<item>@drawable/v3d_tropical_tree_4</item>
+	</integer-array>
+
+	<integer-array name="desert_mixed_tree_shadow_set">
+		<item>@drawable/v3d_tree_2_shadow</item>
+		<item>@drawable/v3d_tree_4_shadow</item>
+		<item>@drawable/v3d_tropical_tree_1_shadow</item>
+		<item>@drawable/v3d_tropical_tree_2_shadow</item>
+		<item>@drawable/v3d_tropical_tree_3_shadow</item>
+		<item>@drawable/v3d_tropical_tree_4_shadow</item>
+	</integer-array>
+</resources>

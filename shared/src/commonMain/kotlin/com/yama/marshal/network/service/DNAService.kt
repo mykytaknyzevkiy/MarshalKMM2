@@ -5,6 +5,10 @@ import com.yama.marshal.network.model.request.*
 import com.yama.marshal.network.model.response.*
 import com.yama.marshal.network.unit.Action
 import com.yama.marshal.network.unit.YamaNetworkService
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") {
     companion object {
@@ -102,8 +106,28 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
         payload = body
     )
 
-    suspend fun cartsLocation(body: CartLastLocationRequest): CartLastLocationResponse? = post(
+    suspend fun cartsLocation(body: CartLastLocationRequest) = postStr(
         action = Action.CartLastLocation,
         payload = body
-    )
+    )?.let { responseJson ->
+        Json
+            .parseToJsonElement(responseJson)
+            .jsonObject["resultList"]
+            ?.jsonArray
+            ?.map {
+                it.jsonArray
+            }
+    }?.let {
+        CartLastLocationResponse(
+            it.map { j ->
+                j.map { jE ->
+                    jE.jsonPrimitive.content
+                }
+            }
+        )
+    }.also {
+        Logger.d(TAG, message = {
+            "on cart location $it"
+        })
+    }
 }
