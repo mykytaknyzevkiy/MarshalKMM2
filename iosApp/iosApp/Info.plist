@@ -40,7 +40,7 @@
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
-			<key>pace-push.syncwise360.com</key>
+			<key>pace-push.syncwise360.com:9001</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
