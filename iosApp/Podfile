@@ -1,0 +1,9 @@
+source 'https://cdn.cocoapods.org'
+source 'https://github.com/Kotlin/kotlin-cocoapods-spec.git'
+
+target 'iosApp' do
+  use_frameworks!
+  platform :ios, '14.1'
+  pod 'shared', :path => '../shared'
+  pod 'Ios', :path => '/Users/nek_zabirov/Documents/MarshallKMM/shared/libs/Ios'
+end

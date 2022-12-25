@@ -8,13 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		39B2B4402953666300F45167 /* Ios.h in Headers */ = {isa = PBXBuildFile; fileRef = 39B2B43F2953666300F45167 /* Ios.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		39B2B44B2953667600F45167 /* FSocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4472953667600F45167 /* FSocket.xcframework */; };
-		39B2B44C2953667600F45167 /* socket_IO.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4482953667600F45167 /* socket_IO.xcframework */; };
-		39B2B44D2953667600F45167 /* SocketRocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4492953667600F45167 /* SocketRocket.xcframework */; };
-		39B2B44E2953667600F45167 /* Pods_iGolf_Marshall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */; };
 		39B2B450295366AB00F45167 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B44F295366AB00F45167 /* SocketManager.swift */; };
 		39B2B4522953686300F45167 /* IGolfSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B4512953686300F45167 /* IGolfSocket.swift */; };
 		39B2B45429536C2700F45167 /* SocketManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */; };
+		3F7E617729580941004844C3 /* FSocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4472953667600F45167 /* FSocket.xcframework */; };
+		3F7E617829580941004844C3 /* FSocket.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4472953667600F45167 /* FSocket.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3F7E617929580942004844C3 /* Pods_iGolf_Marshall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */; };
+		3F7E617A29580942004844C3 /* Pods_iGolf_Marshall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3F7E617B29580944004844C3 /* socket_IO.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4482953667600F45167 /* socket_IO.xcframework */; };
+		3F7E617C29580944004844C3 /* socket_IO.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4482953667600F45167 /* socket_IO.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3F7E617D29580946004844C3 /* SocketRocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4492953667600F45167 /* SocketRocket.xcframework */; };
+		3F7E617E29580946004844C3 /* SocketRocket.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4492953667600F45167 /* SocketRocket.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,6 +28,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				3F7E617E29580946004844C3 /* SocketRocket.xcframework in Embed Frameworks */,
+				3F7E617C29580944004844C3 /* socket_IO.xcframework in Embed Frameworks */,
+				3F7E617829580941004844C3 /* FSocket.xcframework in Embed Frameworks */,
+				3F7E617A29580942004844C3 /* Pods_iGolf_Marshall.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,10 +55,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				39B2B44D2953667600F45167 /* SocketRocket.xcframework in Frameworks */,
-				39B2B44C2953667600F45167 /* socket_IO.xcframework in Frameworks */,
-				39B2B44B2953667600F45167 /* FSocket.xcframework in Frameworks */,
-				39B2B44E2953667600F45167 /* Pods_iGolf_Marshall.xcframework in Frameworks */,
+				3F7E617D29580946004844C3 /* SocketRocket.xcframework in Frameworks */,
+				3F7E617B29580944004844C3 /* socket_IO.xcframework in Frameworks */,
+				3F7E617729580941004844C3 /* FSocket.xcframework in Frameworks */,
+				3F7E617929580942004844C3 /* Pods_iGolf_Marshall.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +341,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.igolf.Ios;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -367,6 +378,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.igolf.Ios;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

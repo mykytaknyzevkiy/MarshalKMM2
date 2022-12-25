@@ -42,7 +42,11 @@ kotlin {
         summary = "This is sample Summary"
         homepage = "Home URL"
 
-        //podfile = project.file("../iosApp/Podfile")
+        specRepos {
+            url("https://github.com/Kotlin/kotlin-cocoapods-spec.git")
+        }
+
+        podfile = project.file("../iosApp/Podfile")
 
         framework {
             baseName = "Shared"
