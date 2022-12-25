@@ -1,5 +1,3 @@
 ${PODS_ROOT}/Target Support Files/Ios/Ios-xcframeworks.sh
-${PODS_ROOT}/../../shared/libs/Ios/libs/FSocket.xcframework
-${PODS_ROOT}/../../shared/libs/Ios/libs/Pods_iGolf_Marshall.xcframework
 ${PODS_ROOT}/../../shared/libs/Ios/libs/SocketRocket.xcframework
 ${PODS_ROOT}/../../shared/libs/Ios/libs/socket_IO.xcframework

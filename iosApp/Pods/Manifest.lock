@@ -1,6 +1,6 @@
 PODS:
-  - Ios (1.3)
-  - shared (1.1):
+  - Ios (1.5)
+  - shared (1.2):
     - Ios
 
 DEPENDENCIES:
@@ -14,8 +14,8 @@ EXTERNAL SOURCES:
     :path: "../shared"
 
 SPEC CHECKSUMS:
-  Ios: 0be8db4cc4f5f85e5976d9279a976ab9d7cf4e01
-  shared: f7eefffa8b19bed7b04bbc9fc5ca1abdf92dfc4a
+  Ios: cea38fe0be6fdff3b5f9baabc50fbf9ce5ed84a1
+  shared: 8835f9dcbe514d874aea1d76be4a31d28569ac64
 
 PODFILE CHECKSUM: 660c4279d9208064081919fb1870e37578d3f0a3
 

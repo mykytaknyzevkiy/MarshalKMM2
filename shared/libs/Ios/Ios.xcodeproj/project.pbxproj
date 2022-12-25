@@ -11,10 +11,6 @@
 		39B2B450295366AB00F45167 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B44F295366AB00F45167 /* SocketManager.swift */; };
 		39B2B4522953686300F45167 /* IGolfSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B4512953686300F45167 /* IGolfSocket.swift */; };
 		39B2B45429536C2700F45167 /* SocketManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */; };
-		3F7E617729580941004844C3 /* FSocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4472953667600F45167 /* FSocket.xcframework */; };
-		3F7E617829580941004844C3 /* FSocket.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4472953667600F45167 /* FSocket.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		3F7E617929580942004844C3 /* Pods_iGolf_Marshall.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */; };
-		3F7E617A29580942004844C3 /* Pods_iGolf_Marshall.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F7E617B29580944004844C3 /* socket_IO.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4482953667600F45167 /* socket_IO.xcframework */; };
 		3F7E617C29580944004844C3 /* socket_IO.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4482953667600F45167 /* socket_IO.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F7E617D29580946004844C3 /* SocketRocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4492953667600F45167 /* SocketRocket.xcframework */; };
@@ -30,8 +26,6 @@
 			files = (
 				3F7E617E29580946004844C3 /* SocketRocket.xcframework in Embed Frameworks */,
 				3F7E617C29580944004844C3 /* socket_IO.xcframework in Embed Frameworks */,
-				3F7E617829580941004844C3 /* FSocket.xcframework in Embed Frameworks */,
-				3F7E617A29580942004844C3 /* Pods_iGolf_Marshall.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -41,10 +35,8 @@
 /* Begin PBXFileReference section */
 		39B2B43C2953666300F45167 /* Ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39B2B43F2953666300F45167 /* Ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Ios.h; sourceTree = "<group>"; };
-		39B2B4472953667600F45167 /* FSocket.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = FSocket.xcframework; sourceTree = "<group>"; };
 		39B2B4482953667600F45167 /* socket_IO.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = socket_IO.xcframework; sourceTree = "<group>"; };
 		39B2B4492953667600F45167 /* SocketRocket.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = SocketRocket.xcframework; sourceTree = "<group>"; };
-		39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Pods_iGolf_Marshall.xcframework; sourceTree = "<group>"; };
 		39B2B44F295366AB00F45167 /* SocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
 		39B2B4512953686300F45167 /* IGolfSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGolfSocket.swift; sourceTree = "<group>"; };
 		39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManagerDelegate.swift; sourceTree = "<group>"; };
@@ -57,8 +49,6 @@
 			files = (
 				3F7E617D29580946004844C3 /* SocketRocket.xcframework in Frameworks */,
 				3F7E617B29580944004844C3 /* socket_IO.xcframework in Frameworks */,
-				3F7E617729580941004844C3 /* FSocket.xcframework in Frameworks */,
-				3F7E617929580942004844C3 /* Pods_iGolf_Marshall.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,10 +86,8 @@
 		39B2B4462953667600F45167 /* libs */ = {
 			isa = PBXGroup;
 			children = (
-				39B2B4472953667600F45167 /* FSocket.xcframework */,
 				39B2B4482953667600F45167 /* socket_IO.xcframework */,
 				39B2B4492953667600F45167 /* SocketRocket.xcframework */,
-				39B2B44A2953667600F45167 /* Pods_iGolf_Marshall.xcframework */,
 			);
 			path = libs;
 			sourceTree = "<group>";

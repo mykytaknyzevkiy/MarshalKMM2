@@ -37,7 +37,7 @@ kotlin {
     cocoapods {
         ios.deploymentTarget = "14.1"
 
-        version = "1.1"
+        version = "1.2"
 
         summary = "This is sample Summary"
         homepage = "Home URL"

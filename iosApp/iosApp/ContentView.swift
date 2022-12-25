@@ -1,16 +1,16 @@
 import SwiftUI
-import shared
+import Shared
 
 struct ContentView: View {
-	let greet = Greeting().greet()
+    let greet = Greeting().greet()
 
-	var body: some View {
-		Text(greet)
-	}
+    var body: some View {
+        ComposeController()
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
-	}
+    static var previews: some View {
+        ContentView()
+    }
 }

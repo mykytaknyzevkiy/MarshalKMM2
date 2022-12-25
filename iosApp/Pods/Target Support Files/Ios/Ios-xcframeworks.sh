@@ -17,18 +17,6 @@ RSYNC_PROTECT_TMP_FILES=(--filter "P .*.??????")
 variant_for_slice()
 {
   case "$1" in
-  "FSocket.xcframework/ios-arm64")
-    echo ""
-    ;;
-  "FSocket.xcframework/ios-arm64_x86_64-simulator")
-    echo "simulator"
-    ;;
-  "Pods_iGolf_Marshall.xcframework/ios-arm64_x86_64-simulator")
-    echo "simulator"
-    ;;
-  "Pods_iGolf_Marshall.xcframework/ios-arm64")
-    echo ""
-    ;;
   "SocketRocket.xcframework/ios-arm64_x86_64-simulator")
     echo "simulator"
     ;;
@@ -47,18 +35,6 @@ variant_for_slice()
 archs_for_slice()
 {
   case "$1" in
-  "FSocket.xcframework/ios-arm64")
-    echo "arm64"
-    ;;
-  "FSocket.xcframework/ios-arm64_x86_64-simulator")
-    echo "arm64 x86_64"
-    ;;
-  "Pods_iGolf_Marshall.xcframework/ios-arm64_x86_64-simulator")
-    echo "arm64 x86_64"
-    ;;
-  "Pods_iGolf_Marshall.xcframework/ios-arm64")
-    echo "arm64"
-    ;;
   "SocketRocket.xcframework/ios-arm64_x86_64-simulator")
     echo "arm64 x86_64"
     ;;
@@ -153,8 +129,6 @@ install_xcframework() {
   echo "Copied $source to $destination"
 }
 
-install_xcframework "${PODS_ROOT}/../../shared/libs/Ios/libs/FSocket.xcframework" "Ios" "framework" "ios-arm64" "ios-arm64_x86_64-simulator"
-install_xcframework "${PODS_ROOT}/../../shared/libs/Ios/libs/Pods_iGolf_Marshall.xcframework" "Ios" "framework" "ios-arm64_x86_64-simulator" "ios-arm64"
 install_xcframework "${PODS_ROOT}/../../shared/libs/Ios/libs/SocketRocket.xcframework" "Ios" "framework" "ios-arm64_x86_64-simulator" "ios-arm64"
 install_xcframework "${PODS_ROOT}/../../shared/libs/Ios/libs/socket_IO.xcframework" "Ios" "framework" "ios-arm64_x86_64-simulator" "ios-arm64"
 
