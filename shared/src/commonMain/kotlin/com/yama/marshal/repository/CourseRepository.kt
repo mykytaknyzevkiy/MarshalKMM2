@@ -94,7 +94,7 @@ object CourseRepository : YamaRepository() {
                             Logger.e(TAG, message = {
                                 "Cannot load GPSVector for course ${it.id}"
                             })
-                            return false
+                            //return false
                         }
                     }
                     .toString()

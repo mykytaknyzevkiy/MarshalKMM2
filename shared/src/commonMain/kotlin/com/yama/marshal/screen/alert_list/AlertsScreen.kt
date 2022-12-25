@@ -96,7 +96,7 @@ internal class AlertsScreen(
                             )
                     }
             },*/
-            customItemBgColor = {
+            /*customItemBgColor = {
                 val cart by remember(it) {
                     it.cart
                 }.collectAsState(null)
@@ -109,7 +109,7 @@ internal class AlertsScreen(
                     YamaColor.item_cart_flag_container_bg
                 else
                     null
-            }
+            }*/
         )
     }
 

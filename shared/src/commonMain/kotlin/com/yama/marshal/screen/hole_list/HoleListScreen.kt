@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,6 +21,7 @@ import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.MarshalList
 
 internal class HoleListScreen(navigationController: NavigationController, viewModel: MainViewModel) :
@@ -54,12 +56,13 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
     @Composable
     private fun RowScope.ItemViewHolder(item: CourseFullDetail.HoleData) {
-        val selectedCourse by remember(viewModel) { viewModel.selectedCourse }.collectAsState()
-
         Text(
             text = item.holeNumber.toString(),
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortHole.HOLE.weight).clickable {
+            modifier = Modifier
+                .weight(SortType.SortHole.HOLE.weight)
+                .padding(Sizes.screenPadding / 2)
+                .clickable {
                 navigationController.navigateTo(
                     MapScreen.route,
                     listOf(
@@ -75,7 +78,9 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
         Text(
             text = PaceValueFormatter.getString(item.differentialPace, PaceValueFormatter.PaceType.Full),
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortHole.PACE_OF_PLAY.weight / 2),
+            modifier = Modifier
+                .weight(SortType.SortHole.PACE_OF_PLAY.weight / 2)
+                .padding(Sizes.screenPadding / 2),
             color = PaceValueFormatter.getColor(item.differentialPace)
         )
 
@@ -84,7 +89,9 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
         Text(
             text = PaceValueFormatter.getStringForCurrentPace(item.averagePace),
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortHole.PACE_OF_PLAY.weight / 2)
+            modifier = Modifier
+                .weight(SortType.SortHole.PACE_OF_PLAY.weight / 2)
+                .padding(Sizes.screenPadding / 2)
         )
     }
 }
