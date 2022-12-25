@@ -7,7 +7,8 @@
 
 import Foundation
 
-protocol SocketManagerDelegate {
+@objc
+public protocol SocketManagerDelegate {
     func didConnected()
     
     func onError(error: String)

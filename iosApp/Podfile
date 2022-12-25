@@ -1,8 +1,0 @@
-source 'https://github.com/Kotlin/kotlin-cocoapods-spec.git'
-source 'https://github.com/CocoaPods/Specs.git'
-
-target 'iosApp' do
-  use_frameworks!
-  platform :ios, '14.1'
-  pod 'shared', :path => '../shared'
-end

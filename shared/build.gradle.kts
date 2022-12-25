@@ -1,5 +1,7 @@
 @file:Suppress("OPT_IN_IS_NOT_ENABLED")
 
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -12,12 +14,14 @@ plugins {
 kotlin {
     android()
 
+    val xcFramework = XCFramework("Shared")
+
     listOf(
         iosX64(),
         iosArm64(),
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "Shared"
             freeCompilerArgs += listOf(
                 "-linker-option", "-framework", "-linker-option", "Metal",
                 "-linker-option", "-framework", "-linker-option", "CoreText",
@@ -25,6 +29,8 @@ kotlin {
             )
             freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
             embedBitcode = org.jetbrains.kotlin.gradle.plugin.mpp.Framework.BitcodeEmbeddingMode.DISABLE
+
+            xcFramework.add(this)
         }
     }
 
