@@ -51,76 +51,23 @@ internal class AlertsScreen(
             itemContent = {
                 ItemViewHolder(it)
             },
-            /*itemActions = { alert ->
-                val cart by remember(alert) { alert.cart }
-                    .collectAsState(null)
+            customItemBgColor = {
+                val cart = it.cart
 
-                if (cart == null)
-                    emptyList()
-                else
-                    ArrayList<MarshalListItemAction>().apply {
-                        val item = cart ?: return@apply
-                        add(
-                            MarshalListItemAction(
-                                icon = Icons.Default.Place,
-                                color = YamaColor.view_cart_btn_bg_color,
-                                onClick = {
-                                    navigationController.navigateTo(
-                                        MapScreen.route,
-                                        listOf(NavArg(key = MapScreen.ARG_CART_ID, value = item.id))
-                                    )
-                                }
-                            )
-                        )
-
-                        if (!item.isFlag)
-                            add(
-                                MarshalListItemAction(
-                                    icon = Icons.Default.Flag,
-                                    color = YamaColor.flag_cart_btn_bg_color,
-                                    onClick = {
-                                        viewModel.flagCart(item)
-                                    }
-                                )
-                            )
-
-                        if (item.isMessagingAvailable)
-                            add(
-                                MarshalListItemAction(
-                                    icon = Icons.Default.Email,
-                                    color = YamaColor.message_cart_btn_bg_color,
-                                    onClick = {
-                                        viewModel.flagCart(item)
-                                    }
-                                )
-                            )
-                    }
-            },*/
-            /*customItemBgColor = {
-                val cart by remember(it) {
-                    it.cart
-                }.collectAsState(null)
-
-                if (cart == null)
-                    null
-                else if (cart!!.isCartInShutdownMode)
+                if (cart.isCartInShutdownMode)
                     YamaColor.cart_shut_down_bg
-                else if (cart!!.isFlag)
+                else if (cart.isFlag)
                     YamaColor.item_cart_flag_container_bg
                 else
                     null
-            }*/
+            }
         )
     }
 
     @Composable
     fun RowScope.ItemViewHolder(item: AlertModel) {
-        val cart by remember(item) {
-            item.cart
-        }.collectAsState(null)
-
         Text(
-            text = cart?.cartName ?: "---",
+            text = item.cart.cartName,
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(0.4f)
         )
@@ -154,12 +101,8 @@ internal class AlertsScreen(
 
         when (item) {
             is AlertModel.Fence -> {
-                val geofence by remember(item) {
-                    item.geofence
-                }.collectAsState(null)
-
                 Text(
-                    text = geofence?.name ?: "---",
+                    text = item.geofence.name ?: "---",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(0.6f)
                 )
@@ -170,7 +113,7 @@ internal class AlertsScreen(
                 modifier = Modifier.weight(0.6f)
             )
             is AlertModel.Battery -> Text(
-                text =cart?.currPosHole.let {
+                text = item.cart.currPosHole.let {
                     if ((it?:0) < 0)
                         "---"
                     else

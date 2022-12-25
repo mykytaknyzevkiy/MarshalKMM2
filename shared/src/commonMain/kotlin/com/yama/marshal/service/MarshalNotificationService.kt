@@ -2,6 +2,8 @@ package com.yama.marshal.service
 
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
+import com.yama.marshal.data.entity.AlertEntity
+import com.yama.marshal.data.entity.AlertType
 import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.network.MarshalSocket
@@ -79,6 +81,22 @@ object MarshalNotificationService : CoroutineScope {
                     totalNetPace = notification.totalPace,
                     roundStartTime = notification.roundDate
                 ).also { Database.addCartRound(it) }
+
+            Database.alerts.any {
+                it.type == AlertType.Pace
+                        && it.date.timestamp == notification.date.timestamp
+            }.also {
+                if (!it)
+                    Database.addAlert(
+                        AlertEntity(
+                            courseID = notification.idCourse,
+                            date = notification.date,
+                            cartID = notification.idCart,
+                            type = AlertType.Pace,
+                            netPace = notification.totalPace
+                        )
+                    )
+            }
         }
 
     private val fenceNotificationManager = onNotification
@@ -89,19 +107,18 @@ object MarshalNotificationService : CoroutineScope {
                 "process FenceNotification $notification"
             })
 
-            CompanyRepository.alerts.any {
-                it is AlertModel.Fence
+            Database.alerts.any {
+                it.type == AlertType.Fence
                         && it.date.timestamp == notification.date.timestamp
             }.also {
                 if (!it)
-                    CompanyRepository.addAlert(
-                        AlertModel.Fence(
+                    Database.addAlert(
+                        AlertEntity(
                             courseID = notification.idCourse,
                             date = notification.date,
-                            course = CourseRepository.findCourse(notification.idCourse),
-                            cart = CartRepository.findCart(notification.idCart)
-                                .filter { c -> c != null }.map { c -> c!! },
-                            geofence = CompanyRepository.findGeofence(notification.idFence)
+                            cartID = notification.idCart,
+                            geofenceID = notification.idFence,
+                            type = AlertType.Fence
                         )
                     )
             }
@@ -133,26 +150,25 @@ object MarshalNotificationService : CoroutineScope {
     private val batteryAlertNotificationManager = onNotification
         .filterList { it is MarshalNotification.BatteryAlertNotification }
         .mapList { it as MarshalNotification.BatteryAlertNotification }
-        .onEachList { data ->
+        .onEachList { notification ->
             Logger.i(TAG, message = {
-                "process BatteryAlertNotification $data"
+                "process BatteryAlertNotification $notification"
             })
 
-            CompanyRepository.alerts.any {
-                it is AlertModel.Battery
-                        && it.date.timestamp == data.date.timestamp
+            Database.alerts.any {
+                it.type == AlertType.Battery
+                        && it.date.timestamp == notification.date.timestamp
             }.also {
                 if (!it)
-                    CompanyRepository.addAlert(
-                        AlertModel.Battery(
-                            courseID = data.idCourse,
-                            date = data.date,
-                            course = findCourse(data.idCourse),
-                            cart = findCart(data.idCart).map { c-> c!! },
+                    Database.addAlert(
+                        AlertEntity(
+                            courseID = notification.idCourse,
+                            date = notification.date,
+                            cartID = notification.idCart,
+                            type = AlertType.Battery
                         )
                     )
             }
-
         }
 
     private val endTripNotificationManager = onNotification

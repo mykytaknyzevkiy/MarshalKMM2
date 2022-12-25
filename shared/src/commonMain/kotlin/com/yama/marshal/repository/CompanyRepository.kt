@@ -2,6 +2,7 @@ package com.yama.marshal.repository
 
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
+import com.yama.marshal.data.entity.AlertType
 import com.yama.marshal.data.entity.CompanyMessage
 import com.yama.marshal.data.entity.GeofenceItem
 import com.yama.marshal.data.model.AlertModel
@@ -9,9 +10,8 @@ import com.yama.marshal.network.model.request.CartMessageListRequest
 import com.yama.marshal.network.model.request.CartMessageSentRequest
 import com.yama.marshal.network.model.request.GeofenceListRequest
 import com.yama.marshal.network.service.DNAService
-import com.yama.marshal.tool.add
+import com.yama.marshal.tool.*
 import com.yama.marshal.tool.companyID
-import com.yama.marshal.tool.filterList
 import com.yama.marshal.tool.prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,11 +31,55 @@ object CompanyRepository : CoroutineScope {
             it.message.isNotBlank()
         }
 
-    val alerts = Database.alerts
+    val alerts = Database
+        .alerts
+        .filterList {
+            it.type == AlertType.Fence && (it.geofenceID ?: -1) >= 0
+        }
+        .combine(CourseRepository.courseList) { alerts, coures ->
+            Pair(alerts, coures)
+        }
+        .combine(CartRepository.cartActiveList) { a, carts ->
+            Pair(a, carts)
+        }
+        .map {
+            it.first.first.map { alert ->
+                val cart = it.second.find { c -> c.id == alert.cartID }
+                val course = it.first.second.find { c -> c.id == alert.courseID }
 
-    suspend fun addAlert(data: AlertModel) {
-        Database.addAlert(data)
-    }
+                if (cart == null || course == null)
+                    null
+                else
+                    when (alert.type) {
+                        AlertType.Pace -> AlertModel.Pace(
+                            courseID = alert.courseID,
+                            cart = cart,
+                            course = course,
+                            netPace = alert.netPace,
+                            date = alert.date
+                        )
+
+                        AlertType.Fence -> AlertModel.Fence(
+                            courseID = alert.courseID,
+                            cart = cart,
+                            course = course,
+                            geofence = findGeofence(alert.geofenceID).first(),
+                            date = alert.date
+                        )
+
+                        AlertType.Battery -> AlertModel.Battery(
+                            courseID = alert.courseID,
+                            cart = cart,
+                            course = course,
+                            date = alert.date
+                        )
+                    }
+            }
+        }
+        .filterList { it != null }
+        .mapList {
+            it!!
+        }
 
     suspend fun loadMessages(): Boolean {
         dnaService

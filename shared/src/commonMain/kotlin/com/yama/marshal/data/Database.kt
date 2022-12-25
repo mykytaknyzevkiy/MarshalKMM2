@@ -36,11 +36,11 @@ internal object Database {
     val geofenceList: StateFlow<List<GeofenceItem>>
         get() = _geofenceList
 
-    private val _alerts = MutableStateFlow<List<AlertModel>>(emptyList())
-    val alerts: StateFlow<List<AlertModel>>
+    private val _alerts = MutableStateFlow<List<AlertEntity>>(emptyList())
+    val alerts: StateFlow<List<AlertEntity>>
         get() = _alerts
 
-    suspend fun addAlert(data: AlertModel) {
+    suspend fun addAlert(data: AlertEntity) {
         _alerts.value.toMutableList().apply {
             add(data)
         }.also {

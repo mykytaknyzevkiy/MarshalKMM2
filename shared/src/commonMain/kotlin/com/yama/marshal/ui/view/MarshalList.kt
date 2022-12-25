@@ -16,6 +16,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.times
 import androidx.compose.ui.unit.toOffset
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
@@ -34,7 +35,14 @@ internal inline fun <E> MarshalList(
     crossinline customItemBgColor: @DisallowComposableCalls (item: E) -> Color? = { null },
     crossinline itemActions: LazyListScope.(item: E) -> Unit = { },
     crossinline itemContent: @Composable RowScope.(item: E) -> Unit
-) = LazyColumn(modifier = modifier) {
+) = LazyColumn(modifier = modifier.drawBehind {
+    repeat(30) {
+        drawRect(
+            color = if (it % 2 == 0) bgPositive else bgNegative,
+            topLeft = Offset(x = 0f, y = (it * holderHeight).toPx()),
+        )
+    }
+}) {
     itemsIndexed(list, key = key) { position, item ->
         Box(modifier = Modifier.fillMaxWidth().height(holderHeight)) {
             val itemBgColor = remember(position, item) {
