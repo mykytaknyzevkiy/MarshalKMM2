@@ -24,6 +24,7 @@ import com.yama.marshal.ui.view.Cart
 import com.yama.marshal.ui.view.IGoldMap
 import com.yama.marshal.ui.view.RenderData
 import com.yama.marshal.ui.view.YamaScreen
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 
 internal class MapScreen(navigationController: NavigationController) : YamaScreen(navigationController) {
@@ -177,6 +178,10 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
                 viewModel.loadHole(holeID, courseID)
             else if (cartID != null)
                 viewModel.loadCart(cartID)
+
+            viewModel
+                .cartsLocationUpdater
+                .launchIn(this)
         }
     }
 

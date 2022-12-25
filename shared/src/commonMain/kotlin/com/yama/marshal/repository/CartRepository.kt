@@ -6,6 +6,7 @@ import com.yama.marshal.data.entity.CartItem
 import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.network.model.request.CartDetailsListRequest
+import com.yama.marshal.network.model.request.CartLastLocationRequest
 import com.yama.marshal.network.model.request.CompanyCartsRoundDetailsRequest
 import com.yama.marshal.network.service.DNAService
 import com.yama.marshal.network.unit.AuthManager
@@ -176,6 +177,46 @@ object CartRepository: YamaRepository() {
             ?.also {
                 Database.updateCart(it.copy(isFlag = true))
             }
+    }
+
+    suspend fun loadUpdateCartsLocation(cartIds: IntArray) {
+        val list = dnaService.cartsLocation(
+            CartLastLocationRequest(cartIds.toList())
+        )?.list ?: return
+
+        for (data in list) {
+            if (data.size != 11)
+                continue
+
+            val cartID = data[0]?.toIntOrNull() ?: continue
+
+            val lat = data[3]?.toDoubleOrNull() ?: continue
+            val lng = data[4]?.toDoubleOrNull() ?: continue
+
+            val hole = data[9]?.toIntOrNull() ?: continue
+
+            val cart = findCart(cartID).first() ?: continue
+
+            if (cart.currPosHole == hole
+                && cart.currPosLat == lat
+                && cart.currPosLon == lng)
+                continue
+
+            val cartRound = Database
+                .cartRoundList
+                .map { l ->
+                    l.findLast { it.id == cartID }
+                }
+                .first() ?: CartRoundItem(id = cartID)
+
+            cartRound.copy(
+                currPosHole = hole,
+                currPosLat = lat,
+                currPosLon = lng
+            ).also {
+                Database.addCartRound(it)
+            }
+        }
     }
 
     fun findCart(id: Int) = cartActiveList

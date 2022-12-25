@@ -31,12 +31,10 @@ object CompanyRepository : CoroutineScope {
             it.message.isNotBlank()
         }
 
-    private val _alerts = MutableStateFlow<List<AlertModel>>(emptyList())
-    val alerts: StateFlow<List<AlertModel>>
-        get() = _alerts
+    val alerts = Database.alerts
 
     suspend fun addAlert(data: AlertModel) {
-        _alerts.add(data)
+        Database.addAlert(data)
     }
 
     suspend fun loadMessages(): Boolean {

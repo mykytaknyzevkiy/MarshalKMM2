@@ -101,4 +101,9 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
         action = Action.CourseGeofenceList,
         payload = body
     )
+
+    suspend fun cartsLocation(body: CartLastLocationRequest): CartLastLocationResponse? = post(
+        action = Action.CartLastLocation,
+        payload = body
+    )
 }

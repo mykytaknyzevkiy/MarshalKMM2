@@ -1,14 +1,21 @@
 package com.yama.marshal.screen.map
 
+import co.touchlab.kermit.Logger
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.repository.CartRepository
 import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.tool.filterList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
 class MapViewModel : YamaViewModel() {
+    companion object {
+        private const val TAG = "MapViewModel"
+    }
+
     private val _holeState = MutableStateFlow<CourseFullDetail.HoleData?>(null)
     val holeState: StateFlow<CourseFullDetail.HoleData?>
         get() = _holeState
@@ -20,6 +27,23 @@ class MapViewModel : YamaViewModel() {
     private val _cartsState = MutableStateFlow<List<CartFullDetail>>(emptyList())
     val cartsState: StateFlow<List<CartFullDetail>>
         get() = _cartsState
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val cartsLocationUpdater = channelFlow {
+        while (!isClosedForSend) {
+            Logger.d(TAG, message = {
+                "on carts location update"
+            })
+
+            val cartIds = cartsState.value.map { it.id }.toIntArray()
+
+            CartRepository.loadUpdateCartsLocation(cartIds)
+
+            delay(1000L * 60 * 2)
+
+            send(1)
+        }
+    }
 
     fun loadHole(id: Int, courseID: String) {
         CourseRepository
