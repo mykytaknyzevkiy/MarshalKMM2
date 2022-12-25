@@ -19,6 +19,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
+        iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
             baseName = "Shared"
@@ -37,7 +38,7 @@ kotlin {
     cocoapods {
         ios.deploymentTarget = "14.1"
 
-        version = "1.3"
+        version = "1.5"
 
         summary = "This is sample Summary"
         homepage = "Home URL"
@@ -109,10 +110,12 @@ kotlin {
 
         val iosX64Main by getting
         val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
         val uikitX64Main by creating {
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
             }

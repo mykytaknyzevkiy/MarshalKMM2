@@ -19,6 +19,8 @@ class SocketManager: NSObject, SocketIODelegate {
     func connect(url: String, port: Int) {
         self.socketIO = nil
         
+        print("socketIO onConnect " + url + ":" + String(port))
+        
         self.socketIO = SocketIO(delegate: self)
         self.socketIO.connect(toHost: url, onPort: port)
     }
