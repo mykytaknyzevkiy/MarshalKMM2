@@ -1,10 +1,13 @@
 package com.yama.marshal.screen.hole_list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,6 +25,7 @@ import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
+import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
 
 internal class HoleListScreen(navigationController: NavigationController, viewModel: MainViewModel) :
@@ -49,6 +53,29 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             modifier = Modifier.fillMaxSize(),
             itemContent = {
                 ItemViewHolder(it)
+            },
+            itemActions = { item ->
+                item {
+                    IconButton(
+                        modifier = Modifier.size(Sizes.fleet_view_holder_height).background(
+                            YamaColor.view_cart_btn_bg_color),
+                        onClick = {
+                            navigationController.navigateTo(
+                                MapScreen.route,
+                                listOf(
+                                    NavArg(key = MapScreen.ARG_HOLE_ID, value = item.holeNumber),
+                                    NavArg(key = MapScreen.ARG_COURSE_ID, value = item.idCourse)
+                                )
+                            )
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                }
             },
             list = holeList
         )

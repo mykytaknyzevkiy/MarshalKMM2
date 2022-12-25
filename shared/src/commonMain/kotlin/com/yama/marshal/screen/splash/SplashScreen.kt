@@ -30,7 +30,7 @@ internal class SplashScreen(navigationController: NavigationController) : YamaSc
             horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painterResource("img_app_logo.png"),
-                modifier = Modifier.padding(Sizes.screenPadding),
+                modifier = Modifier.padding(Sizes.screenPadding / 2),
                 contentDescription = null
             )
 

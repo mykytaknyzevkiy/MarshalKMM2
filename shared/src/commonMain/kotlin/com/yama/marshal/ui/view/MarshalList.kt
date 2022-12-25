@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.toOffset
@@ -35,10 +36,7 @@ internal inline fun <E> MarshalList(
     crossinline itemContent: @Composable RowScope.(item: E) -> Unit
 ) = LazyColumn(modifier = modifier) {
     itemsIndexed(list, key = key) { position, item ->
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(holderHeight)
-        ) {
+        Box(modifier = Modifier.fillMaxWidth().height(holderHeight)) {
             val itemBgColor = remember(position, item) {
                 customItemBgColor(item)
                     ?: if (position % 2 == 0)
@@ -47,19 +45,18 @@ internal inline fun <E> MarshalList(
                         bgNegative
             }
 
-            val maxOffset = remember {
-                holderHeight * 3
+            var maxOffset by remember {
+                mutableStateOf(0)
             }
 
-            var offsetX by remember { mutableStateOf(0f) }
+            LazyRow(modifier = Modifier.onSizeChanged {
+                maxOffset = it.width
+            }) {
+                itemActions(item)
+            }
 
-            if (offsetX > 0)
-                LazyRow {
-                    itemActions(item)
-                }
-
-            val itemOffset = remember(offsetX) {
-                IntOffset(offsetX.roundToInt(), 0)
+            var itemOffset by remember {
+                mutableStateOf(IntOffset(0, 0))
             }
 
             Row(modifier = Modifier
@@ -74,17 +71,17 @@ internal inline fun <E> MarshalList(
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures(
                         onHorizontalDrag = { _, x ->
-                            val original = Offset(offsetX, 0f)
-                            val summed = original + Offset(x = x, y = 0f)
+                            val original = itemOffset
+                            val summed = original + IntOffset(x = x.roundToInt(), y = 0)
 
-                            if (summed.x in 0.0f..maxOffset.toPx())
-                                offsetX = summed.x
+                            if (summed.x in 0..maxOffset)
+                                itemOffset = summed
                         },
                         onDragEnd = {
-                            if (offsetX < (maxOffset.toPx()) / 2f)
-                                offsetX = 0f
-                            else if (offsetX > (maxOffset.toPx()) / 2f)
-                                offsetX = maxOffset.toPx()
+                            if (itemOffset.x < maxOffset / 2f)
+                                itemOffset = IntOffset(0,0)
+                            else if (itemOffset.x > maxOffset / 2f)
+                                itemOffset = IntOffset(maxOffset, 0)
                         }
                     )
                 },

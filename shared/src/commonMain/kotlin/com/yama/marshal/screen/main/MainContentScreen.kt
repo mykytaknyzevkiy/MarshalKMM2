@@ -25,23 +25,6 @@ internal abstract class MainContentScreen(
                                                   currentSort: SORT_TYPE,
                                                   updateSort: (type: SORT_TYPE) -> Unit
     ) {
-        val textLabel: @Composable RowScope.(type: SORT_TYPE, isLast: Boolean) -> Unit =
-            { type, isLast ->
-                Box(
-                    modifier = Modifier.weight(type.weight).fillMaxHeight().clickable {
-                        updateSort(type)
-                    },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        type.label.uppercase(),
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = if (currentSort == type) 1f else 0.6f),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-                if (!isLast) NSpacer()
-            }
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -50,10 +33,30 @@ internal abstract class MainContentScreen(
                 .border(width = 1.dp, color = Color.LightGray),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            sortList.forEachIndexed { index, sortType ->
-                textLabel(sortType, sortList.lastIndex == index)
+            sortList.forEach { sortType ->
+                textLabel(sortType, currentSort, updateSort)
             }
         }
+    }
+
+    @Composable
+    private fun <SORT_TYPE : SortType>  RowScope.textLabel(type: SORT_TYPE,
+                                                           currentSort: SORT_TYPE,
+                                                           updateSort: (type: SORT_TYPE) -> Unit
+    ) {
+        Box(modifier = Modifier
+            .weight(type.weight)
+            .fillMaxHeight()
+            .padding(Sizes.screenPadding / 2)
+            .clickable { updateSort(type) }, contentAlignment = Alignment.Center) {
+            Text(
+                text = type.label.uppercase(),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = if (currentSort == type) 1f else 0.6f),
+                textAlign = TextAlign.Center,
+            )
+        }
+
+        NSpacer()
     }
 }
 
