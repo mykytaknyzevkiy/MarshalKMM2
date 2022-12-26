@@ -15,7 +15,7 @@
 		3F7E617C29580944004844C3 /* socket_IO.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4482953667600F45167 /* socket_IO.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F7E617D29580946004844C3 /* SocketRocket.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4492953667600F45167 /* SocketRocket.xcframework */; };
 		3F7E617E29580946004844C3 /* SocketRocket.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 39B2B4492953667600F45167 /* SocketRocket.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		3FFFE7FF295A32A80021E28A /* MarshallUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFFE7FE295A32A80021E28A /* MarshallUtils.swift */; };
+		3FFFE801295A3D1A0021E28A /* NUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFFE800295A3D1A0021E28A /* NUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,7 +42,7 @@
 		39B2B4512953686300F45167 /* IGolfSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IGolfSocket.swift; sourceTree = "<group>"; };
 		39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManagerDelegate.swift; sourceTree = "<group>"; };
 		3FCCEE85295816D00060CE1E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		3FFFE7FE295A32A80021E28A /* MarshallUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarshallUtils.swift; sourceTree = "<group>"; };
+		3FFFE800295A3D1A0021E28A /* NUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				39B2B44F295366AB00F45167 /* SocketManager.swift */,
 				39B2B4512953686300F45167 /* IGolfSocket.swift */,
 				39B2B45329536C2700F45167 /* SocketManagerDelegate.swift */,
-				3FFFE7FE295A32A80021E28A /* MarshallUtils.swift */,
+				3FFFE800295A3D1A0021E28A /* NUtils.swift */,
 			);
 			path = Ios;
 			sourceTree = "<group>";
@@ -188,8 +188,8 @@
 			files = (
 				39B2B4522953686300F45167 /* IGolfSocket.swift in Sources */,
 				39B2B450295366AB00F45167 /* SocketManager.swift in Sources */,
+				3FFFE801295A3D1A0021E28A /* NUtils.swift in Sources */,
 				39B2B45429536C2700F45167 /* SocketManagerDelegate.swift in Sources */,
-				3FFFE7FF295A32A80021E28A /* MarshallUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,27 +2,47 @@ package com.yama.marshal.ui.view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.round
+import co.touchlab.kermit.Logger
 import com.yama.marshal.currentRootView
 import kotlinx.coroutines.flow.Flow
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.setBounds
 import igolf.render.CourseRenderView
+import igolf.render.CourseRenderViewDelegateProtocol
+import platform.Foundation.*
 import platform.UIKit.addSubview
 import platform.UIKit.didMoveToSuperview
 import platform.UIKit.willRemoveSubview
+import platform.darwin.NSObject
+
 
 @Composable
-internal actual fun IGoldMap(modifier: Modifier,
-                             renderData: RenderData,
-                             hole: Flow<Int>,
-                             carts: Flow<List<Cart>>) {
-    val renderView = CourseRenderView()
+internal actual fun IGoldMap(
+    modifier: Modifier,
+    renderData: RenderData,
+    hole: Flow<Int>,
+    carts: Flow<List<Cart>>
+) {
+    val renderView = remember {
+        CourseRenderView().apply {
+            setDelegate(object : CourseRenderViewDelegateProtocol, NSObject() {
+                override fun courseRenderViewDidLoadHoleData() {
+                    Logger.d("NEKAAA", message = {
+                        "courseRenderViewDidLoadHoleData"
+                    })
+                }
+            })
+        }
+    }
+
 
     val density = LocalDensity.current.density
 
@@ -42,7 +62,18 @@ internal actual fun IGoldMap(modifier: Modifier,
             )
         },
         content = {
-                  JSONSE
+            NSString
+                .create(string = renderData.vectors)
+                .dataUsingEncoding(1)!!.let {
+                    NSJSONSerialization.JSONObjectWithData(data = it, options = 0, error = null)
+                }!!.let {
+                    it as Map<Any?, *>
+                }.also {
+                    renderView.viewCartWithGpsVectorData(it)
+                    renderView.setCurrentHole(1)
+                }
+
+
         },
         measurePolicy = { _, _ -> layout(0, 0) {} }
     )
@@ -55,8 +86,6 @@ internal actual fun IGoldMap(modifier: Modifier,
             currentRootView.view.willRemoveSubview(renderView)
         }
     }
-
-
 }
 
 /*

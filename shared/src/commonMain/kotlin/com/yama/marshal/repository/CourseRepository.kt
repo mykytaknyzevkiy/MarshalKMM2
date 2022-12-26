@@ -16,6 +16,7 @@ import com.yama.marshal.tool.mapList
 import com.yama.marshal.tool.prefs
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 
 object CourseRepository : YamaRepository() {

@@ -10,7 +10,7 @@ import UIKit
 @objc
 public class IGolfSocket: NSObject {
     @objc
-    public func v25() {
+    public func v29() {
         
     }
     
