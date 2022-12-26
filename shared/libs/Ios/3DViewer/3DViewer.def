@@ -1,0 +1,4 @@
+language = Objective-C
+
+headers = CourseRenderView.h
+package = igolf.render

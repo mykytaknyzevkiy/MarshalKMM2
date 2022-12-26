@@ -22,6 +22,7 @@ class SocketManager: NSObject, SocketIODelegate {
         print("socketIO onConnect " + url + ":" + String(port))
         
         self.socketIO = SocketIO(delegate: self)
+        self.socketIO.useSecure = true
         self.socketIO.connect(toHost: url, onPort: port)
     }
     

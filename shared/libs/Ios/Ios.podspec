@@ -1,15 +1,16 @@
 Pod::Spec.new do |spec|
   spec.name                     = 'Ios'
-  spec.version                  = '1.7'
+  spec.version                  = '1.20'
   spec.homepage                 = 'Home URL'
   spec.source                   = { :http=> ''}
   spec.authors                  = ''
   spec.license                  = ''
   spec.summary                  = 'This is sample Summary'
-  spec.vendored_frameworks      = 'libs/*.*'
+  spec.vendored_frameworks      = ['libs/*.*']
   spec.ios.deployment_target    = '14.1'
   spec.swift_version            = '5.0'
-  spec.source_files             = 'Ios/*.{swift,h,m}'
+  spec.source_files             = ['Ios/*.{swift,h,m}']
+  spec.requires_arc             = true
 
 
   #s.requires_arc     = true

@@ -12,7 +12,3 @@ FOUNDATION_EXPORT double IosVersionNumber;
 
 //! Project version string for Ios.
 FOUNDATION_EXPORT const unsigned char IosVersionString[];
-
-// In this header, you should import all the public headers of your framework using statements like #import <Ios/PublicHeader.h>
-
-

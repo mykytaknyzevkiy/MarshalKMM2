@@ -37,10 +37,14 @@ internal inline fun <E> MarshalList(
     crossinline itemContent: @Composable RowScope.(item: E) -> Unit
 ) = LazyColumn(modifier = modifier.drawBehind {
     repeat(30) {
-        drawRect(
-            color = if (it % 2 == 0) bgPositive else bgNegative,
-            topLeft = Offset(x = 0f, y = (it * holderHeight).toPx()),
-        )
+        try {
+            drawRect(
+                color = if (it % 2 == 0) bgPositive else bgNegative,
+                topLeft = Offset(x = 0f, y = (it * holderHeight).toPx()),
+            )
+        } catch (e: Exception) {
+            return@repeat
+        }
     }
 }) {
     itemsIndexed(list, key = key) { position, item ->
