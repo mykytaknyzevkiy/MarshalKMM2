@@ -36,6 +36,7 @@ internal actual fun IGoldMap(
             .also { view ->
                 view.init(
                     hashMapOf(
+                        //CourseGPSVectorDetailsRequest:vectorGPSObject
                         Pair(renderData.idCourse, renderData.vectors),
                         Pair(Course3DRenderer.COURSE_ID, renderData.idCourse)
                     ),

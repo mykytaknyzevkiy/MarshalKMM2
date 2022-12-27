@@ -260,6 +260,10 @@
 		3FD084BA295A714000935A18 /* 3DViewer */ = {
 			isa = PBXGroup;
 			children = (
+				3FCCEE69295812490060CE1E /* ComposeController.swift */,
+				7555FF82242A565900829871 /* ContentView.swift */,
+				3FD08563295A8C8D00935A18 /* RenderMapViewController.xib */,
+				3FD0855F295A7E9D00935A18 /* RenderMapViewController.swift */,
 				3FD084BB295A714000935A18 /* Textures */,
 				3FD08504295A714000935A18 /* Include */,
 			);
@@ -359,6 +363,13 @@
 			path = Include;
 			sourceTree = "<group>";
 		};
+		3FD08565295B026100935A18 /* view */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
@@ -381,17 +392,14 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				2152FB032600AC8F00CF470E /* iOSApp.swift */,
+				3FCCEE86295823600060CE1E /* iosApp.entitlements */,
+				7555FF8C242A565B00829871 /* Info.plist */,
+				058557BA273AAA24004C7B11 /* Assets.xcassets */,
+				058557D7273AAEEB004C7B11 /* Preview Content */,
+				3FD08565295B026100935A18 /* view */,
 				3FD084BA295A714000935A18 /* 3DViewer */,
 				3FD08555295A71AC00935A18 /* Bridging-Header.h */,
-				3FCCEE86295823600060CE1E /* iosApp.entitlements */,
-				3FCCEE69295812490060CE1E /* ComposeController.swift */,
-				058557BA273AAA24004C7B11 /* Assets.xcassets */,
-				7555FF82242A565900829871 /* ContentView.swift */,
-				7555FF8C242A565B00829871 /* Info.plist */,
-				2152FB032600AC8F00CF470E /* iOSApp.swift */,
-				3FD08563295A8C8D00935A18 /* RenderMapViewController.xib */,
-				058557D7273AAEEB004C7B11 /* Preview Content */,
-				3FD0855F295A7E9D00935A18 /* RenderMapViewController.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";

@@ -152,6 +152,14 @@ android {
     defaultConfig {
         targetSdk = 33
         minSdk = 23
+
+        ndk.abiFilters.apply {
+            add("armeabi-v7a")
+            add("x86")
+            add("armeabi")
+            add("mips")
+            add("arm64-v8a")
+        }
     }
 
     sourceSets["main"].apply {
