@@ -5,6 +5,7 @@ import Shared
 struct iOSApp: App {
     init() {
         IniterKt.doInitMe(bundle: Bundle.main)
+        IniterKt.setCourseRenderView(igolfMapNativeRenderViewN: RenderMapViewController())
     }
     
     var body: some Scene {

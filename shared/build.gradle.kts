@@ -34,7 +34,7 @@ kotlin {
             xcFramework.add(this)
         }
 
-        it.compilations.getByName("main") {
+        /*it.compilations.getByName("main") {
             val ThereDViewer by cinterops.creating {
                 // Path to .def file
                 defFile("libs/Ios/3DViewer/3DViewer.def")
@@ -46,7 +46,7 @@ kotlin {
                 // Linker options required to link to the library.
                 linkerOpts("/Users/nek_zabirov/Documents/MarshallKMM/shared/libs/Ios/3DViewer/Include/libiGolfViewer3D.a")
             }
-        }
+        }*/
     }
 
     cocoapods {
