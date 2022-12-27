@@ -51,7 +51,7 @@ actual class MarshalSocket:MarshalSocketIO(), IOCallback {
         SocketIO.setDefaultSSLSocketFactory(SSLContext.getDefault())
 
         socketIO = try {
-            SocketIO("$MARSHAL_NOTIFICATION_ENDPOINT:$MARSHAL_NOTIFICATION_PORT")
+            SocketIO("https://$MARSHAL_NOTIFICATION_ENDPOINT:$MARSHAL_NOTIFICATION_PORT")
         } catch (e: Exception) {
             onError(e.localizedMessage ?: "Unknown")
             return@launch

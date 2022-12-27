@@ -12,12 +12,12 @@ object AuthManager {
     private const val SignatureVersion = "2.0"
     private const val SignatureMethod = "HmacSHA256"
     private const val ResponseFormat = "JSON"
-    const val ApplicationSecretKey = "L4ccbyhS9xlDjd3vgnw_LZTqsrCvLO"
+    const val ApplicationSecretKey = "3CA0LPbu3FlXRin0UCH05rM/ZzvCkK"
     private const val timeStampDateFormatPattern = "yyMMddHHmmssZZZZ"
     const val timeStampDateFormatDataPattern = "yyMMddHHmmss"
-    const val ApplicationAPIKey = "FVyzsVqr-BmP280"
+    const val ApplicationAPIKey = "uUqnXUKU86kghJk"
 
-    const val MARSHAL_NOTIFICATION_ENDPOINT = "https://pace-push.syncwise360.com"
+    const val MARSHAL_NOTIFICATION_ENDPOINT = "pace-push.syncwise360.com"
     const val MARSHAL_NOTIFICATION_PORT = 9001
 
     fun getUrlForAction(action: Action): String {
