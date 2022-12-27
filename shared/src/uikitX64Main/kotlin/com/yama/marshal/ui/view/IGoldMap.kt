@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalDensity
 import co.touchlab.kermit.Logger
 import com.yama.marshal.currentRootView
 import com.yama.marshal.tool.igolfMapNativeRenderView
+import com.yama.marshal.tool.onEachList
 import com.yama.marshal.ui.theme.Sizes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
@@ -76,6 +77,17 @@ internal actual fun IGoldMap(
                 })
                 igolfMapNativeRenderView.setHole(
                     it
+                )
+            }
+            .launchIn(this)
+
+        carts
+            .onEachList {
+                igolfMapNativeRenderView.addCart(
+                    id = it.id,
+                    name = it.name,
+                    lat = it.location.first,
+                    lng = it.location.second
                 )
             }
             .launchIn(this)

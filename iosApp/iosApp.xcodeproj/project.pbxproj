@@ -260,10 +260,6 @@
 		3FD084BA295A714000935A18 /* 3DViewer */ = {
 			isa = PBXGroup;
 			children = (
-				3FCCEE69295812490060CE1E /* ComposeController.swift */,
-				7555FF82242A565900829871 /* ContentView.swift */,
-				3FD08563295A8C8D00935A18 /* RenderMapViewController.xib */,
-				3FD0855F295A7E9D00935A18 /* RenderMapViewController.swift */,
 				3FD084BB295A714000935A18 /* Textures */,
 				3FD08504295A714000935A18 /* Include */,
 			);
@@ -366,6 +362,10 @@
 		3FD08565295B026100935A18 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				3FCCEE69295812490060CE1E /* ComposeController.swift */,
+				7555FF82242A565900829871 /* ContentView.swift */,
+				3FD08563295A8C8D00935A18 /* RenderMapViewController.xib */,
+				3FD0855F295A7E9D00935A18 /* RenderMapViewController.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";

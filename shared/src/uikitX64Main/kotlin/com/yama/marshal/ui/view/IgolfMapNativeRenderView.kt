@@ -1,6 +1,5 @@
 package com.yama.marshal.ui.view
 
-import platform.Foundation.NSDictionary
 import platform.UIKit.UIViewController
 
 interface IgolfMapNativeRenderView {
@@ -9,4 +8,8 @@ interface IgolfMapNativeRenderView {
     fun setVectors(json: String)
 
     fun setHole(hole: Int)
+
+    fun addCart(id: Int, name: String, lat: Double, lng: Double)
+
+    fun removeCart(id: Int)
 }
