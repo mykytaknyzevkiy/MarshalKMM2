@@ -15,7 +15,7 @@ class RenderMapViewController: UIViewController, CourseRenderViewDelegate, Igolf
     @IBOutlet var renderView: CourseRenderView?
     
     func setHole(hole: Int32) {
-        //renderView?.currentHole = UInt(hole)
+        renderView?.currentHole = UInt(hole)
     }
     
     func setVectors(json: String) {
@@ -34,7 +34,6 @@ class RenderMapViewController: UIViewController, CourseRenderViewDelegate, Igolf
     
     func courseRenderViewDidLoadCourseData() {
         print("Neka courseRenderViewDidLoadCourseData")
-        renderView?.currentHole = UInt(3)
     }
 
 

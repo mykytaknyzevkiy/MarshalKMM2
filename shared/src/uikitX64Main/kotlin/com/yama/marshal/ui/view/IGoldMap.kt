@@ -2,21 +2,20 @@ package com.yama.marshal.ui.view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.round
+import co.touchlab.kermit.Logger
 import com.yama.marshal.currentRootView
 import com.yama.marshal.tool.igolfMapNativeRenderView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import platform.CoreGraphics.CGRectMake
-import platform.Foundation.*
 import platform.UIKit.*
 
 
@@ -27,7 +26,6 @@ internal actual fun IGoldMap(
     hole: Flow<Int>,
     carts: Flow<List<Cart>>
 ) {
-
     val density = LocalDensity.current.density
 
     Layout(
@@ -36,7 +34,7 @@ internal actual fun IGoldMap(
             val location = coordinates.localToWindow(Offset.Zero)
             val size = coordinates.size
 
-            igolfMapNativeRenderView.renderNUIViewController().view.setBounds(
+            igolfMapNativeRenderView.renderNUIViewController().view.setFrame(
                 CGRectMake(
                     (location.x / density).toDouble(),
                     (location.y / density).toDouble(),
@@ -46,7 +44,9 @@ internal actual fun IGoldMap(
             )
         },
         content = {},
-        measurePolicy = { _, _ -> layout(0, 0) {} }
+        measurePolicy = { m, c ->
+            layout(0, 0) {}
+        }
     )
 
     DisposableEffect(igolfMapNativeRenderView) {
@@ -55,15 +55,26 @@ internal actual fun IGoldMap(
         igolfMapNativeRenderView.renderNUIViewController().didMoveToParentViewController(currentRootView)
 
         igolfMapNativeRenderView.setVectors(renderData.vectors)
-        igolfMapNativeRenderView.setHole(1)
 
         onDispose {
-            //currentRootView.view.willRemoveSubview(renderView)
+            igolfMapNativeRenderView.renderNUIViewController().removeFromParentViewController()
+            igolfMapNativeRenderView.renderNUIViewController().view.removeFromSuperview()
         }
     }
 
-    val scope = rememberCoroutineScope()
-
-    scope.launch(Dispatchers.Default) {
+    LaunchedEffect(renderData) {
+        hole
+            .filter {
+                it >= 0
+            }
+            .onEach {
+                Logger.i("IGoldMap", message = {
+                    "Move to hole $it"
+                })
+                igolfMapNativeRenderView.setHole(
+                    it
+                )
+            }
+            .launchIn(this)
     }
 }
