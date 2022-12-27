@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalDensity
 import co.touchlab.kermit.Logger
 import com.yama.marshal.currentRootView
 import com.yama.marshal.tool.igolfMapNativeRenderView
+import com.yama.marshal.ui.theme.Sizes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -28,6 +29,8 @@ internal actual fun IGoldMap(
 ) {
     val density = LocalDensity.current.density
 
+    val screenPadding = Sizes.screenPadding.value
+
     Layout(
         modifier = Modifier.onGloballyPositioned { childCoordinates ->
             val coordinates = childCoordinates.parentCoordinates!!
@@ -39,12 +42,12 @@ internal actual fun IGoldMap(
                     (location.x / density).toDouble(),
                     (location.y / density).toDouble(),
                     (size.width / density).toDouble(),
-                    (size.height / density).toDouble()
+                    (size.height / density - (screenPadding * 3)).toDouble()
                 )
             )
         },
         content = {},
-        measurePolicy = { m, c ->
+        measurePolicy = { _, _ ->
             layout(0, 0) {}
         }
     )

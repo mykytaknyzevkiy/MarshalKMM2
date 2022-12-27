@@ -20,8 +20,6 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.unit.toOffset
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
-import com.yama.marshal.ui.tool.Orientation
-import com.yama.marshal.ui.tool.currentOrientation
 import kotlin.math.roundToInt
 
 @Composable
