@@ -130,4 +130,9 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
             "on cart location $it"
         })
     }
+
+    suspend fun courseVectorDetails(payload: CourseGPSVectorDetailsRequest): String? = postStr(
+        action = Action.CourseVectorDetails,
+        payload = payload
+    )
 }
