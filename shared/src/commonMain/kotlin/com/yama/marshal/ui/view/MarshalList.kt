@@ -1,5 +1,6 @@
 package com.yama.marshal.ui.view
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -58,28 +59,28 @@ internal inline fun <E> MarshalList(
     LazyColumn(modifier = Modifier.fillMaxSize(), state = state) {
         itemsIndexed(list, key = key) { position, item ->
             Box(modifier = Modifier.fillMaxWidth().height(holderHeight)) {
-                val itemBgColor = remember(position, item) {
-                    customItemBgColor(item)
-                        ?: if (position % 2 == 0)
-                            bgPositive
-                        else
-                            bgNegative
+                val itemBgColor by remember {
+                    derivedStateOf {
+                        customItemBgColor(item)
+                            ?: if (position % 2 == 0)
+                                bgPositive
+                            else
+                                bgNegative
+                    }
                 }
 
-                var maxOffset by remember {
+                var maxOffset by remember(item) {
                     mutableStateOf(0)
                 }
 
-                var itemOffset by remember {
+                var itemOffset by remember(item) {
                     mutableStateOf(IntOffset(0, 0))
                 }
 
-                if (itemOffset.x > 0 || maxOffset == 0) {
-                    LazyRow(modifier = Modifier.onSizeChanged {
-                        maxOffset = it.width
-                    }) {
-                        itemActions(item)
-                    }
+                LazyRow(modifier = Modifier.onSizeChanged {
+                    maxOffset = it.width
+                }) {
+                    itemActions(item)
                 }
 
                 Row(modifier = Modifier
@@ -119,36 +120,40 @@ internal inline fun <E> MarshalList(
         }
     }
 
-    val isOnTop = remember(state.firstVisibleItemIndex) {
-        state.firstVisibleItemIndex <= 0
+    val showToTopBtn by remember {
+        derivedStateOf {
+            state.firstVisibleItemIndex > 0
+        }
     }
 
-    if (!isOnTop)
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.BottomCenter)
-            .padding(Sizes.screenPadding))
-        {
-            Spacer(modifier = Modifier.weight(1f))
-
-            IconButton(
-                modifier = Modifier
-                    .size(Sizes.screenPadding * 3)
-                    .background(
-                        MaterialTheme.colorScheme.primary,
-                        CircleShape
-                    ),
-                onClick = {
-                    scope.launch {
-                        state.animateScrollToItem(0)
-                    }
+    AnimatedVisibility(
+        showToTopBtn,
+        enter = slideInHorizontally(
+            initialOffsetX = { +300 }
+        ),
+        exit = slideOutHorizontally(
+            targetOffsetX = { +300 }
+        ),
+        modifier = Modifier.align(Alignment.BottomEnd).padding(Sizes.screenPadding)
+    ) {
+        IconButton(
+            modifier = Modifier
+                .size(Sizes.screenPadding * 3)
+                .background(
+                    MaterialTheme.colorScheme.primary,
+                    CircleShape
+                ),
+            onClick = {
+                scope.launch {
+                    state.animateScrollToItem(0)
                 }
-            ) {
-                Icon(
-                    Icons.Default.PanToolAlt,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    contentDescription = null
-                )
             }
+        ) {
+            Icon(
+                Icons.Default.PanToolAlt,
+                tint = MaterialTheme.colorScheme.onPrimary,
+                contentDescription = null
+            )
         }
+    }
 }

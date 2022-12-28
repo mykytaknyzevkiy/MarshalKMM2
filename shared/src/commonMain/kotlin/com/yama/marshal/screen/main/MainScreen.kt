@@ -60,8 +60,8 @@ internal class MainScreen(navigationController: NavigationController) :
 
         return when (currentScreen.route) {
             fleetListScreen.route -> fleetListScreen.toolbarColor
-            holeListScreen.route -> fleetListScreen.toolbarColor
-            alertListScreen.route -> fleetListScreen.toolbarColor
+            holeListScreen.route -> holeListScreen.toolbarColor
+            alertListScreen.route -> holeListScreen.toolbarColor
             else -> super.toolbarColor()
         }
     }
@@ -77,7 +77,8 @@ internal class MainScreen(navigationController: NavigationController) :
             modifier = Modifier.clickable { onSelectCourseState.value = true },
             text = selectedCourse!!.courseName,
             fontSize = Sizes.title,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 

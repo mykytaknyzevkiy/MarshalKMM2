@@ -27,7 +27,8 @@ internal abstract class YamaScreen(protected val navigationController: Navigatio
             modifier = Modifier.padding(horizontal = Sizes.screenPadding),
             text = title().uppercase(),
             fontSize = Sizes.title,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 

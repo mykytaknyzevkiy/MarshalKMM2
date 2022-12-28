@@ -4,13 +4,13 @@ import kotlinx.cinterop.copy
 import platform.UIKit.UIDevice
 import platform.UIKit.UIDeviceOrientation
 import platform.UIKit.UIScreen
+import platform.UIKit.UIUserInterfaceIdiomPad
 
 internal actual fun currentOrientation(): Orientation {
-    return if (UIDevice.currentDevice().orientation == UIDeviceOrientation.UIDeviceOrientationPortrait) {
+    return if (UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiomPad)
         Orientation.LANDSCAPE
-    } else {
+    else
         Orientation.PORTRAIT
-    }
 }
 
 internal actual fun screenSize(): ScreenSize {

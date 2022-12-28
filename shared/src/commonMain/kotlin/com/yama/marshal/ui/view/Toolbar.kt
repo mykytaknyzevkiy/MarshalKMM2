@@ -22,7 +22,7 @@ internal fun YamaToolbar(
     onBack: (() -> Unit)? = null,
     backIcon: ImageVector = Icons.Filled.ArrowBack,
     actions: (@Composable RowScope.() -> Unit)? = null,
-) = Surface(color = color) {
+) = Surface(color = color, contentColor = MaterialTheme.colorScheme.onPrimary) {
     Row(
         modifier = Modifier.fillMaxWidth()
             .defaultMinSize(minHeight = LocalAppDimens.current.toolbar_height)
