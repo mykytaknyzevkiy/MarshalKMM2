@@ -61,7 +61,7 @@ internal class MainScreen(navigationController: NavigationController) :
         return when (currentScreen.route) {
             fleetListScreen.route -> fleetListScreen.toolbarColor
             holeListScreen.route -> holeListScreen.toolbarColor
-            alertListScreen.route -> holeListScreen.toolbarColor
+            alertListScreen.route -> alertListScreen.toolbarColor
             else -> super.toolbarColor()
         }
     }

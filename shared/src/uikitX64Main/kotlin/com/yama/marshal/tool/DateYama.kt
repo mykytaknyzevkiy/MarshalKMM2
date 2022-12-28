@@ -1,9 +1,7 @@
 package com.yama.marshal.tool
 
 import io.ktor.util.date.*
-import platform.Foundation.NSDate
-import platform.Foundation.NSDateFormatter
-import platform.Foundation.timeIntervalSince1970
+import platform.Foundation.*
 
 actual fun GMTDate.format(pattern: String): String {
     val date = NSDate(
@@ -20,10 +18,12 @@ actual fun GMTDate.format(pattern: String): String {
 actual fun parseDate(pattern: String, date: String): GMTDate {
     return NSDateFormatter().apply {
         dateFormat = pattern
+        this.timeZone = NSTimeZone.create("UTC")!!
     }.dateFromString(date).let {
         if (it == null)
             GMTDate()
-        else
-            GMTDate(it.timeIntervalSince1970.toLong() * 10000)
+        else {
+            GMTDate(it.timeIntervalSince1970.toLong() * 1000)
+        }
     }
 }

@@ -28,6 +28,7 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -67,13 +68,16 @@ internal class AlertsScreen(
                     YamaColor.item_cart_flag_container_bg
                 else
                     null
+            },
+            key = { position, _ ->
+                position
             }
         )
 
         LaunchedEffect(viewModel) {
             viewModel.alertList
                 .onEach {
-                    listState.scrollToItem(0)
+                    listState.animateScrollToItem(index = 0, scrollOffset = 0)
                 }.launchIn(this)
         }
     }
@@ -88,7 +92,7 @@ internal class AlertsScreen(
 
         NSpacer()
 
-        Icon(
+        /*Icon(
             imageVector = when (item) {
                 is AlertModel.Fence -> Icons.Default.LocationDisabled
                 is AlertModel.Pace -> Icons.Default.Schedule
@@ -96,10 +100,10 @@ internal class AlertsScreen(
             },
             contentDescription = null,
             modifier = Modifier
-                .weight(0.2f)
+                .weight(0.150f)
         )
 
-        NSpacer()
+        NSpacer()*/
 
         Text(
             text = when (item) {
@@ -108,12 +112,12 @@ internal class AlertsScreen(
                 is AlertModel.Battery -> Strings.alerts_item_type_battery_title
             },
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.4f).padding(Sizes.screenPadding / 2)
+            modifier = Modifier.weight(0.5f).padding(Sizes.screenPadding / 2)
         )
 
         NSpacer()
 
-        when (item) {
+        when (item){
             is AlertModel.Fence -> {
                 Text(
                     text = item.geofence.name ?: "---",
@@ -143,7 +147,7 @@ internal class AlertsScreen(
         Text(
             text = item.date.format("hh:mm a"),
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.3f)
+            modifier = Modifier.weight(0.4f).padding(Sizes.screenPadding / 2)
         )
     }
 }
