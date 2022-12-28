@@ -5,6 +5,7 @@ import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.repository.CartRepository
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.CourseRepository
+import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.tool.FleetSorter
 import com.yama.marshal.tool.HoleSorter
@@ -127,5 +128,9 @@ class MainViewModel : YamaViewModel() {
 
     fun flagCart(cart: CartFullDetail) = viewModelScope.launch {
         CartRepository.flagCart(cart.id)
+    }
+
+    fun logOut() {
+        UserRepository().logOut()
     }
 }

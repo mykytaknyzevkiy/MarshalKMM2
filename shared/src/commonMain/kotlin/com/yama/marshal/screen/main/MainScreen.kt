@@ -9,8 +9,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.GolfCourse
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -73,6 +75,18 @@ internal class MainScreen(navigationController: NavigationController) :
             val clock by remember { viewModel.clock }.collectAsState("")
 
             Text(clock, fontSize = Sizes.title)
+        }
+
+        IconButton(
+            modifier = Modifier.size(Sizes.buttonSize),
+            onClick = {
+                viewModel.logOut()
+                navigationController.navigateToAndFinish("login")
+            }) {
+            Icon(
+                modifier = Modifier.size(Sizes.button_icon_size),
+                imageVector = Icons.Default.Logout, contentDescription = null
+            )
         }
     }
 

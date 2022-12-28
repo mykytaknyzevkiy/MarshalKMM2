@@ -59,5 +59,13 @@ class UserRepository {
         }
     }
 
+    fun logOut(): Boolean {
+        prefs.userName = null
+        prefs.userID = -1
+        prefs.secretKey = null
+
+        return true
+    }
+
     fun isUserLogin(): Boolean = !prefs.userName.isNullOrEmpty()
 }

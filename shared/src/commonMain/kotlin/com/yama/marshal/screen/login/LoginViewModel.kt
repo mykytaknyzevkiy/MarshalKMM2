@@ -91,4 +91,7 @@ class LoginViewModel : YamaViewModel(), UserDataViewModel {
         _currentViewState.emit(LoginViewState.OK)
     }
 
+    override fun onClear() {
+        _currentViewState.value = LoginViewState.Empty
+    }
 }
