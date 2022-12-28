@@ -70,7 +70,7 @@ internal inline fun <E> MarshalList(
                     mutableStateOf(IntOffset(0, 0))
                 }
 
-                if (itemOffset.x > 0) {
+                if (itemOffset.x > 0 && maxOffset != 0) {
                     LazyRow(modifier = Modifier.onSizeChanged {
                         maxOffset = it.width
                     }) {
