@@ -93,7 +93,8 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
         LaunchedEffect(viewModel) {
             viewModel.currentHoleSort
                 .onEach {
-                    listState.animateScrollToItem(0)
+                    if (!listState.isScrollInProgress)
+                        listState.animateScrollToItem(0)
                 }
                 .launchIn(this)
         }

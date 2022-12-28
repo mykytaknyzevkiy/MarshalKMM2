@@ -78,7 +78,7 @@ internal class AlertsScreen(
             var fistAlert: AlertModel? = null
             viewModel.alertList
                 .onEach {
-                    if (it.isNotEmpty()) {
+                    if (it.isNotEmpty() && !listState.isScrollInProgress) {
                         if (fistAlert != it.first())
                             listState.animateScrollToItem(0)
                         fistAlert = it.first()

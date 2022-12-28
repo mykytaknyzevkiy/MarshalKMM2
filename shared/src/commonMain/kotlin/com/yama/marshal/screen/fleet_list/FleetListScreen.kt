@@ -218,7 +218,8 @@ internal class FleetListScreen(
         LaunchedEffect(viewModel) {
             viewModel.currentFleetSort
                 .onEach {
-                    listState.animateScrollToItem(0)
+                    if (!listState.isScrollInProgress)
+                        listState.animateScrollToItem(0)
                 }
                 .launchIn(this)
         }

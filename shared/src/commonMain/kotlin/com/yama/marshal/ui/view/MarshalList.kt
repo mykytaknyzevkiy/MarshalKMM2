@@ -159,7 +159,8 @@ internal inline fun <E> MarshalList(
                 ),
             onClick = {
                 scope.launch {
-                    state.animateScrollToItem(0)
+                    if (!state.isScrollInProgress)
+                        state.animateScrollToItem(0)
                 }
             }
         ) {
