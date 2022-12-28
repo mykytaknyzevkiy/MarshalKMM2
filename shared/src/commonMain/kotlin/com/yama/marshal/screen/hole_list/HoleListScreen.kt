@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -60,6 +61,9 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             itemContent = {
                 ItemViewHolder(it)
             },
+            itemActionsMaxWidth = {
+                Sizes.fleet_view_holder_height
+            },
             itemActions = { item ->
                 item {
                     IconButton(
@@ -89,7 +93,7 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
         LaunchedEffect(viewModel) {
             viewModel.currentHoleSort
                 .onEach {
-                    listState.scrollToItem(0)
+                    listState.animateScrollToItem(0)
                 }
                 .launchIn(this)
         }

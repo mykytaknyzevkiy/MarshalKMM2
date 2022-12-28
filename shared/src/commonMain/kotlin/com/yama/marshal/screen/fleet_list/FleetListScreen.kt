@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -30,6 +31,7 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -67,9 +69,27 @@ internal class FleetListScreen(
         MarshalList(
             modifier = Modifier.fillMaxSize(),
             list = itemList,
+            state = listState,
             key = { _, item -> item.id },
             itemContent = {
                 ItemViewHolder(it)
+            },
+            itemActionsMaxWidth = { item ->
+                var width = 0.dp
+
+                if (item.currPosLat != null
+                    && item.currPosLon != null
+                    && item.currPosHole != null
+                    && item.currPosHole > 0
+                )
+                    width += Sizes.fleet_view_holder_height
+
+                width += Sizes.fleet_view_holder_height
+
+                if (item.isMessagingAvailable)
+                    width += Sizes.fleet_view_holder_height
+
+                width
             },
             itemActions = { item ->
                 if (item.currPosLat != null
@@ -198,7 +218,7 @@ internal class FleetListScreen(
         LaunchedEffect(viewModel) {
             viewModel.currentFleetSort
                 .onEach {
-                    listState.scrollToItem(0)
+                    listState.animateScrollToItem(0)
                 }
                 .launchIn(this)
         }

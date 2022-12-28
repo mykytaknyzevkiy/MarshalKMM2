@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
@@ -21,10 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.times
-import androidx.compose.ui.unit.toOffset
+import androidx.compose.ui.unit.*
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import kotlinx.coroutines.launch
@@ -40,6 +38,7 @@ internal inline fun <E> MarshalList(
     bgNegative: Color = YamaColor.itemColor(1),
     noinline key: ((position: Int, item: E) -> Any)? = null,
     crossinline customItemBgColor: @DisallowComposableCalls (item: E) -> Color? = { null },
+    crossinline itemActionsMaxWidth: @DisallowComposableCalls (item: E) -> Dp = { 0.dp },
     crossinline itemActions: LazyListScope.(item: E) -> Unit = { },
     crossinline itemContent: @Composable RowScope.(item: E) -> Unit
 ) = Box(modifier = modifier.drawBehind {
@@ -56,10 +55,13 @@ internal inline fun <E> MarshalList(
 }) {
     val scope = rememberCoroutineScope()
 
-    LazyColumn(modifier = Modifier.fillMaxSize(), state = state) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = state
+    ) {
         itemsIndexed(list, key = key) { position, item ->
             Box(modifier = Modifier.fillMaxWidth().height(holderHeight)) {
-                val itemBgColor by remember {
+                val itemBgColor by remember(item, position) {
                     derivedStateOf {
                         customItemBgColor(item)
                             ?: if (position % 2 == 0)
@@ -69,19 +71,18 @@ internal inline fun <E> MarshalList(
                     }
                 }
 
-                var maxOffset by remember(item) {
-                    mutableStateOf(0)
+                val maxOffset = remember(item) {
+                    itemActionsMaxWidth(item)
                 }
 
                 var itemOffset by remember(item) {
                     mutableStateOf(IntOffset(0, 0))
                 }
 
-                LazyRow(modifier = Modifier.onSizeChanged {
-                    maxOffset = it.width
-                }) {
-                    itemActions(item)
-                }
+                if (itemOffset.x > 0)
+                    LazyRow {
+                        itemActions(item)
+                    }
 
                 Row(modifier = Modifier
                     .fillMaxSize()
@@ -92,25 +93,38 @@ internal inline fun <E> MarshalList(
                         )
                     }
                     .offset { itemOffset }
-                    .pointerInput(Unit) {
-                        detectHorizontalDragGestures(
-                            onHorizontalDrag = { _, x ->
-                                val original = itemOffset
-                                val summed = original + IntOffset(x = x.roundToInt(), y = 0)
+                    .let {
+                        if (maxOffset.value > 0)
+                            it.pointerInput(Unit) {
+                                val maxOffsetPx = maxOffset.roundToPx()
 
-                                if (summed.x in 0..maxOffset)
-                                    itemOffset = summed
-                            },
-                            onDragEnd = {
-                                if (itemOffset.x < maxOffset / 2f)
-                                    itemOffset = IntOffset(0, 0)
-                                else if (itemOffset.x > maxOffset / 2f)
-                                    itemOffset = IntOffset(maxOffset, 0)
+                                detectHorizontalDragGestures(
+                                    onHorizontalDrag = { _, x ->
+                                        val original = itemOffset
+                                        val summed = original + IntOffset(x = x.roundToInt(), y = 0)
+
+                                        if (summed.x in 0..maxOffsetPx)
+                                            itemOffset = summed
+                                    },
+                                    onDragEnd = {
+                                        if (itemOffset.x < maxOffsetPx / 2f)
+                                            itemOffset = IntOffset(0, 0)
+                                        else if (itemOffset.x > maxOffsetPx / 2f)
+                                            itemOffset = IntOffset(maxOffsetPx, 0)
+                                    }
+                                )
+                            }.pointerInput(Unit) {
+                                val maxOffsetPx = maxOffset.roundToPx()
+
+                                detectTapGestures {
+                                    itemOffset = if (itemOffset.x >= maxOffsetPx)
+                                        IntOffset(x = 0, y = 0)
+                                    else
+                                        IntOffset(x = maxOffsetPx, y = 0)
+                                }
                             }
-                        )
-                    }
-                    .clickable {
-                        itemOffset = IntOffset(x = maxOffset, y = 0)
+                        else
+                            it
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {

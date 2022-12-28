@@ -73,9 +73,7 @@ internal object Sizes {
 
     val tablet_main_screen_navigation_item_width = 60.dp
 
-    val fleet_view_holder_height
-        @Composable
-        get() = dimensions.fleet_view_holder_height
+    val fleet_view_holder_height = 75.dp
 }
 
 sealed class Dimensions(
@@ -95,8 +93,6 @@ sealed class Dimensions(
 
     val login_screen_logo_width: Dp = 400.dp,
 
-    val fleet_view_holder_height: Dp = 75.dp,
-
     val toolbar_height: Dp = 85.dp
 ) {
     object Phone: Dimensions(
@@ -115,8 +111,6 @@ sealed class Dimensions(
         buttonSize = 45.dp,
 
         login_screen_logo_width = 300.dp,
-
-        fleet_view_holder_height = 60.dp,
 
         toolbar_height = 70.dp
     )

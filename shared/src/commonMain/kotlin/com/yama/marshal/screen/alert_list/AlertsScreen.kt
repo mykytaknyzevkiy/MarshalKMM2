@@ -75,10 +75,16 @@ internal class AlertsScreen(
         )
 
         LaunchedEffect(viewModel) {
+            var fistAlert: AlertModel? = null
             viewModel.alertList
                 .onEach {
-                    listState.animateScrollToItem(index = 0, scrollOffset = 0)
-                }.launchIn(this)
+                    if (it.isNotEmpty()) {
+                        if (fistAlert != it.first())
+                            listState.animateScrollToItem(0)
+                        fistAlert = it.first()
+                    }
+                }
+                .launchIn(this)
         }
     }
 
