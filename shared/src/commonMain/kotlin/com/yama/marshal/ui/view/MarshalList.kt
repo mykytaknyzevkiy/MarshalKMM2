@@ -1,13 +1,17 @@
 package com.yama.marshal.ui.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlignVerticalTop
+import androidx.compose.material.icons.filled.PanToolAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,7 +74,7 @@ internal inline fun <E> MarshalList(
                     mutableStateOf(IntOffset(0, 0))
                 }
 
-                if (itemOffset.x > 0 && maxOffset != 0) {
+                if (itemOffset.x > 0 || maxOffset == 0) {
                     LazyRow(modifier = Modifier.onSizeChanged {
                         maxOffset = it.width
                     }) {
@@ -119,21 +123,32 @@ internal inline fun <E> MarshalList(
         state.firstVisibleItemIndex <= 0
     }
 
-    if (isOnTop)
-        IconButton(
-            modifier = Modifier
-                .size(Sizes.screenPadding * 3)
-                .align(Alignment.BottomEnd)
-                .padding(Sizes.screenPadding),
-            onClick = {
-                scope.launch {
-                    state.scrollToItem(0)
+    if (!isOnTop)
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.BottomCenter)
+            .padding(Sizes.screenPadding))
+        {
+            Spacer(modifier = Modifier.weight(1f))
+
+            IconButton(
+                modifier = Modifier
+                    .size(Sizes.screenPadding * 3)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        CircleShape
+                    ),
+                onClick = {
+                    scope.launch {
+                        state.animateScrollToItem(0)
+                    }
                 }
+            ) {
+                Icon(
+                    Icons.Default.PanToolAlt,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    contentDescription = null
+                )
             }
-        ) {
-            Icon(
-                Icons.Default.AlignVerticalTop,
-                contentDescription = null
-            )
         }
 }

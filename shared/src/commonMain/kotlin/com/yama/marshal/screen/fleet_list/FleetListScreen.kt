@@ -100,9 +100,9 @@ internal class FleetListScreen(
                 if (item.isFlag)
                     item {
                         IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.flag_cart_btn_bg_color),
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.item_cart_flag_container_bg),
                             onClick = {
-                                viewModel.flagCart(item)
+                                viewModel.unFlagCart(item)
                             }
                         ) {
                             Icon(
@@ -115,9 +115,9 @@ internal class FleetListScreen(
                 else
                     item {
                         IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.item_cart_flag_container_bg),
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.flag_cart_btn_bg_color),
                             onClick = {
-                                viewModel.unFlagCart(item)
+                                viewModel.flagCart(item)
                             }
                         ) {
                             Icon(
@@ -149,7 +149,7 @@ internal class FleetListScreen(
                         }
                     }
 
-                if (item.isShutdownEnable)
+                /*if (item.isShutdownEnable)
                     item {
                         IconButton(
                             modifier = Modifier
@@ -183,7 +183,7 @@ internal class FleetListScreen(
                                 tint = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
-                    }
+                    }*/
             },
             customItemBgColor = {
                 if (it.isCartInShutdownMode)

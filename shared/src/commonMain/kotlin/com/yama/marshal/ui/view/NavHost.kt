@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.YamaTheme
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun NavHost(
     modifier: Modifier = Modifier.fillMaxSize(),
@@ -23,10 +22,8 @@ internal fun NavHost(
 ) {
     val currentRoute by navigationController.currentRoute.collectAsState()
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     YamaTheme {
-        Surface(modifier = modifier.clickable { keyboardController?.hide() }) {
+        Surface(modifier = modifier) {
             Column(modifier = Modifier.fillMaxSize()) {
                 val screen = screens.find { it.route == currentRoute.route }
 

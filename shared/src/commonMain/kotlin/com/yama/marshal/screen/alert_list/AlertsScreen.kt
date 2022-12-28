@@ -3,6 +3,7 @@ package com.yama.marshal.screen.alert_list
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatteryAlert
@@ -24,6 +25,7 @@ import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
 import kotlinx.coroutines.flow.launchIn
@@ -81,7 +83,7 @@ internal class AlertsScreen(
         Text(
             text = item.cart.cartName,
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.4f)
+            modifier = Modifier.weight(0.2f).padding(Sizes.screenPadding / 2)
         )
 
         NSpacer()
@@ -94,7 +96,7 @@ internal class AlertsScreen(
             },
             contentDescription = null,
             modifier = Modifier
-                .weight(0.1f)
+                .weight(0.2f)
         )
 
         NSpacer()
@@ -106,7 +108,7 @@ internal class AlertsScreen(
                 is AlertModel.Battery -> Strings.alerts_item_type_battery_title
             },
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.3f)
+            modifier = Modifier.weight(0.4f).padding(Sizes.screenPadding / 2)
         )
 
         NSpacer()
@@ -116,13 +118,13 @@ internal class AlertsScreen(
                 Text(
                     text = item.geofence.name ?: "---",
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(0.6f)
+                    modifier = Modifier.weight(0.6f).padding(Sizes.screenPadding / 2)
                 )
             }
             is AlertModel.Pace -> Text(
                 text = PaceValueFormatter.getString(item.netPace, PaceValueFormatter.PaceType.Full),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.weight(0.6f)
+                modifier = Modifier.weight(0.6f).padding(Sizes.screenPadding / 2)
             )
             is AlertModel.Battery -> Text(
                 text = item.cart.currPosHole.let {
@@ -132,7 +134,7 @@ internal class AlertsScreen(
                         "Hole: $it"
                 },
                 textAlign = TextAlign.Center,
-                modifier = Modifier.weight(0.6f)
+                modifier = Modifier.weight(0.6f).padding(Sizes.screenPadding / 2)
             )
         }
 
@@ -141,7 +143,7 @@ internal class AlertsScreen(
         Text(
             text = item.date.format("hh:mm a"),
             textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.2f)
+            modifier = Modifier.weight(0.3f)
         )
     }
 }

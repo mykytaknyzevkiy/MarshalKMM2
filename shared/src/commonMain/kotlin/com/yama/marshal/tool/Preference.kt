@@ -33,5 +33,5 @@ internal fun Settings.setCartFlag(cartID: Int) {
 }
 
 internal fun Settings.disCartFlag(cartID: Int) {
-    this["cart_flag_time_$cartID"] = 0
+    this["cart_flag_time_$cartID"] = 0L
 }

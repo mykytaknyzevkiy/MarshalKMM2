@@ -1,13 +1,16 @@
 package com.yama.marshal.screen.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.tool.Strings
@@ -21,6 +24,7 @@ import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@OptIn(ExperimentalComposeUiApi::class)
 internal class LoginScreen(navigationController: NavigationController) :
     YamaScreen(navigationController) {
     override val route: String = "login"
@@ -32,7 +36,11 @@ internal class LoginScreen(navigationController: NavigationController) :
 
     @Composable
     override fun content(args: List<NavArg>) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        val keyboardController = LocalSoftwareKeyboardController.current
+
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .clickable { keyboardController?.hide() }, contentAlignment = Alignment.Center) {
             Column(modifier = Modifier.let {
                     if (currentOrientation() == Orientation.LANDSCAPE) it.width(
                         Sizes.tablet_login_screen_content_width
