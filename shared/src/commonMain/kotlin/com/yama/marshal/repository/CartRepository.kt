@@ -7,6 +7,7 @@ import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.network.model.request.CartDetailsListRequest
 import com.yama.marshal.network.model.request.CartLastLocationRequest
+import com.yama.marshal.network.model.request.CartShutdownRequest
 import com.yama.marshal.network.model.request.CompanyCartsRoundDetailsRequest
 import com.yama.marshal.network.service.DNAService
 import com.yama.marshal.network.unit.AuthManager
@@ -230,6 +231,28 @@ object CartRepository: YamaRepository() {
                 Database.addCartRound(it)
             }
         }
+    }
+
+    suspend fun shutDown(id: Int) {
+        dnaService.cartShutdown(CartShutdownRequest(idCart = id))
+
+        Database
+            .cartBy(id)
+            .first()
+            ?.also {
+                Database.updateCart(it.copy(assetControlOverride = 1))
+            }
+    }
+
+    suspend fun restore(id: Int) {
+        dnaService.cartRestore(CartShutdownRequest(idCart = id))
+
+        Database
+            .cartBy(id)
+            .first()
+            ?.also {
+                Database.updateCart(it.copy(assetControlOverride = 0))
+            }
     }
 
     fun findCart(id: Int) = cartActiveList

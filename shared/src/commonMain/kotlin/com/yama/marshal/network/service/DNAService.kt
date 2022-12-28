@@ -135,4 +135,14 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
         action = Action.CourseVectorDetails,
         payload = payload
     )
+
+    suspend fun cartShutdown(payload: CartShutdownRequest): BaseResponse? = post(
+        action = Action.CartShutdown,
+        payload = payload
+    )
+
+    suspend fun cartRestore(payload: CartShutdownRequest): BaseResponse? = post(
+        action = Action.CartShutdown,
+        payload = payload
+    )
 }

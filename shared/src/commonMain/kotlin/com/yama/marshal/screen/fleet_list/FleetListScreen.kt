@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -149,6 +147,42 @@ internal class FleetListScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Email,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
+                    }
+
+                if (item.isShutdownEnable)
+                    item {
+                        IconButton(
+                            modifier = Modifier
+                                .size(Sizes.fleet_view_holder_height)
+                                .background(YamaColor.shutdown_cart_btn_bg_color),
+                            onClick = {
+                                viewModel.shutDown(item.id)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PowerOff,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
+                    }
+
+                if (item.isCartInShutdownMode)
+                    item {
+                        IconButton(
+                            modifier = Modifier
+                                .size(Sizes.fleet_view_holder_height)
+                                .background(YamaColor.restore_cart_btn_bg_color),
+                            onClick = {
+                                viewModel.restore(item.id)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Power,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onPrimary,
                             )

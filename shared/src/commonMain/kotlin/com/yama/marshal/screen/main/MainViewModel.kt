@@ -134,6 +134,14 @@ class MainViewModel : YamaViewModel() {
         CartRepository.unFlagCart(cart.id)
     }
 
+    fun shutDown(cartID: Int) = viewModelScope.launch {
+        CartRepository.shutDown(cartID)
+    }
+
+    fun restore(cartID: Int) = viewModelScope.launch {
+        CartRepository.restore(cartID)
+    }
+
     fun logOut() {
         UserRepository().logOut()
     }
