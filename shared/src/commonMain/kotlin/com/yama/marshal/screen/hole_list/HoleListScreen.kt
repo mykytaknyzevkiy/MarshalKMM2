@@ -37,10 +37,7 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
     override val route: String = ROUTE
 
-    @Composable
-    override fun toolbarColor(): Color {
-        return YamaColor.hole_navigation_card_bg
-    }
+    override val toolbarColor = YamaColor.hole_navigation_card_bg
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {

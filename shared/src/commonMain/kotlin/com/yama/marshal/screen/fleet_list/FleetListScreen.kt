@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
@@ -44,10 +43,7 @@ internal class FleetListScreen(
 
     override val route: String = ROUTE
 
-    @Composable
-    override fun toolbarColor(): Color {
-        return YamaColor.fleet_navigation_card_bg
-    }
+    override val toolbarColor = YamaColor.fleet_navigation_card_bg
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {

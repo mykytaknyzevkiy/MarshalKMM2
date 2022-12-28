@@ -3,16 +3,14 @@ package com.yama.marshal.screen.alert_list
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatteryAlert
 import androidx.compose.material.icons.filled.LocationDisabled
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +26,8 @@ import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class AlertsScreen(
     navigationController: NavigationController,
@@ -39,10 +39,7 @@ internal class AlertsScreen(
 
     override val route: String = ROUTE
 
-    @Composable
-    override fun toolbarColor(): Color {
-        return YamaColor.alert_navigation_card_bg
-    }
+    override val toolbarColor = YamaColor.alert_navigation_card_bg
 
     @Composable
     override fun content(args: List<NavArg>) {
@@ -50,8 +47,11 @@ internal class AlertsScreen(
             viewModel.alertList
         }.collectAsState(emptyList())
 
+        val listState = rememberLazyListState()
+
         MarshalList(
             modifier = Modifier.fillMaxSize().border(width = 1.dp, color = Color.LightGray),
+            state = listState,
             list = itemList,
             itemContent = {
                 ItemViewHolder(it)
@@ -67,6 +67,13 @@ internal class AlertsScreen(
                     null
             }
         )
+
+        LaunchedEffect(viewModel) {
+            viewModel.alertList
+                .onEach {
+                    listState.scrollToItem(0)
+                }.launchIn(this)
+        }
     }
 
     @Composable

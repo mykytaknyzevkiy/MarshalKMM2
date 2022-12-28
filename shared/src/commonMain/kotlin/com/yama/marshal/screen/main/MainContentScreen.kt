@@ -58,6 +58,8 @@ internal abstract class MainContentScreen(
 
         NSpacer()
     }
+
+    abstract val toolbarColor: Color
 }
 
 @Composable

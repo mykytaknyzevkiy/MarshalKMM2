@@ -59,9 +59,9 @@ internal class MainScreen(navigationController: NavigationController) :
         val currentScreen by mainNavigationController.currentRoute.collectAsState()
 
         return when (currentScreen.route) {
-            fleetListScreen.route -> fleetListScreen.toolbarColor()
-            holeListScreen.route -> fleetListScreen.toolbarColor()
-            alertListScreen.route -> fleetListScreen.toolbarColor()
+            fleetListScreen.route -> fleetListScreen.toolbarColor
+            holeListScreen.route -> fleetListScreen.toolbarColor
+            alertListScreen.route -> fleetListScreen.toolbarColor
             else -> super.toolbarColor()
         }
     }
