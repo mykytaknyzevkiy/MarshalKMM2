@@ -31,3 +31,7 @@ internal fun Settings.isCartFlag(cartID: Int): Boolean = this
 internal fun Settings.setCartFlag(cartID: Int) {
     this["cart_flag_time_$cartID"] = GMTDate().timestamp
 }
+
+internal fun Settings.disCartFlag(cartID: Int) {
+    this["cart_flag_time_$cartID"] = 0
+}

@@ -130,6 +130,10 @@ class MainViewModel : YamaViewModel() {
         CartRepository.flagCart(cart.id)
     }
 
+    fun unFlagCart(cart: CartFullDetail) = viewModelScope.launch {
+        CartRepository.unFlagCart(cart.id)
+    }
+
     fun logOut() {
         UserRepository().logOut()
     }

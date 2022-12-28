@@ -40,6 +40,11 @@ internal class AlertsScreen(
     override val route: String = ROUTE
 
     @Composable
+    override fun toolbarColor(): Color {
+        return YamaColor.alert_navigation_card_bg
+    }
+
+    @Composable
     override fun content(args: List<NavArg>) {
         val itemList by remember(viewModel) {
             viewModel.alertList

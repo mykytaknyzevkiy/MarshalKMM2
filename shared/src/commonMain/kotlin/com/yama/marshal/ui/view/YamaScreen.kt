@@ -1,6 +1,7 @@
 package com.yama.marshal.ui.view
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -13,6 +14,9 @@ import com.yama.marshal.ui.theme.Sizes
 
 internal abstract class YamaScreen(protected val navigationController: NavigationController) {
     abstract val route: String
+
+    @Composable
+    open fun toolbarColor() = MaterialTheme.colorScheme.primary
 
     @Composable
     open fun title(): String = ""

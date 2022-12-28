@@ -3,17 +3,16 @@ package com.yama.marshal.screen.hole_list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
@@ -27,6 +26,8 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class HoleListScreen(navigationController: NavigationController, viewModel: MainViewModel) :
     MainContentScreen(navigationController, viewModel)  {
@@ -35,6 +36,11 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
     }
 
     override val route: String = ROUTE
+
+    @Composable
+    override fun toolbarColor(): Color {
+        return YamaColor.hole_navigation_card_bg
+    }
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
@@ -49,8 +55,11 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
         val holeList by remember(viewModel) { viewModel.holeList }.collectAsState(emptyList())
 
+        val listState = rememberLazyListState()
+
         MarshalList(
             modifier = Modifier.fillMaxSize(),
+            state = listState,
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -79,6 +88,14 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             },
             list = holeList
         )
+
+        LaunchedEffect(viewModel) {
+            viewModel.currentHoleSort
+                .onEach {
+                    listState.scrollToItem(0)
+                }
+                .launchIn(this)
+        }
     }
 
     @Composable

@@ -55,6 +55,18 @@ internal class MainScreen(navigationController: NavigationController) :
     private val alertListScreen = AlertsScreen(navigationController, viewModel)
 
     @Composable
+    override fun toolbarColor(): Color {
+        val currentScreen by mainNavigationController.currentRoute.collectAsState()
+
+        return when (currentScreen.route) {
+            fleetListScreen.route -> fleetListScreen.toolbarColor()
+            holeListScreen.route -> fleetListScreen.toolbarColor()
+            alertListScreen.route -> fleetListScreen.toolbarColor()
+            else -> super.toolbarColor()
+        }
+    }
+
+    @Composable
     override fun titleContent() {
         val selectedCourse by remember { viewModel.selectedCourse }.collectAsState()
 

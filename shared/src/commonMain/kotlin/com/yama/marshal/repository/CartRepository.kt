@@ -179,6 +179,19 @@ object CartRepository: YamaRepository() {
             }
     }
 
+    suspend fun unFlagCart(cartID: Int) {
+        Logger.i(TAG, message = { "On un flag cart with id id $cartID" })
+
+        prefs.disCartFlag(cartID)
+
+        Database
+            .cartBy(cartID)
+            .first()
+            ?.also {
+                Database.updateCart(it.copy(isFlag = false))
+            }
+    }
+
     suspend fun loadUpdateCartsLocation(cartIds: IntArray) {
         val list = dnaService.cartsLocation(
             CartLastLocationRequest(cartIds.toList())

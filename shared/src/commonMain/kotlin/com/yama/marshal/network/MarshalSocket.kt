@@ -36,6 +36,8 @@ abstract class MarshalSocketIO: CoroutineScope {
 
     protected fun onError(message: String) {
         Logger.e(TAG, message = { "onError $message" })
+
+        disconnect()
     }
 
     protected fun onMessage(json: String) = launch {

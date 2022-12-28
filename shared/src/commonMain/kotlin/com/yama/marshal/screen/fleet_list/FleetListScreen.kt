@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Flag
@@ -13,11 +14,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
@@ -34,6 +33,8 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class FleetListScreen(
     navigationController: NavigationController,
@@ -44,6 +45,11 @@ internal class FleetListScreen(
     }
 
     override val route: String = ROUTE
+
+    @Composable
+    override fun toolbarColor(): Color {
+        return YamaColor.fleet_navigation_card_bg
+    }
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
@@ -61,6 +67,8 @@ internal class FleetListScreen(
         val itemList by remember(viewModel) {
             viewModel.fleetList
         }.collectAsState(emptyList())
+
+        val listState = rememberLazyListState()
 
         MarshalList(
             modifier = Modifier.fillMaxSize(),
@@ -95,20 +103,36 @@ internal class FleetListScreen(
                         }
                     }
 
-                item {
-                    IconButton(
-                        modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.flag_cart_btn_bg_color),
-                        onClick = {
-                            viewModel.flagCart(item)
+                if (item.isFlag)
+                    item {
+                        IconButton(
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.flag_cart_btn_bg_color),
+                            onClick = {
+                                viewModel.flagCart(item)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Flag,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Flag,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                        )
                     }
-                }
+                else
+                    item {
+                        IconButton(
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.item_cart_flag_container_bg),
+                            onClick = {
+                                viewModel.unFlagCart(item)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Flag,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        }
+                    }
 
                 if (item.isMessagingAvailable)
                     item {
@@ -140,6 +164,14 @@ internal class FleetListScreen(
                     null
             }
         )
+
+        LaunchedEffect(viewModel) {
+            viewModel.currentFleetSort
+                .onEach {
+                    listState.scrollToItem(0)
+                }
+                .launchIn(this)
+        }
     }
 
     @Composable

@@ -33,6 +33,7 @@ internal fun NavHost(
                 if (screen != null) {
                     if (screen.isToolbarEnable) {
                         YamaToolbar(
+                            color = screen.toolbarColor(),
                             title = {
                              screen.titleContent()
                             },
