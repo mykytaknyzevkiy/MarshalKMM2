@@ -1,0 +1,4 @@
+1) Remove auto login
+2) Adaptive test sizes
+3) Remove spaces from Username while entering
+4) Make adaptive toolbar items

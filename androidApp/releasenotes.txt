@@ -1,3 +1,0 @@
-1) Change unflug icon
-2) Fix list item swiping
-3) Fix toolbar on map screen

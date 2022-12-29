@@ -115,5 +115,25 @@ sealed class Dimensions(
         toolbar_height = 70.dp
     )
 
+    object PhoneSmall: Dimensions(
+        bodyLarge = 12.sp,
+
+        bodySmall = 8.sp,
+
+        labelLarge = 14.sp,
+
+        title = 16.sp,
+
+        screenPadding = 16.dp,
+
+        button_icon_size = 24.dp,
+
+        buttonSize = 45.dp,
+
+        login_screen_logo_width = 300.dp,
+
+        toolbar_height = 70.dp
+    )
+
     object Tablet: Dimensions()
 }

@@ -50,11 +50,11 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
             viewModel.cartsState
         }.collectAsState()
 
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             if (carts.size == 1) {
                 val cart = carts.first()
                 Text(
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier.padding(horizontal = Sizes.screenPadding).weight(1f),
                     text = "Cart: ${cart.cartName}",
                     fontSize = Sizes.title,
                     textAlign = TextAlign.Center
@@ -63,7 +63,7 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
 
             if (hole != null)
                 Text(
-                    modifier = Modifier.padding(horizontal = Sizes.screenPadding).align(Alignment.CenterEnd),
+                    modifier = Modifier.padding(horizontal = Sizes.screenPadding).weight(1f),
                     text = "Hole: ${hole?.holeNumber}",
                     fontSize = Sizes.title,
                     textAlign = TextAlign.Center

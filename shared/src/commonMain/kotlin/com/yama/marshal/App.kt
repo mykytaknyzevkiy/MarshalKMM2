@@ -32,7 +32,9 @@ internal fun App() {
     val screenSize = screenSize()
 
     ProvideDimens(
-        dimensions = if (screenSize.width < 480)
+        dimensions = if (screenSize.width <= 400)
+            Dimensions.PhoneSmall
+        else if (screenSize.width <= 480)
             Dimensions.Phone
         else
             Dimensions.Tablet
