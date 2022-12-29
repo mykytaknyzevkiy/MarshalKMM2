@@ -71,8 +71,10 @@ internal inline fun <E> MarshalList(
                     }
                 }
 
-                val maxOffset = remember(item) {
-                    itemActionsMaxWidth(item)
+                val maxOffset by remember {
+                    derivedStateOf {
+                        itemActionsMaxWidth(item)
+                    }
                 }
 
                 var itemOffset by remember(item) {
@@ -93,38 +95,34 @@ internal inline fun <E> MarshalList(
                         )
                     }
                     .offset { itemOffset }
-                    .let {
-                        if (maxOffset.value > 0)
-                            it.pointerInput(Unit) {
-                                val maxOffsetPx = maxOffset.roundToPx()
+                    .pointerInput(item) {
+                        val maxOffsetPx = maxOffset.roundToPx()
 
-                                detectHorizontalDragGestures(
-                                    onHorizontalDrag = { _, x ->
-                                        val original = itemOffset
-                                        val summed = original + IntOffset(x = x.roundToInt(), y = 0)
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { _, x ->
+                                val original = itemOffset
+                                val summed = original + IntOffset(x = x.roundToInt(), y = 0)
 
-                                        if (summed.x in 0..maxOffsetPx)
-                                            itemOffset = summed
-                                    },
-                                    onDragEnd = {
-                                        if (itemOffset.x < maxOffsetPx / 2f)
-                                            itemOffset = IntOffset(0, 0)
-                                        else if (itemOffset.x > maxOffsetPx / 2f)
-                                            itemOffset = IntOffset(maxOffsetPx, 0)
-                                    }
-                                )
-                            }.pointerInput(Unit) {
-                                val maxOffsetPx = maxOffset.roundToPx()
-
-                                detectTapGestures {
-                                    itemOffset = if (itemOffset.x >= maxOffsetPx)
-                                        IntOffset(x = 0, y = 0)
-                                    else
-                                        IntOffset(x = maxOffsetPx, y = 0)
-                                }
+                                if (summed.x in 0..maxOffsetPx)
+                                    itemOffset = summed
+                            },
+                            onDragEnd = {
+                                if (itemOffset.x < maxOffsetPx / 2f)
+                                    itemOffset = IntOffset(0, 0)
+                                else if (itemOffset.x > maxOffsetPx / 2f)
+                                    itemOffset = IntOffset(maxOffsetPx, 0)
                             }
-                        else
-                            it
+                        )
+                    }
+                    .pointerInput(item) {
+                        val maxOffsetPx = maxOffset.roundToPx()
+
+                        detectTapGestures {
+                            itemOffset = if (itemOffset.x >= maxOffsetPx)
+                                IntOffset(x = 0, y = 0)
+                            else
+                                IntOffset(x = maxOffsetPx, y = 0)
+                        }
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {

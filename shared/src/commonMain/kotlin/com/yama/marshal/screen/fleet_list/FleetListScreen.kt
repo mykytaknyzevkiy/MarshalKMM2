@@ -1,5 +1,6 @@
 package com.yama.marshal.screen.fleet_list
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -14,6 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.CartFullDetail
@@ -97,45 +101,59 @@ internal class FleetListScreen(
                     && item.currPosHole != null
                     && item.currPosHole > 0
                 ) item {
-                        IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.view_cart_btn_bg_color),
-                            onClick = {
-                                navigationController.navigateTo(
-                                    MapScreen.route,
-                                    listOf(
-                                        NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
-                                        NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
-                                    )
+                    IconButton(
+                        modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                            .background(YamaColor.view_cart_btn_bg_color),
+                        onClick = {
+                            navigationController.navigateTo(
+                                MapScreen.route,
+                                listOf(
+                                    NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
+                                    NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
                                 )
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Place,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
                             )
                         }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
                     }
+                }
 
                 if (item.isFlag)
                     item {
                         IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.item_cart_flag_container_bg),
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                                .background(YamaColor.flag_cart_btn_bg_color),
                             onClick = {
                                 viewModel.unFlagCart(item)
                             }
                         ) {
+                            val screenPadding = Sizes.screenPadding
+                            val tintColor = MaterialTheme.colorScheme.onPrimary
                             Icon(
                                 imageVector = Icons.Default.Flag,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                                tint = tintColor,
                             )
+                            Canvas(modifier = Modifier.fillMaxSize()) {
+                                val padding = screenPadding.toPx()
+                                drawLine(
+                                    color = tintColor,
+                                    start = Offset(padding, padding),
+                                    end =  Offset(this.size.width - padding, this.size.height - padding),
+                                    strokeWidth = 8f
+                                )
+                            }
                         }
                     }
                 else
                     item {
                         IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.flag_cart_btn_bg_color),
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                                .background(YamaColor.flag_cart_btn_bg_color),
                             onClick = {
                                 viewModel.flagCart(item)
                             }
@@ -151,12 +169,16 @@ internal class FleetListScreen(
                 if (item.isMessagingAvailable)
                     item {
                         IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height).background(YamaColor.message_cart_btn_bg_color),
+                            modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                                .background(YamaColor.message_cart_btn_bg_color),
                             onClick = {
                                 navigationController.navigateTo(
                                     SendMessageScreen.ROUTE,
                                     listOf(
-                                        NavArg(key = SendMessageScreen.ARG_CART_ID, value = item.id),
+                                        NavArg(
+                                            key = SendMessageScreen.ARG_CART_ID,
+                                            value = item.id
+                                        ),
                                     )
                                 )
                             }
