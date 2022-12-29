@@ -23,11 +23,11 @@ variant_for_slice()
   "SocketRocket.xcframework/ios-arm64")
     echo ""
     ;;
-  "socket_IO.xcframework/ios-arm64_x86_64-simulator")
-    echo "simulator"
-    ;;
   "socket_IO.xcframework/ios-arm64")
     echo ""
+    ;;
+  "socket_IO.xcframework/ios-arm64_x86_64-simulator")
+    echo "simulator"
     ;;
   esac
 }
@@ -41,11 +41,11 @@ archs_for_slice()
   "SocketRocket.xcframework/ios-arm64")
     echo "arm64"
     ;;
-  "socket_IO.xcframework/ios-arm64_x86_64-simulator")
-    echo "arm64 x86_64"
-    ;;
   "socket_IO.xcframework/ios-arm64")
     echo "arm64"
+    ;;
+  "socket_IO.xcframework/ios-arm64_x86_64-simulator")
+    echo "arm64 x86_64"
     ;;
   esac
 }
@@ -130,5 +130,5 @@ install_xcframework() {
 }
 
 install_xcframework "${PODS_ROOT}/../../shared/libs/Ios/libs/SocketRocket.xcframework" "Ios" "framework" "ios-arm64_x86_64-simulator" "ios-arm64"
-install_xcframework "${PODS_ROOT}/../../shared/libs/Ios/libs/socket_IO.xcframework" "Ios" "framework" "ios-arm64_x86_64-simulator" "ios-arm64"
+install_xcframework "${PODS_ROOT}/../../shared/libs/Ios/libs/socket_IO.xcframework" "Ios" "framework" "ios-arm64" "ios-arm64_x86_64-simulator"
 

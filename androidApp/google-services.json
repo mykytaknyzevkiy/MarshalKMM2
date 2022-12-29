@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "658871926629",
+    "project_id": "yamatrack-marshal-app",
+    "storage_bucket": "yamatrack-marshal-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658871926629:android:dbaa6d17dc7174c09f6b8c",
+        "android_client_info": {
+          "package_name": "com.l1inc.yamatrackmarshal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "658871926629-mc9gh5m6oeorj2ijp73gu332a8c30tbg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTM3bWoRKAFy0rzQD_wCnfzypUogLF21E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658871926629-mc9gh5m6oeorj2ijp73gu332a8c30tbg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658871926629:android:165fe4fcfdfa1ebd9f6b8c",
+        "android_client_info": {
+          "package_name": "com.l1inc.yamatrackmarshal.yamatrack_util_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "658871926629-hadhj8tgn9eqfsfovb9paj8n11sddu13.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.l1inc.yamatrackmarshal.yamatrack_util_1",
+            "certificate_hash": "27196e386b875e76adf700e7ea84e4c6eee33dfa"
+          }
+        },
+        {
+          "client_id": "658871926629-mc9gh5m6oeorj2ijp73gu332a8c30tbg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTM3bWoRKAFy0rzQD_wCnfzypUogLF21E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658871926629-mc9gh5m6oeorj2ijp73gu332a8c30tbg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
