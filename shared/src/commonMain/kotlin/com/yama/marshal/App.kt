@@ -25,6 +25,10 @@ internal fun ProvideDimens(
     CompositionLocalProvider(LocalAppDimens provides dimensionSet, content = content)
 }
 
+object AppDelegate {
+    lateinit var onBackPresse: () -> Unit
+}
+
 @Composable
 internal fun App() {
     val navigationController = rememberNavController("splash")
@@ -50,4 +54,9 @@ internal fun App() {
             )
         )
     }
+
+    AppDelegate.onBackPresse = {
+        navigationController.popBack()
+    }
+
 }

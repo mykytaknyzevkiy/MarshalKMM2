@@ -117,7 +117,7 @@ kotlin {
                 implementation("com.vividsolutions:jts:1.13")
                  */
 
-                implementation(project(":viewer"))
+                implementation(project(":3dviewer"))
             }
         }
         val androidTest by getting

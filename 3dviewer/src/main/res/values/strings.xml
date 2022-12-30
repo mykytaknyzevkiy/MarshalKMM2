@@ -1,0 +1,9 @@
+<resources>
+	<string name="app_name">iGolf3DViewer</string>
+
+	<string name="distance_100">100</string>
+	<string name="distance_150">150</string>
+	<string name="distance_200">200</string>
+	<string name="distance_250">250</string>
+	<string name="distance_300">300</string>
+</resources>

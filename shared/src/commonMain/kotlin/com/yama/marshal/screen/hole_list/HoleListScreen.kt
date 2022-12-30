@@ -108,15 +108,6 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             modifier = Modifier
                 .weight(SortType.SortHole.HOLE.weight)
                 .padding(Sizes.screenPadding / 2)
-                .clickable {
-                navigationController.navigateTo(
-                    MapScreen.route,
-                    listOf(
-                        NavArg(key = MapScreen.ARG_HOLE_ID, value = item.holeNumber),
-                        NavArg(key = MapScreen.ARG_COURSE_ID, value = item.idCourse)
-                    )
-                )
-            }
         )
 
         NSpacer()

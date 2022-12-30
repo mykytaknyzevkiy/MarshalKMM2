@@ -145,4 +145,9 @@ class MainViewModel : YamaViewModel() {
     fun logOut() {
         UserRepository().logOut()
     }
+
+    override fun onClear() {
+        super.onClear()
+        _selectedCourse.value = null
+    }
 }

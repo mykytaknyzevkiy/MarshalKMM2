@@ -113,9 +113,14 @@ internal class LoginScreen(navigationController: NavigationController) :
     private fun UserNameField(userName: MutableState<String>) {
         val keyboardController = LocalSoftwareKeyboardController.current
 
+        val currentState by remember {
+            viewModel.currentState
+        }.collectAsState()
+
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = userName.value,
+            enabled = currentState !is LoginViewState.Loading,
             label = {
                 Text(Strings.login_screen_text_field_username_label)
             },
@@ -143,6 +148,7 @@ internal class LoginScreen(navigationController: NavigationController) :
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = password.value,
+            enabled = currentState !is LoginViewState.Loading,
             label = {
                 Text(Strings.login_screen_text_field_password_label)
             },

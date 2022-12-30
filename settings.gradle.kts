@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 rootProject.name = "MarshalKMM"
 include(":shared")
 include(":androidApp")
-include(":viewer")
+include(":3dviewer")
