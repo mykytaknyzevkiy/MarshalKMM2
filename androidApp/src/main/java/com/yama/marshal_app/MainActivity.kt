@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import com.yama.marshal.AndroidView
 import com.yama.marshal.AppDelegate
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,7 +15,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Deprecated("Deprecated in Java",
+    @Deprecated(
+        "Deprecated in Java",
         ReplaceWith("AppDelegate.onBackPresse()", "com.yama.marshal.AppDelegate")
     )
     override fun onBackPressed() {
