@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import com.yama.marshal.LocalAppDimens
@@ -49,7 +50,6 @@ internal class LoginScreen(navigationController: NavigationController) :
 
         Column(
             modifier = Modifier
-                .clickable { keyboardController?.hide() }
                 .fillMaxSize()
                 .padding(Sizes.screenPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,7 +70,7 @@ internal class LoginScreen(navigationController: NavigationController) :
             Spacer(modifier = Modifier.height(Sizes.screenPadding * 2))
 
             val userName = remember {
-                mutableStateOf("")
+                mutableStateOf("neksalt")
             }
 
             UserNameField(userName)
@@ -78,7 +78,7 @@ internal class LoginScreen(navigationController: NavigationController) :
             Spacer(modifier = Modifier.height(Sizes.screenPadding))
 
             val password = remember {
-                mutableStateOf("")
+                mutableStateOf("1234")
             }
 
             PasswordField(password)
@@ -127,7 +127,7 @@ internal class LoginScreen(navigationController: NavigationController) :
             viewModel.currentState
         }.collectAsState()
 
-        OutlinedTextField(
+        /*OutlinedTextField(
             value = userName.value,
             enabled = currentState !is LoginViewState.Loading,
             label = {
@@ -142,6 +142,17 @@ internal class LoginScreen(navigationController: NavigationController) :
             onValueChange = { userName.value = it.replace("\n", "").replace(" ", "") },
             maxLines = 1,
             singleLine = true
+        )*/
+
+        com.yama.marshal.ui.view.TextField(
+            value = userName.value,
+            label = Strings.login_screen_text_field_username_label,
+            modifier = Modifier,
+            isError = false,
+            visualTransformation = VisualTransformation.None,
+            onValueChange = {
+
+            }
         )
     }
 
