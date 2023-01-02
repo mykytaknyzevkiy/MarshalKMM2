@@ -28,6 +28,10 @@ class MapViewModel : YamaViewModel() {
     val cartsState: StateFlow<List<CartFullDetail>>
         get() = _cartsState
 
+    private val _cartIDState = MutableStateFlow(-1)
+    val cartIDState: StateFlow<Int>
+        get() = _cartIDState
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val cartsLocationUpdater = channelFlow {
         while (!isClosedForSend) {
@@ -74,6 +78,8 @@ class MapViewModel : YamaViewModel() {
     }
 
     fun loadCart(id: Int) {
+        _cartIDState.value = id
+
         CartRepository
             .findCart(id)
             .filter { it != null }
