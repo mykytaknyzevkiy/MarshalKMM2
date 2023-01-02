@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         IniterKt.doInitMe(bundle: Bundle.main)
         IniterKt.setCourseRenderView(igolfMapNativeRenderViewN: RenderMapViewController())
-        
+                
         return true
     }
     

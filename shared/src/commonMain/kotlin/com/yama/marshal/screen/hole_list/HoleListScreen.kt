@@ -1,7 +1,6 @@
 package com.yama.marshal.screen.hole_list
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -12,9 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -61,8 +58,8 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             itemContent = {
                 ItemViewHolder(it)
             },
-            itemActionsMaxWidth = {
-                Sizes.fleet_view_holder_height
+            itemActionsCount = {
+                1
             },
             itemActions = { item ->
                 item {

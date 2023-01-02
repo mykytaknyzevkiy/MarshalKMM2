@@ -22,11 +22,14 @@ internal fun YamaToolbar(
     onBack: (() -> Unit)? = null,
     backIcon: ImageVector = Icons.Filled.ArrowBack,
     actions: (@Composable RowScope.() -> Unit)? = null,
-) = Surface(color = color, contentColor = MaterialTheme.colorScheme.onPrimary) {
+) = Surface(
+    modifier = Modifier.fillMaxWidth()
+        .defaultMinSize(minHeight = LocalAppDimens.current.toolbar_height),
+    color = color,
+    contentColor = MaterialTheme.colorScheme.onPrimary
+) {
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .defaultMinSize(minHeight = LocalAppDimens.current.toolbar_height)
-            .padding(horizontal = Sizes.screenPadding),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = Sizes.screenPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (onBack != null)

@@ -15,9 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.CartFullDetail
@@ -35,7 +33,6 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -78,20 +75,20 @@ internal class FleetListScreen(
             itemContent = {
                 ItemViewHolder(it)
             },
-            itemActionsMaxWidth = { item ->
-                var width = 0.dp
+            itemActionsCount = { item ->
+                var width = 0
 
                 if (item.currPosLat != null
                     && item.currPosLon != null
                     && item.currPosHole != null
                     && item.currPosHole > 0
                 )
-                    width += Sizes.fleet_view_holder_height
+                    width += 1
 
-                width += Sizes.fleet_view_holder_height
+                width += 1
 
                 if (item.isMessagingAvailable)
-                    width += Sizes.fleet_view_holder_height
+                    width += 1
 
                 width
             },
