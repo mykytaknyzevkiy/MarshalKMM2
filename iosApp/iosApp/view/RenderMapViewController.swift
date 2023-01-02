@@ -14,7 +14,7 @@ import CoreLocation
 class RenderMapViewController: UIViewController, CourseRenderViewDelegate, IgolfMapNativeRenderView {
     @IBOutlet var renderView: CourseRenderView?
     
-    private let cartIds = [Int32]()
+    private var cartIds = [Int32]()
     
     func setHole(hole: Int32) {
         renderView?.currentHole = UInt(hole)
@@ -39,22 +39,23 @@ class RenderMapViewController: UIViewController, CourseRenderViewDelegate, Igolf
     }
     
     func addCart(id: Int32, name: String, lat: Double, lng: Double) {
-        let latitudeString = String(format: "%f", lat)
-        let longitudeString = String(format: "%f", lng)
-        
         if (cartIds.contains(id)) {
             renderView?.updateCartMarker(
                 withId: id,
-                newLocation: CLLocation(latitude: latitudeString, longitude: longitudeString)
+                newLocation: CLLocation(latitude: lat, longitude: lng)
             )
         } else {
-            renderView?.addCartMarker(withName: name, andLocation: CLLocation(latitude: latitudeString, longitude: longitudeString), andId: id)
+            renderView?.addCartMarker(withName: name, andLocation: CLLocation(latitude: lat, longitude: lng), andId: id)
+            cartIds.append(id);
         }
     }
     
     func removeCart(id: Int32) {
         if (cartIds.contains(id)) {
             renderView?.removeCartMarker(withId: id)
+        }
+        cartIds.removeAll { d in
+            d == id
         }
     }
 
@@ -63,26 +64,21 @@ class RenderMapViewController: UIViewController, CourseRenderViewDelegate, Igolf
 
 extension CLLocation {
     
-    convenience init?(latitude: String, longitude: String) {
+    convenience init?(latitude: Double, longitude: Double) {
+        let latitudeDD = Double(Int(latitude / 100))
+        let latitudeMM = ((latitude / 100) - latitudeDD) * 100
+        let latitudedd = latitudeMM / 60
+        let latitudeRes = latitudeDD + latitudedd
         
-        if let latitudeValue = Double(latitude), let longitudeValue = Double(longitude) {
-            let latitudeDD = Double(Int(latitudeValue / 100))
-            let latitudeMM = ((latitudeValue / 100) - latitudeDD) * 100
-            let latitudedd = latitudeMM / 60
-            let latitudeRes = latitudeDD + latitudedd
-            
-            let longitudeDD = Double(Int(longitudeValue / 100))
-            let longitudeMM = ((longitudeValue / 100) - longitudeDD) * 100
-            let longitudedd = longitudeMM / 60
-            let longitudeRes = longitudeDD + longitudedd
-            
-            if latitudeRes < -90.0 || latitudeRes > 90.0 || longitudeRes < -180.0 || longitudeRes > 180.0 {
-                return nil
-            } else {
-                self.init(latitude: latitudeRes, longitude: longitudeRes)
-            }
+        let longitudeDD = Double(Int(longitude / 100))
+        let longitudeMM = ((longitude / 100) - longitudeDD) * 100
+        let longitudedd = longitudeMM / 60
+        let longitudeRes = longitudeDD + longitudedd
+        
+        if latitudeRes < -90.0 || latitudeRes > 90.0 || longitudeRes < -180.0 || longitudeRes > 180.0 {
+            return nil
         } else {
-           return nil
+            self.init(latitude: latitudeRes, longitude: longitudeRes)
         }
     }
 }
