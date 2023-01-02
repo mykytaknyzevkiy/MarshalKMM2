@@ -98,6 +98,8 @@ internal actual fun TextField(
             this.addAction(UIAction.actionWithHandler {
                 onValueChange(this.text() ?: "")
             }, UIControlEventEditingChanged)
+
+            this.autocorrectionType = UITextAutocorrectionType.UITextAutocorrectionTypeNo
         }
     }
 
