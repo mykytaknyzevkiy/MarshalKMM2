@@ -11,5 +11,6 @@ internal expect fun TextField(
     modifier: Modifier,
     label: String,
     isError: Boolean,
+    isEnable: Boolean,
     visualTransformation: VisualTransformation
 )

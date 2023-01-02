@@ -32,7 +32,6 @@ import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@OptIn(ExperimentalComposeUiApi::class)
 internal class LoginScreen(navigationController: NavigationController) :
     YamaScreen(navigationController) {
     override val route: String = "login"
@@ -42,70 +41,75 @@ internal class LoginScreen(navigationController: NavigationController) :
     @Composable
     override fun title(): String = ""
 
+    @ExperimentalMaterial3Api
     @Composable
     override fun content(args: List<NavArg>) {
         val orientation = currentOrientation()
 
-        val keyboardController = LocalSoftwareKeyboardController.current
+        val currentState by remember {
+            viewModel.currentState
+        }.collectAsState()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(Sizes.screenPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        val userName = remember {
+            mutableStateOf("neksalt")
+        }
+        val password = remember {
+            mutableStateOf("1234")
+        }
+
+        Box(modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Image(
-                painterResource("img_app_logo.png"),
-                modifier = Modifier
-                    .fillMaxWidth(
-                        if (orientation == Orientation.LANDSCAPE)
-                            0.2f
-                        else 0.5f
-                    ),
-                contentScale = ContentScale.FillWidth,
-                contentDescription = null
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    painterResource("img_app_logo.png"),
+                    modifier = Modifier
+                        .fillMaxWidth(
+                            if (orientation == Orientation.LANDSCAPE)
+                                0.2f
+                            else 0.5f
+                        ).padding(Sizes.screenPadding),
+                    contentScale = ContentScale.FillWidth,
+                    contentDescription = null
+                )
 
-            Spacer(modifier = Modifier.height(Sizes.screenPadding * 2))
-
-            val userName = remember {
-                mutableStateOf("neksalt")
-            }
-
-            UserNameField(userName)
-
-            Spacer(modifier = Modifier.height(Sizes.screenPadding))
-
-            val password = remember {
-                mutableStateOf("1234")
-            }
-
-            PasswordField(password)
-
-            Spacer(modifier = Modifier.height(Sizes.screenPadding))
-
-            val currentState by remember {
-                viewModel.currentState
-            }.collectAsState()
-
-            if (currentState is LoginViewState.Loading)
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            else
-                Button(
-                    onClick = {
-                        viewModel.login(userName = userName.value, password = password.value)
+                com.yama.marshal.ui.view.TextField(
+                    value = userName.value,
+                    label = Strings.login_screen_text_field_username_label,
+                    modifier = Modifier.padding(Sizes.screenPadding),
+                    isError = false,
+                    visualTransformation = VisualTransformation.None,
+                    onValueChange = {
+                        userName.value = it.replace("\n", "")
                     },
-                    enabled = userName.value.isNotBlank() && password.value.isNotBlank(),
-                    shape = RoundedCornerShape(0.dp)
-                ) {
-                    Text(Strings.login_screen_button_login_label.uppercase())
-                }
+                    isEnable = currentState !is LoginViewState.Loading
+                )
 
-            if (orientation == Orientation.PORTRAIT)
-                Spacer(modifier = Modifier.height(Sizes.screenPadding * 5))
+                com.yama.marshal.ui.view.TextField(
+                    value = password.value,
+                    label = Strings.login_screen_text_field_password_label,
+                    modifier = Modifier.padding(bottom = Sizes.screenPadding),
+                    isError = currentState is LoginViewState.Error,
+                    visualTransformation = PasswordVisualTransformation(),
+                    onValueChange = {
+                        password.value = it.replace("\n", "")
+                    },
+                    isEnable = currentState !is LoginViewState.Loading
+                )
 
-
+                if (currentState is LoginViewState.Loading)
+                    LinearProgressIndicator(modifier = Modifier.wrapContentWidth())
+                else
+                    Button(
+                        onClick = {
+                            viewModel.login(userName = userName.value, password = password.value)
+                        },
+                        enabled = userName.value.isNotBlank() && password.value.isNotBlank(),
+                        shape = RoundedCornerShape(0.dp)
+                    ) {
+                        Text(Strings.login_screen_button_login_label.uppercase())
+                    }
+            }
         }
 
         LaunchedEffect(0) {
@@ -116,70 +120,6 @@ internal class LoginScreen(navigationController: NavigationController) :
                 }
                 .launchIn(this)
         }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    private fun UserNameField(userName: MutableState<String>) {
-        val keyboardController = LocalSoftwareKeyboardController.current
-
-        val currentState by remember {
-            viewModel.currentState
-        }.collectAsState()
-
-        /*OutlinedTextField(
-            value = userName.value,
-            enabled = currentState !is LoginViewState.Loading,
-            label = {
-                Text(Strings.login_screen_text_field_username_label)
-            },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, autoCorrect = false),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    keyboardController?.hide()
-                }
-            ),
-            onValueChange = { userName.value = it.replace("\n", "").replace(" ", "") },
-            maxLines = 1,
-            singleLine = true
-        )*/
-
-        com.yama.marshal.ui.view.TextField(
-            value = userName.value,
-            label = Strings.login_screen_text_field_username_label,
-            modifier = Modifier,
-            isError = false,
-            visualTransformation = VisualTransformation.None,
-            onValueChange = {
-
-            }
-        )
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    private fun PasswordField(password: MutableState<String>) {
-        val keyboardController = LocalSoftwareKeyboardController.current
-
-        val currentState by remember {
-            viewModel.currentState
-        }.collectAsState()
-
-        OutlinedTextField(
-            value = password.value,
-            enabled = currentState !is LoginViewState.Loading,
-            label = {
-                Text(Strings.login_screen_text_field_password_label)
-            },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, autoCorrect = false),
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }),
-            visualTransformation = PasswordVisualTransformation(),
-            onValueChange = { password.value = it.replace("\n", "") },
-            isError = currentState is LoginViewState.Error,
-            maxLines = 1,
-            singleLine = true
-        )
     }
 
     override val isToolbarEnable: Boolean = false

@@ -15,7 +15,8 @@ internal actual fun TextField(
     modifier: Modifier,
     label: String,
     isError: Boolean,
-    visualTransformation: VisualTransformation,
+    isEnable: Boolean,
+    visualTransformation: VisualTransformation
 ) {
     OutlinedTextField(
         modifier = modifier,

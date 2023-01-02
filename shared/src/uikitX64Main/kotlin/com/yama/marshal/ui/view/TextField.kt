@@ -13,15 +13,10 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.round
 import co.touchlab.kermit.Logger
 import com.yama.marshal.currentRootView
-import com.yama.marshal.ui.theme.Sizes
-import platform.CoreGraphics.CGRectGetHeight
-import platform.CoreGraphics.CGRectGetWidth
 import platform.CoreGraphics.CGRectMake
 import platform.Foundation.NSAttributedString
-import platform.Foundation.NSAttributedStringKey
 import platform.Foundation.create
 import platform.UIKit.*
 import platform.darwin.NSObject
@@ -34,27 +29,28 @@ internal actual fun TextField(
     modifier: Modifier,
     label: String,
     isError: Boolean,
+    isEnable: Boolean,
     visualTransformation: VisualTransformation,
 ) {
-    val secondary = UIColor(
+    val secondaryColor = UIColor(
         red = MaterialTheme.colorScheme.secondary.red.toDouble(),
         green = MaterialTheme.colorScheme.secondary.green.toDouble(),
         blue = MaterialTheme.colorScheme.secondary.blue.toDouble(),
         alpha = MaterialTheme.colorScheme.secondary.alpha.toDouble()
     )
 
-    val primaryColor = UIColor(
-        red = MaterialTheme.colorScheme.primary.red.toDouble(),
-        green = MaterialTheme.colorScheme.primary.green.toDouble(),
-        blue = MaterialTheme.colorScheme.primary.blue.toDouble(),
-        alpha = MaterialTheme.colorScheme.primary.alpha.toDouble()
+    val placeholderColor = UIColor(
+        red = MaterialTheme.colorScheme.secondary.red.toDouble(),
+        green = MaterialTheme.colorScheme.secondary.green.toDouble(),
+        blue = MaterialTheme.colorScheme.secondary.blue.toDouble(),
+        alpha = 0.5
     )
 
-    val backgroundColor = UIColor(
-        red = MaterialTheme.colorScheme.background.red.toDouble(),
-        green = MaterialTheme.colorScheme.background.green.toDouble(),
-        blue = MaterialTheme.colorScheme.background.blue.toDouble(),
-        alpha = MaterialTheme.colorScheme.background.alpha.toDouble()
+    val errorColor = UIColor(
+        red = MaterialTheme.colorScheme.error.red.toDouble(),
+        green = MaterialTheme.colorScheme.error.green.toDouble(),
+        blue = MaterialTheme.colorScheme.error.blue.toDouble(),
+        alpha = MaterialTheme.colorScheme.error.alpha.toDouble()
     )
 
     val testDelegate = remember {
@@ -62,34 +58,24 @@ internal actual fun TextField(
             override fun textFieldShouldReturn(textField: UITextField): Boolean {
                 textField.resignFirstResponder()
                 currentRootView.view.endEditing(true)
-                Logger.i("NEKAA", message = {
-                    "onReturn click"
-                })
                 return true
-            }
-
-            override fun textFieldDidBeginEditing(textField: UITextField) {
-                onValueChange(textField.text() ?: "")
             }
         }
     }
 
     val uiTextField = remember {
         UITextField().apply {
-            /*this.setAttributedPlaceholder(
+            this.setAttributedPlaceholder(
                 NSAttributedString.create(
                     string = label,
                     attributes = mapOf(
                         Pair(
                             NSForegroundColorAttributeName,
-                            secondary.apply { alpha = 0.5 }
+                            placeholderColor
                         )
                     )
                 )
-            )*/
-
-
-            this.setTextColor(secondary)
+            )
 
             this.setBackgroundColor(
                 UIColor(
@@ -103,15 +89,17 @@ internal actual fun TextField(
             this.setDelegate(testDelegate)
 
             this.setBorderStyle(UITextBorderStyle.UITextBorderStyleRoundedRect)
-            this.layer.setBorderColor(primaryColor.CGColor)
             this.layer.setBorderWidth(1.0)
 
             this.setPlaceholder(label)
+
+            this.setSecureTextEntry(visualTransformation != VisualTransformation.None)
+
+            this.addAction(UIAction.actionWithHandler {
+                onValueChange(this.text() ?: "")
+            }, UIControlEventEditingChanged)
         }
     }
-
-    if (uiTextField.superview != null)
-        uiTextField.removeFromSuperview()
 
     val density = LocalDensity.current.density
 
@@ -139,6 +127,15 @@ internal actual fun TextField(
     )
 
     uiTextField.setText(value)
+    uiTextField.setUserInteractionEnabled(isEnable)
+
+    if (isError) {
+        uiTextField.layer.setBorderColor(errorColor.CGColor)
+        uiTextField.setTextColor(errorColor)
+    } else {
+        uiTextField.layer.setBorderColor(secondaryColor.CGColor)
+        uiTextField.setTextColor(secondaryColor)
+    }
 
     DisposableEffect(uiTextField) {
         currentRootView.view.addSubview(uiTextField)
