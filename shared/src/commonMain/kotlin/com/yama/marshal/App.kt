@@ -11,6 +11,7 @@ import com.yama.marshal.screen.send_message.SendMessageScreen
 import com.yama.marshal.screen.splash.SplashScreen
 import com.yama.marshal.ui.navigation.rememberNavController
 import com.yama.marshal.ui.theme.Dimensions
+import com.yama.marshal.ui.theme.YamaTheme
 import com.yama.marshal.ui.tool.screenSize
 import com.yama.marshal.ui.view.NavHost
 
@@ -43,16 +44,18 @@ internal fun App() {
         else
             Dimensions.Tablet
     ) {
-        NavHost(
-            navigationController = navigationController,
-            screens = arrayOf(
-                SplashScreen(navigationController),
-                LoginScreen(navigationController),
-                MainScreen(navigationController),
-                MapScreen(navigationController),
-                SendMessageScreen(navigationController)
+        YamaTheme {
+            NavHost(
+                navigationController = navigationController,
+                screens = arrayOf(
+                    SplashScreen(navigationController),
+                    LoginScreen(navigationController),
+                    MainScreen(navigationController),
+                    MapScreen(navigationController),
+                    SendMessageScreen(navigationController)
+                )
             )
-        )
+        }
     }
 
     AppDelegate.onBackPresse = {

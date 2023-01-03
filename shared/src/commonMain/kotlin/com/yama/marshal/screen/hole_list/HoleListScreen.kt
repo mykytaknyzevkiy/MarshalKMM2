@@ -24,6 +24,7 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -88,10 +89,14 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
         )
 
         LaunchedEffect(viewModel) {
-            viewModel.currentHoleSort
+            var lastHole: CourseFullDetail.HoleData? = null
+
+            viewModel.holeList
+                .filter { it.isNotEmpty() }
                 .onEach {
-                    if (!listState.isScrollInProgress)
+                    if (!listState.isScrollInProgress && lastHole != it.first())
                         listState.animateScrollToItem(0)
+                    lastHole = it.first()
                 }
                 .launchIn(this)
         }

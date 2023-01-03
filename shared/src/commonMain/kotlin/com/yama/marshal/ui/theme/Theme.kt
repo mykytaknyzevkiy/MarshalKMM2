@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.sp
 import com.yama.marshal.LocalAppDimens
 
 private val LightColorScheme = lightColorScheme(
-    background = Color(172, 173, 173),
+    background = Color(245, 243, 242),
 
-    primary = Color(35, 100, 165),
+    primary = Color.Black,
 
     onPrimary = Color.White,
 
@@ -104,19 +104,19 @@ sealed class Dimensions(
 
         buttonSize = 45.dp,
 
-        toolbar_height = 80.dp,
+        toolbar_height = 85.dp,
 
         fleet_view_holder_height = 65.dp
     )
 
     object PhoneSmall: Dimensions(
-        bodyLarge = 12.sp,
+        bodyLarge = 14.sp,
 
-        bodySmall = 8.sp,
+        bodySmall = 10.sp,
 
-        labelLarge = 14.sp,
+        labelLarge = 16.sp,
 
-        title = 16.sp,
+        title = 18.sp,
 
         screenPadding = 16.dp,
 
@@ -124,7 +124,7 @@ sealed class Dimensions(
 
         buttonSize = 45.dp,
 
-        toolbar_height = 75.dp,
+        toolbar_height = 85.dp,
 
         fleet_view_holder_height = 65.dp
     )

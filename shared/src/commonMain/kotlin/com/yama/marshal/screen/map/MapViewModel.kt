@@ -93,6 +93,7 @@ class MapViewModel : YamaViewModel() {
 
     override fun onClear() {
         super.onClear()
+        _cartIDState.value = -1
         _holeState.value = null
         _courseState.value = null
         _cartsState.value = emptyList()

@@ -1,6 +1,7 @@
 package com.yama.marshal.screen.alert_list
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -45,7 +46,7 @@ internal class AlertsScreen(
     override val toolbarColor = YamaColor.alert_navigation_card_bg
 
     @Composable
-    override fun content(args: List<NavArg>) {
+    override fun content(args: List<NavArg>) = Column {
         val itemList by remember(viewModel) {
             viewModel.alertList
         }.collectAsState(emptyList())

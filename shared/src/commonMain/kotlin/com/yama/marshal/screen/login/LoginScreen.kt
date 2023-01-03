@@ -84,7 +84,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 isError = false,
                 visualTransformation = VisualTransformation.None,
                 onValueChange = {
-                    userName.value = it.replace("\n", "")
+                    userName.value = it.replace("\n", "").replace(" ", "")
                 },
                 isEnable = currentState !is LoginViewState.Loading
             )

@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -1362,8 +1363,10 @@ public class Course3DRenderer extends Course3DRendererBase implements GLSurfaceV
         currentLocationVisible = Math.abs(projectedPosition.x) < 0.9 && Math.abs(projectedPosition.y) < 0.9;
         bindMatrix();
 
+        final Set<Map.Entry<Integer, CartDrawData.CartMarker>> entrySet = cartDrawData.cartMarkerArray.entrySet();
+
         float locationScale = Math.abs(0.037f * z);
-        for (Map.Entry<Integer, CartDrawData.CartMarker> entry : cartDrawData.cartMarkerArray.entrySet()) {
+        for (Map.Entry<Integer, CartDrawData.CartMarker> entry : entrySet) {
 
             if(entry.getValue().cartMarker == null)
                 entry.getValue().init();

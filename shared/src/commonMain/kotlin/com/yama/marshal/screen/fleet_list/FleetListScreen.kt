@@ -25,6 +25,7 @@ import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.screen.main.SortType
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.screen.send_message.SendMessageScreen
+import com.yama.marshal.tool.FleetSorter
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
@@ -33,8 +34,13 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 internal class FleetListScreen(
     navigationController: NavigationController,
@@ -234,11 +240,12 @@ internal class FleetListScreen(
             }
         )
 
-        LaunchedEffect(viewModel) {
-            viewModel.currentFleetSort
+        LaunchedEffect(Unit) {
+            viewModel.fleetList
+                .filter { it.isNotEmpty() }
                 .onEach {
-                    if (!listState.isScrollInProgress)
-                        listState.animateScrollToItem(0)
+                    listState.animateScrollToItem(0)
+                    listState.animateScrollToItem(0)
                 }
                 .launchIn(this)
         }

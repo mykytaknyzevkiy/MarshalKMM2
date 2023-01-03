@@ -67,6 +67,8 @@ internal actual fun IGoldMap(
     }
 
     LaunchedEffect(renderData) {
+        val cartsIDs = arrayListOf<Int>()
+
         hole
             .filter {
                 it >= 0
@@ -82,6 +84,19 @@ internal actual fun IGoldMap(
             .launchIn(this)
 
         carts
+            .onEach {
+                Logger.i("IGoldMap", message = {
+                    "Update carts"
+                })
+
+                cartsIDs.forEach { id ->
+                    if (!it.any { c -> c.id == id })
+                        igolfMapNativeRenderView.removeCart(id)
+                }
+
+                cartsIDs.clear()
+                cartsIDs.addAll(it.map { c -> c.id })
+            }
             .onEachList {
                 igolfMapNativeRenderView.addCart(
                     id = it.id,

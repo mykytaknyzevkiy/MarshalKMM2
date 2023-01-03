@@ -22,26 +22,27 @@ internal abstract class MainContentScreen(
 ) : YamaScreen(navigationController) {
     @Composable
     protected fun <SORT_TYPE : SortType> TableRow(sortList: Array<SORT_TYPE>,
-                                                  currentSort: SORT_TYPE,
+                                                  currentSort: SORT_TYPE?,
                                                   updateSort: (type: SORT_TYPE) -> Unit
-    ) {
+    ) = Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(Sizes.fleet_view_holder_height)
-                .background(MaterialTheme.colorScheme.primary)
-                .border(width = 1.dp, color = Color.LightGray),
+                .background(MaterialTheme.colorScheme.background),
             verticalAlignment = Alignment.CenterVertically
         ) {
             sortList.forEach { sortType ->
                 textLabel(sortType, currentSort, updateSort)
             }
         }
+
+        Spacer(modifier = Modifier.fillMaxWidth().background(Color.LightGray).height(1.dp))
     }
 
     @Composable
     private fun <SORT_TYPE : SortType>  RowScope.textLabel(type: SORT_TYPE,
-                                                           currentSort: SORT_TYPE,
+                                                           currentSort: SORT_TYPE?,
                                                            updateSort: (type: SORT_TYPE) -> Unit
     ) {
         Box(modifier = Modifier
@@ -51,7 +52,7 @@ internal abstract class MainContentScreen(
             .clickable { updateSort(type) }, contentAlignment = Alignment.Center) {
             Text(
                 text = type.label.uppercase(),
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = if (currentSort == type) 1f else 0.6f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = if (currentSort == type) 1f else 0.6f),
                 textAlign = TextAlign.Center,
             )
         }

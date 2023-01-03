@@ -1,11 +1,9 @@
 package com.yama.marshal.ui.view
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.ui.navigation.NavArg
@@ -24,11 +22,9 @@ internal abstract class YamaScreen(protected val navigationController: Navigatio
     @Composable
     open fun titleContent() {
         Text(
-            modifier = Modifier.padding(horizontal = Sizes.screenPadding),
             text = title().uppercase(),
             fontSize = Sizes.title,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 
@@ -53,5 +49,10 @@ internal abstract class YamaScreen(protected val navigationController: Navigatio
                 viewModel.onClear()
             }
         }
+    }
+
+    @Composable
+    open fun bottomBar() {
+
     }
 }

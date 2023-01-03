@@ -1,1 +1,9 @@
-1) Implement a new map view
+1) Native text field
+2) Scrolling motion
+3) Improve map render
+4) Map screen toolbar title
+5) Login screen fields
+6) Disable change orientation screen
+7) Clean database after log out
+8) Implement crash analysis
+9) Clean view_model scope

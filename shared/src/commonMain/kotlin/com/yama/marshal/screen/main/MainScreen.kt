@@ -11,10 +11,7 @@ import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.GolfCourse
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,6 +29,7 @@ import com.yama.marshal.screen.hole_list.HoleListScreen
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
+import com.yama.marshal.ui.theme.Dimensions
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.tool.Orientation
@@ -55,18 +53,6 @@ internal class MainScreen(navigationController: NavigationController) :
     private val alertListScreen = AlertsScreen(navigationController, viewModel)
 
     @Composable
-    override fun toolbarColor(): Color {
-        val currentScreen by mainNavigationController.currentRoute.collectAsState()
-
-        return when (currentScreen.route) {
-            fleetListScreen.route -> fleetListScreen.toolbarColor
-            holeListScreen.route -> holeListScreen.toolbarColor
-            alertListScreen.route -> alertListScreen.toolbarColor
-            else -> super.toolbarColor()
-        }
-    }
-
-    @Composable
     override fun titleContent() {
         val selectedCourse by remember { viewModel.selectedCourse }.collectAsState()
 
@@ -78,7 +64,6 @@ internal class MainScreen(navigationController: NavigationController) :
             text = selectedCourse!!.courseName,
             fontSize = Sizes.title,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 
@@ -87,7 +72,11 @@ internal class MainScreen(navigationController: NavigationController) :
         if (currentOrientation() == Orientation.LANDSCAPE) {
             val clock by remember { viewModel.clock }.collectAsState("")
 
-            Text(clock, fontSize = Sizes.title)
+            Text(
+                modifier = Modifier.padding(horizontal = Sizes.screenPadding),
+                text = clock,
+                fontSize = Sizes.title
+            )
         }
 
         IconButton(
@@ -105,15 +94,11 @@ internal class MainScreen(navigationController: NavigationController) :
 
     @Composable
     override fun content(args: List<NavArg>) = Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            NavHost(
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                navigationController = mainNavigationController,
-                screens = arrayOf(fleetListScreen, holeListScreen, alertListScreen)
-            )
-
-            menuNavigation()
-        }
+        NavHost(
+            modifier = Modifier.fillMaxSize(),
+            navigationController = mainNavigationController,
+            screens = arrayOf(fleetListScreen, holeListScreen, alertListScreen)
+        )
 
         val courses by viewModel.courseList.collectAsState(emptyList())
 
@@ -140,63 +125,103 @@ internal class MainScreen(navigationController: NavigationController) :
     }
 
     @Composable
-    private fun menuNavigation() = Row(modifier = Modifier.fillMaxWidth()) {
-        NavigationItem(
-            YamaColor.fleet_navigation_card_bg,
-            Strings.main_screen_navigation_item_fleet_label,
-            Icons.Default.DirectionsCar,
-        ) {
-            mainNavigationController.navigateTo(FleetListScreen.ROUTE)
-        }
+    override fun bottomBar() {
+        val dimensions = LocalAppDimens.current
 
-        NavigationItem(
-            YamaColor.hole_navigation_card_bg,
-            Strings.main_screen_navigation_item_hole_label,
-            Icons.Default.GolfCourse,
+        BottomAppBar(
+            modifier = Modifier.let {
+                if (dimensions !is Dimensions.Tablet)
+                    it.height(50.dp)
+                else
+                    it
+            },
+            contentPadding = PaddingValues(0.dp),
         ) {
-            mainNavigationController.navigateTo(HoleListScreen.ROUTE)
-        }
+            val currentRoute by mainNavigationController.currentRoute.collectAsState()
 
-        NavigationItem(
-            YamaColor.alert_navigation_card_bg,
-            Strings.main_screen_navigation_item_alert_label,
-            Icons.Default.Warning,
-        ) {
-            mainNavigationController.navigateTo(AlertsScreen.ROUTE)
-        }
-    }
-
-    @Composable
-    private fun RowScope.NavigationItem(
-        backgroundColor: Color,
-        label: String,
-        icon: ImageVector,
-        onClick: () -> Unit
-    ) {
-        Column(
-            modifier = Modifier
-                .background(backgroundColor)
-                .weight(1f)
-                .clickable(true, onClick = onClick),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Spacer(modifier  = Modifier.height(Sizes.screenPadding / 2))
-
-            Icon(
-                imageVector = icon,
-                modifier = Modifier.size(Sizes.button_icon_size),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
+            NavigationBarItem(
+                selected = currentRoute.route == FleetListScreen.ROUTE,
+                modifier = Modifier.background(YamaColor.fleet_navigation_card_bg),
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.DirectionsCar,
+                        contentDescription = null
+                    )
+                },
+                label = if (dimensions is Dimensions.Tablet) {
+                    {
+                        Text(
+                            Strings.main_screen_navigation_item_fleet_label.uppercase()
+                        )
+                    }
+                } else null,
+                onClick = {
+                    mainNavigationController.navigateTo(FleetListScreen.ROUTE)
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.Black,
+                    selectedTextColor = Color.White,
+                    unselectedIconColor = Color.White,
+                    unselectedTextColor = Color.White
+                ),
+                alwaysShowLabel = true
             )
 
-            Text(
-                label.uppercase(),
-                fontSize = LocalAppDimens.current.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimary
+            NavigationBarItem(
+                selected = currentRoute.route == HoleListScreen.ROUTE,
+                modifier = Modifier.background(YamaColor.hole_navigation_card_bg),
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.GolfCourse,
+                        contentDescription = null
+                    )
+                },
+                label = if (dimensions is Dimensions.Tablet) {
+                    {
+                        Text(
+                            Strings.main_screen_navigation_item_hole_label.uppercase()
+                        )
+                    }
+                } else null,
+                onClick = {
+                    mainNavigationController.navigateTo(HoleListScreen.ROUTE)
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.Black,
+                    selectedTextColor = Color.White,
+                    unselectedIconColor = Color.White,
+                    unselectedTextColor = Color.White
+                ),
+                alwaysShowLabel = true
             )
 
-            Spacer(modifier  = Modifier.height(Sizes.screenPadding / 2))
+            NavigationBarItem(
+                selected = currentRoute.route == AlertsScreen.ROUTE,
+                modifier = Modifier.background(YamaColor.alert_navigation_card_bg),
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = null
+                    )
+                },
+                label = if (dimensions is Dimensions.Tablet) {
+                    {
+                        Text(
+                            Strings.main_screen_navigation_item_hole_label.uppercase()
+                        )
+                    }
+                } else null,
+                onClick = {
+                    mainNavigationController.navigateTo(AlertsScreen.ROUTE)
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color.Black,
+                    selectedTextColor = Color.White,
+                    unselectedIconColor = Color.White,
+                    unselectedTextColor = Color.White
+                ),
+                alwaysShowLabel = true
+            )
         }
     }
 

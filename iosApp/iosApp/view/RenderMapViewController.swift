@@ -28,6 +28,8 @@ class RenderMapViewController: UIViewController, CourseRenderViewDelegate, Igolf
         if let vectors = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
             renderView?.viewCart(withGpsVectorData: vectors)
         }
+        
+        renderView?.showCalloutOverlay = false
     }
     
     func renderNUIViewController() -> UIViewController {
@@ -65,21 +67,7 @@ class RenderMapViewController: UIViewController, CourseRenderViewDelegate, Igolf
 extension CLLocation {
     
     convenience init?(latitude: Double, longitude: Double) {
-        let latitudeDD = Double(Int(latitude / 100))
-        let latitudeMM = ((latitude / 100) - latitudeDD) * 100
-        let latitudedd = latitudeMM / 60
-        let latitudeRes = latitudeDD + latitudedd
-        
-        let longitudeDD = Double(Int(longitude / 100))
-        let longitudeMM = ((longitude / 100) - longitudeDD) * 100
-        let longitudedd = longitudeMM / 60
-        let longitudeRes = longitudeDD + longitudedd
-        
-        if latitudeRes < -90.0 || latitudeRes > 90.0 || longitudeRes < -180.0 || longitudeRes > 180.0 {
-            return nil
-        } else {
-            self.init(latitude: latitudeRes, longitude: longitudeRes)
-        }
+        self.init(latitude: latitude, longitude: longitude)
     }
 }
 
