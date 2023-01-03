@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.VisualTransformation
-import co.touchlab.kermit.Logger
 import com.yama.marshal.currentRootView
 import platform.CoreGraphics.CGRectMake
 import platform.Foundation.NSAttributedString
@@ -65,6 +64,10 @@ internal actual fun TextField(
 
     val uiTextField = remember {
         UITextField().apply {
+            this.translatesAutoresizingMaskIntoConstraints = false
+
+            this.setUserInteractionEnabled(true)
+
             this.setAttributedPlaceholder(
                 NSAttributedString.create(
                     string = label,
@@ -123,7 +126,6 @@ internal actual fun TextField(
                     height = (size.height / density).toDouble()
                 )
             )
-            uiTextField.layer.setZPosition(Double.MAX_VALUE)
         },
         measurePolicy = { _, _ -> layout(0, 0) {} }
     )
@@ -141,7 +143,6 @@ internal actual fun TextField(
 
     DisposableEffect(uiTextField) {
         currentRootView.view.addSubview(uiTextField)
-        uiTextField.layer.setZPosition(Double.MAX_VALUE)
         onDispose {
             uiTextField.removeFromSuperview()
         }

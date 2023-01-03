@@ -1,9 +1,6 @@
-1) Native text field
-2) Scrolling motion
-3) Improve map render
-4) Map screen toolbar title
-5) Login screen fields
-6) Disable change orientation screen
-7) Clean database after log out
-8) Implement crash analysis
-9) Clean view_model scope
+1) Remove carts from map
+2) Change UI style
+3) Implement new bottom navigation
+4) Change toolbar state
+5) new color schema
+6) Send message screen

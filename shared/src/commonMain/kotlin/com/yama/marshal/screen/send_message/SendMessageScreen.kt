@@ -1,8 +1,6 @@
 package com.yama.marshal.screen.send_message
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,9 +8,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.tool.Strings
@@ -21,7 +19,6 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.navigation.findInt
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.Dialog
-import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
 
 internal class SendMessageScreen(navigationController: NavigationController) :
@@ -57,14 +54,14 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                 Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
 
                 Row {
-                    TextField(
+                    com.yama.marshal.ui.view.TextField(
                         modifier = Modifier.weight(1f),
                         value = sendSendMessageText.value,
-                        placeholder = {
-                            Text(Strings.send_message_screen_message_text_field_label)
-                        },
+                        label = Strings.send_message_screen_message_text_field_label,
                         onValueChange = { sendSendMessageText.value = it },
-                        enabled = currentState !is SendMessageViewState.Loading
+                        isEnable = currentState !is SendMessageViewState.Loading,
+                        visualTransformation = VisualTransformation.None,
+                        isError = false
                     )
 
                     IconButton(
@@ -72,6 +69,7 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                             viewModel.sendMessage(cartID, sendSendMessageText.value)
                         },
                         enabled = currentState !is SendMessageViewState.Loading
+                                && sendSendMessageText.value.isNotBlank()
                     ) {
                         Icon(
                             Icons.Default.Send,

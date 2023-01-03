@@ -1,17 +1,16 @@
 package com.yama.marshal.screen.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,6 +24,7 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.tool.Orientation
 import com.yama.marshal.ui.tool.currentOrientation
+import com.yama.marshal.ui.view.TextField
 import com.yama.marshal.ui.view.YamaScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -58,10 +58,10 @@ internal class LoginScreen(navigationController: NavigationController) :
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
-                detectTapGestures {
-                    closeKeyboard()
-                }
-            },
+                    detectTapGestures {
+                        closeKeyboard()
+                    }
+                },
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -77,7 +77,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 contentDescription = null
             )
 
-            com.yama.marshal.ui.view.TextField(
+            TextField(
                 value = userName.value,
                 label = Strings.login_screen_text_field_username_label,
                 modifier = Modifier.padding(Sizes.screenPadding),
@@ -89,7 +89,7 @@ internal class LoginScreen(navigationController: NavigationController) :
                 isEnable = currentState !is LoginViewState.Loading
             )
 
-            com.yama.marshal.ui.view.TextField(
+            TextField(
                 value = password.value,
                 label = Strings.login_screen_text_field_password_label,
                 modifier = Modifier.padding(bottom = Sizes.screenPadding),
