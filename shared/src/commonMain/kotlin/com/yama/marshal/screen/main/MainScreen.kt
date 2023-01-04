@@ -128,10 +128,17 @@ internal class MainScreen(navigationController: NavigationController) :
     override fun bottomBar() {
         val dimensions = LocalAppDimens.current
 
+        val navColors = NavigationBarItemDefaults.colors(
+            selectedIconColor = Color.Black,
+            selectedTextColor = Color.White,
+            unselectedIconColor = Color.White,
+            unselectedTextColor = Color.White
+        )
+
         BottomAppBar(
             modifier = Modifier.let {
                 if (dimensions !is Dimensions.Tablet)
-                    it.height(50.dp)
+                    it.height(60.dp)
                 else
                     it
             },
@@ -158,12 +165,7 @@ internal class MainScreen(navigationController: NavigationController) :
                 onClick = {
                     mainNavigationController.navigateTo(FleetListScreen.ROUTE)
                 },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Black,
-                    selectedTextColor = Color.White,
-                    unselectedIconColor = Color.White,
-                    unselectedTextColor = Color.White
-                ),
+                colors = navColors,
                 alwaysShowLabel = true
             )
 
@@ -186,12 +188,7 @@ internal class MainScreen(navigationController: NavigationController) :
                 onClick = {
                     mainNavigationController.navigateTo(HoleListScreen.ROUTE)
                 },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Black,
-                    selectedTextColor = Color.White,
-                    unselectedIconColor = Color.White,
-                    unselectedTextColor = Color.White
-                ),
+                colors = navColors,
                 alwaysShowLabel = true
             )
 
@@ -214,12 +211,7 @@ internal class MainScreen(navigationController: NavigationController) :
                 onClick = {
                     mainNavigationController.navigateTo(AlertsScreen.ROUTE)
                 },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Black,
-                    selectedTextColor = Color.White,
-                    unselectedIconColor = Color.White,
-                    unselectedTextColor = Color.White
-                ),
+                colors = navColors,
                 alwaysShowLabel = true
             )
         }
