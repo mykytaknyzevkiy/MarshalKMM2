@@ -19,6 +19,12 @@ internal fun Typography() = androidx.compose.material3.Typography(
         fontSize = LocalAppDimens.current.bodySmall
     ),
 
+    bodyMedium = TextStyle(
+        // fontFamily = FontFamily(fontResources("bebas_neue.ttf")),
+        fontWeight = FontWeight.Normal,
+        fontSize = LocalAppDimens.current.bodyMedium
+    ),
+
     labelLarge = TextStyle(
         //fontFamily = FontFamily(fontResources("bebas_neue.ttf")),
         fontWeight = FontWeight.Normal,

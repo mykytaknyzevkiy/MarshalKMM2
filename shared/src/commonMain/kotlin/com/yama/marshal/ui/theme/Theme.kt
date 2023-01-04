@@ -75,6 +75,8 @@ sealed class Dimensions(
 
     val bodySmall: TextUnit = 16.sp,
 
+    val bodyMedium: TextUnit = 18.sp,
+
     val labelLarge: TextUnit = 24.sp,
 
     val screenPadding: Dp = 24.dp,
@@ -93,6 +95,8 @@ sealed class Dimensions(
         bodyLarge = 16.sp,
 
         bodySmall = 12.sp,
+
+        bodyMedium = 14.sp,
 
         labelLarge = 18.sp,
 
@@ -113,6 +117,8 @@ sealed class Dimensions(
         bodyLarge = 14.sp,
 
         bodySmall = 10.sp,
+
+        bodyMedium = 12.sp,
 
         labelLarge = 16.sp,
 

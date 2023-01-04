@@ -44,7 +44,8 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
         TableRow(
             sortList = SortType.SortHole.values(),
-            currentSort = currentSort
+            currentSort = currentSort.first,
+            currentDesc = currentSort.second
         ) {
             viewModel.updateSort(it)
         }

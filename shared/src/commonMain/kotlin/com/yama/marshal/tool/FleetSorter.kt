@@ -7,7 +7,7 @@ import com.yama.marshal.screen.main.SortType.SortHole
 import com.yama.marshal.screen.main.SortType.SortHole.HOLE
 import com.yama.marshal.screen.main.SortType.SortHole.PACE_OF_PLAY
 
-class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail> {
+class FleetSorter(private val sortFleet: SortFleet, private val desc: Boolean) : Comparator<CartFullDetail> {
     override fun compare(a: CartFullDetail, b: CartFullDetail): Int {
         return if (a.isFlag && !b.isFlag)
             -1
@@ -15,10 +15,30 @@ class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail>
             1
         else
             when (sortFleet) {
-                SortFleet.CAR -> byCardName(a, b)
-                SortFleet.START_TIME -> byStartTime(a, b)
-                SortFleet.PLACE_OF_PLAY -> byPaceOfPlay(a, b)
-                SortFleet.HOLE -> byHole(a, b)
+                SortFleet.CAR -> byCardName(a, b).let {
+                    if (desc)
+                        it * -1
+                    else
+                        it
+                }
+                SortFleet.START_TIME -> byStartTime(a, b).let {
+                    if (desc)
+                        it * -1
+                    else
+                        it
+                }
+                SortFleet.PLACE_OF_PLAY -> byPaceOfPlay(a, b).let {
+                    if (desc)
+                        it * -1
+                    else
+                        it
+                }
+                SortFleet.HOLE -> byHole(a, b).let {
+                    if (desc)
+                        it * -1
+                    else
+                        it
+                }
             }
     }
 
@@ -131,10 +151,21 @@ class FleetSorter(private val sortFleet: SortFleet) : Comparator<CartFullDetail>
     }
 }
 
-class HoleSorter(private val sortHole: SortHole) : Comparator<CourseFullDetail.HoleData> {
+class HoleSorter(private val sortHole: SortHole, private val desc: Boolean) : Comparator<CourseFullDetail.HoleData> {
     override fun compare(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int = when (sortHole) {
-        HOLE -> byID(a, b)
-        PACE_OF_PLAY -> holeByPaceOfPlay(a, b)
+        HOLE -> byID(a, b).let {
+            if (desc)
+                it * -1
+            else
+                it
+        }
+
+        PACE_OF_PLAY -> holeByPaceOfPlay(a, b).let {
+            if (desc)
+                it * -1
+            else
+                it
+        }
     }
 
     private fun byID(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int {

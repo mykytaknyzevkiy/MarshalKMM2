@@ -56,18 +56,19 @@ internal class FleetListScreen(
             viewModel.currentFleetSort
         }.collectAsState()
 
+        val listState = rememberLazyListState()
+
         TableRow(
             sortList = remember {
                 SortType.SortFleet.values()
             },
-            currentSort = currentSort
+            currentSort = currentSort.first,
+            currentDesc = currentSort.second
         ) { viewModel.updateSort(it) }
 
         val itemList by remember(viewModel) {
             viewModel.fleetList
         }.collectAsState(emptyList())
-
-        val listState = rememberLazyListState()
 
         MarshalList(
             modifier = Modifier.fillMaxSize(),

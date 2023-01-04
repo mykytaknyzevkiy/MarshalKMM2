@@ -24,10 +24,13 @@ interface SortType {
         override val label: String,
         override val weight: Float
     ) : SortType {
-        CAR(Strings.fleet_list_screen_table_row_car_label, 0.8f),
-        START_TIME(Strings.fleet_list_screen_table_row_start_time_label, 0.7f),
+        CAR(Strings.fleet_list_screen_table_row_car_label, 0.6f),
+
+        START_TIME(Strings.fleet_list_screen_table_row_start_time_label, 0.8f),
+
         PLACE_OF_PLAY(Strings.fleet_list_screen_table_row_place_of_place_label, 1f),
-        HOLE(Strings.fleet_list_screen_table_row_hole_label, 0.5f)
+
+        HOLE(Strings.fleet_list_screen_table_row_hole_label, 0.6f)
     }
 
     enum class SortHole(
@@ -35,6 +38,7 @@ interface SortType {
         override val weight: Float
     ) : SortType {
         HOLE(Strings.hole_screen_table_row_hole_label, 0.3f),
+
         PACE_OF_PLAY(Strings.hole_screen_table_row_pace_of_play_label, 1f)
     }
 }
@@ -49,12 +53,12 @@ class MainViewModel : YamaViewModel() {
         it.format("hh:mm a")
     }
 
-    private val _currentFleetSort = MutableStateFlow(SortType.SortFleet.CAR)
-    val currentFleetSort: StateFlow<SortType.SortFleet>
+    private val _currentFleetSort = MutableStateFlow(Pair(SortType.SortFleet.CAR, false))
+    val currentFleetSort: StateFlow<Pair<SortType.SortFleet, Boolean>>
         get() = _currentFleetSort
 
-    private val _currentHoleSort = MutableStateFlow(SortType.SortHole.HOLE)
-    val currentHoleSort: StateFlow<SortType.SortHole>
+    private val _currentHoleSort = MutableStateFlow(Pair(SortType.SortHole.HOLE, false))
+    val currentHoleSort: StateFlow<Pair<SortType.SortHole, Boolean>>
         get() = _currentHoleSort
 
     private val _selectedCourse = MutableStateFlow<CourseFullDetail?>(null)
@@ -90,7 +94,7 @@ class MainViewModel : YamaViewModel() {
             a.filter { c -> c.course?.id == b?.id }
         }
         .combine(_currentFleetSort) { a, b ->
-            a.sortedWith(FleetSorter(b))
+            a.sortedWith(FleetSorter(b.first, b.second))
         }
 
     val holeList = CourseRepository
@@ -102,7 +106,7 @@ class MainViewModel : YamaViewModel() {
                 a.filter { it.idCourse == b?.id }
         }
         .combine(_currentHoleSort) { a, b ->
-            a.sortedWith(HoleSorter(b))
+            a.sortedWith(HoleSorter(b.first, b.second))
         }
 
     val alertList = CompanyRepository
@@ -115,11 +119,17 @@ class MainViewModel : YamaViewModel() {
         }
 
     fun updateSort(type: SortType.SortFleet) {
-        _currentFleetSort.value = type
+        _currentFleetSort.value = Pair(
+            type,
+            _currentFleetSort.value.first == type && !_currentFleetSort.value.second
+        )
     }
 
     fun updateSort(type: SortType.SortHole) {
-        _currentHoleSort.value = type
+        _currentHoleSort.value = Pair(
+            type,
+            _currentHoleSort.value.first == type && !_currentHoleSort.value.second
+        )
     }
 
     fun selectCourse(course: CourseFullDetail) {

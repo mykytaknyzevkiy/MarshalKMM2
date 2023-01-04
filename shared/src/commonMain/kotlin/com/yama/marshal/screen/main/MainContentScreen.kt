@@ -5,6 +5,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.YamaScreen
@@ -25,7 +30,8 @@ internal abstract class MainContentScreen(
     @Composable
     protected fun <SORT_TYPE : SortType> TableRow(
         sortList: Array<SORT_TYPE>,
-        currentSort: SORT_TYPE?,
+        currentSort: SORT_TYPE,
+        currentDesc: Boolean,
         updateSort: (type: SORT_TYPE) -> Unit
     ) = Row(
         modifier = Modifier
@@ -35,37 +41,46 @@ internal abstract class MainContentScreen(
             .border(1.dp, Color.LightGray),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        sortList.forEach { sortType ->
-            textLabel(sortType, currentSort, updateSort)
-        }
-    }
+        val dimensions = LocalAppDimens.current
 
-    @Composable
-    private fun <SORT_TYPE : SortType> RowScope.textLabel(
-        type: SORT_TYPE,
-        currentSort: SORT_TYPE?,
-        updateSort: (type: SORT_TYPE) -> Unit
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(type.weight)
-                .fillMaxHeight()
-                .padding(Sizes.screenPadding / 2)
-                .pointerInput(Unit) {
-                    detectTapGestures {
-                        updateSort(type)
+        sortList.forEach { type ->
+            Box(
+                modifier = Modifier
+                    .weight(type.weight)
+                    .fillMaxHeight()
+                    .padding(Sizes.screenPadding / 2)
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            updateSort(type)
+                        }
                     }
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = type.label.uppercase(),
-                color = MaterialTheme.colorScheme.primary.copy(alpha = if (currentSort == type) 1f else 0.6f),
-                textAlign = TextAlign.Center,
-            )
-        }
+            ) {
+                Text(
+                    text = type.label.uppercase(),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = Sizes.screenPadding / 2),
+                    color = MaterialTheme
+                        .colorScheme
+                        .primary
+                        .copy(alpha = if (currentSort == type) 1f else 0.6f),
+                    textAlign = TextAlign.Center,
+                    fontSize = dimensions.bodyMedium
+                )
 
-        NSpacer()
+                if (type == currentSort)
+                    Icon(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        imageVector = if (currentDesc)
+                            Icons.Default.ArrowDropUp
+                        else
+                            Icons.Default.ArrowDropDown,
+                        contentDescription = null
+                    )
+            }
+
+            NSpacer()
+        }
     }
 
     abstract val toolbarColor: Color
