@@ -4,10 +4,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +19,7 @@ import com.yama.marshal.ui.navigation.findInt
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.Dialog
 import com.yama.marshal.ui.view.MarshalList
+import com.yama.marshal.ui.view.TextField
 import com.yama.marshal.ui.view.YamaScreen
 
 internal class SendMessageScreen(navigationController: NavigationController) :
@@ -38,6 +36,7 @@ internal class SendMessageScreen(navigationController: NavigationController) :
     private var cartID: Int = 0
 
     @Composable
+    @ExperimentalMaterial3Api
     override fun content(args: List<NavArg>) = Box(modifier = Modifier
         .fillMaxSize()
         .pointerInput(Unit) {
@@ -62,18 +61,18 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                     fontSize = dimensions.bodySmall
                 )
 
-                val currentMessage by remember(viewModel) {
+                val currentMessage = remember(viewModel) {
                     viewModel.currentMessage
                 }.collectAsState()
 
-                com.yama.marshal.ui.view.TextField(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = Sizes.screenPadding),
-                    value = currentMessage,
+                TextField(
+                    value = currentMessage.value,
                     label = Strings.send_message_screen_message_text_field_label,
-                    onValueChange = { viewModel.setMessage(it) },
-                    isEnable = currentState !is SendMessageViewState.Loading,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = Sizes.screenPadding),
+                    isError = false,
                     visualTransformation = VisualTransformation.None,
-                    isError = false
+                    onValueChange = { viewModel.setMessage(it) },
+                    isEnable = true,
                 )
 
                 Text(

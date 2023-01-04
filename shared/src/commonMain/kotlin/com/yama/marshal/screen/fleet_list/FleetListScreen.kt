@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -25,7 +26,6 @@ import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.screen.main.SortType
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.screen.send_message.SendMessageScreen
-import com.yama.marshal.tool.FleetSorter
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
@@ -34,13 +34,9 @@ import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 internal class FleetListScreen(
     navigationController: NavigationController,
@@ -241,11 +237,14 @@ internal class FleetListScreen(
         )
 
         LaunchedEffect(Unit) {
-            viewModel.fleetList
-                .filter { it.isNotEmpty() }
+            viewModel.currentFleetSort
                 .onEach {
-                    listState.animateScrollToItem(0)
-                    listState.animateScrollToItem(0)
+                    try {
+                        listState.animateScrollToItem(0)
+                        listState.animateScrollToItem(0)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 .launchIn(this)
         }

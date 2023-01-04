@@ -54,7 +54,9 @@ internal class AlertsScreen(
         val listState = rememberLazyListState()
 
         MarshalList(
-            modifier = Modifier.fillMaxSize().border(width = 1.dp, color = Color.LightGray),
+            modifier = Modifier
+                .fillMaxSize()
+                .border(width = 1.dp, color = Color.LightGray),
             state = listState,
             list = itemList,
             itemContent = {
@@ -76,13 +78,15 @@ internal class AlertsScreen(
         )
 
         LaunchedEffect(viewModel) {
-            var fistAlert: AlertModel? = null
             viewModel.alertList
                 .onEach {
-                    if (it.isNotEmpty() && !listState.isScrollInProgress) {
-                        if (fistAlert != it.first())
+                    if (listState.isScrollInProgress) {
+                        try {
                             listState.animateScrollToItem(0)
-                        fistAlert = it.first()
+                            listState.animateScrollToItem(0)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
                 .launchIn(this)

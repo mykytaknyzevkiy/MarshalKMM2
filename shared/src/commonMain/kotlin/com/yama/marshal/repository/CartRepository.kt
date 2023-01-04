@@ -23,7 +23,7 @@ object CartRepository: YamaRepository() {
     private val dnaService = DNAService()
 
     val cartActiveList = Database.cartList
-        //.filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
+        .filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
         .combine(Database.cartRoundList) { cartsList, reportList ->
             cartsList.map { cart ->
                 val cartRound = reportList.findLast { it.id == cart.id}

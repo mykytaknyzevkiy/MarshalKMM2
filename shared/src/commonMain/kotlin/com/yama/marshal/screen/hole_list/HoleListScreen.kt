@@ -89,14 +89,14 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
         )
 
         LaunchedEffect(viewModel) {
-            var lastHole: CourseFullDetail.HoleData? = null
-
-            viewModel.holeList
-                .filter { it.isNotEmpty() }
+            viewModel.currentHoleSort
                 .onEach {
-                    if (!listState.isScrollInProgress && lastHole != it.first())
+                    try {
                         listState.animateScrollToItem(0)
-                    lastHole = it.first()
+                        listState.animateScrollToItem(0)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 .launchIn(this)
         }
