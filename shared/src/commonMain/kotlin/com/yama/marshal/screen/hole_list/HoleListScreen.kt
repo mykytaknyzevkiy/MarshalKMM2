@@ -15,7 +15,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
-import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.screen.main.SortType
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.tool.PaceValueFormatter
@@ -23,8 +22,9 @@ import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
+import com.yama.marshal.ui.view.MarshalItemDivider
+import com.yama.marshal.ui.view.MarshalItemText
 import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -105,33 +105,24 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
     @Composable
     private fun RowScope.ItemViewHolder(item: CourseFullDetail.HoleData) {
-        Text(
+        MarshalItemText(
             text = item.holeNumber.toString(),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .weight(SortType.SortHole.HOLE.weight)
-                .padding(Sizes.screenPadding / 2)
+            weight = SortType.SortHole.HOLE.weight
         )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        Text(
+        MarshalItemText(
             text = PaceValueFormatter.getString(item.differentialPace, PaceValueFormatter.PaceType.Full),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .weight(SortType.SortHole.PACE_OF_PLAY.weight / 2)
-                .padding(Sizes.screenPadding / 2),
+            weight = SortType.SortHole.PACE_OF_PLAY.weight / 2,
             color = PaceValueFormatter.getColor(item.differentialPace)
         )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        Text(
+        MarshalItemText(
             text = PaceValueFormatter.getStringForCurrentPace(item.averagePace),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .weight(SortType.SortHole.PACE_OF_PLAY.weight / 2)
-                .padding(Sizes.screenPadding / 2)
+            weight = SortType.SortHole.PACE_OF_PLAY.weight / 2
         )
     }
 }

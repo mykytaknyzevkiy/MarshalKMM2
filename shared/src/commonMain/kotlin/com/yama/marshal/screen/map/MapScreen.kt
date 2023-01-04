@@ -46,33 +46,30 @@ internal class MapScreen(navigationController: NavigationController) : YamaScree
             viewModel.holeState
         }.collectAsState()
 
+        if (hole != null)
+            Text(
+                text = "Hole: ${hole?.holeNumber}",
+                fontSize = Sizes.title,
+                textAlign = TextAlign.Center
+            )
+    }
+
+    @Composable
+    override fun actions() {
         val cartID by remember(viewModel) { viewModel.cartIDState }.collectAsState()
 
         val carts by remember(viewModel) {
             viewModel.cartsState
         }.collectAsState()
 
-        if (hole == null)
-            return
-
-        Row(modifier = Modifier.fillMaxWidth()) {
-            if (cartID >= 0 && carts.isNotEmpty()) {
-                val cart = carts.first()
-                Text(
-                    modifier = Modifier.padding(end = Sizes.screenPadding).weight(1f),
-                    text = "Cart: ${cart.cartName}",
-                    fontSize = Sizes.title,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            if (hole != null)
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = "Hole: ${hole?.holeNumber}",
-                    fontSize = Sizes.title,
-                    textAlign = TextAlign.Center
-                )
+        if (cartID >= 0 && carts.isNotEmpty()) {
+            val cart = carts.first()
+            Text(
+                modifier = Modifier.padding(end = Sizes.screenPadding),
+                text = "Cart: ${cart.cartName}",
+                fontSize = Sizes.title,
+                textAlign = TextAlign.Center
+            )
         }
     }
 

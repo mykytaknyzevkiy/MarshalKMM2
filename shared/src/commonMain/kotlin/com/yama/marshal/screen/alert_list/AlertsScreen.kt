@@ -6,11 +6,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BatteryAlert
-import androidx.compose.material.icons.filled.LocationDisabled
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
-import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
@@ -28,8 +22,9 @@ import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
+import com.yama.marshal.ui.view.MarshalItemDivider
+import com.yama.marshal.ui.view.MarshalItemText
 import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -95,70 +90,43 @@ internal class AlertsScreen(
 
     @Composable
     fun RowScope.ItemViewHolder(item: AlertModel) {
-        Text(
+        MarshalItemText(
             text = item.cart.cartName,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.2f).padding(Sizes.screenPadding / 2)
+            weight = 0.2f
         )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        /*Icon(
-            imageVector = when (item) {
-                is AlertModel.Fence -> Icons.Default.LocationDisabled
-                is AlertModel.Pace -> Icons.Default.Schedule
-                is AlertModel.Battery -> Icons.Default.BatteryAlert
-            },
-            contentDescription = null,
-            modifier = Modifier
-                .weight(0.150f)
-        )
-
-        NSpacer()*/
-
-        Text(
+        MarshalItemText(
             text = when (item) {
                 is AlertModel.Fence -> Strings.alerts_item_type_fence_title
                 is AlertModel.Pace -> Strings.alerts_item_type_pence_title
                 is AlertModel.Battery -> Strings.alerts_item_type_battery_title
             },
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.5f).padding(Sizes.screenPadding / 2)
+            weight = 0.5f
         )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        when (item){
-            is AlertModel.Fence -> {
-                Text(
-                    text = item.geofence.name ?: "---",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(0.6f).padding(Sizes.screenPadding / 2)
-                )
-            }
-            is AlertModel.Pace -> Text(
-                text = PaceValueFormatter.getString(item.netPace, PaceValueFormatter.PaceType.Full),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(0.6f).padding(Sizes.screenPadding / 2)
-            )
-            is AlertModel.Battery -> Text(
-                text = item.cart.currPosHole.let {
-                    if ((it?:0) < 0)
+        MarshalItemText(
+            text = when (item) {
+                is AlertModel.Fence -> item.geofence.name ?: "---"
+                is AlertModel.Pace -> PaceValueFormatter.getString(item.netPace, PaceValueFormatter.PaceType.Full)
+                is AlertModel.Battery -> item.cart.currPosHole.let {
+                    if ((it ?: 0) < 0)
                         "---"
                     else
                         "Hole: $it"
-                },
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(0.6f).padding(Sizes.screenPadding / 2)
-            )
-        }
+                }
+            },
+            weight = 0.6f
+        )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        Text(
+        MarshalItemText(
             text = item.date.format("hh:mm a"),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(0.4f).padding(Sizes.screenPadding / 2)
+            weight = 0.4f
         )
     }
 }

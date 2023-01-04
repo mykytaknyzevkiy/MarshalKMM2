@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.PanToolAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +20,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
+import com.yama.marshal.screen.main.SortType
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import kotlinx.coroutines.launch
@@ -40,55 +43,60 @@ internal inline fun <E> MarshalList(
     crossinline itemContent: @Composable RowScope.(item: E) -> Unit,
     crossinline onTapItem: (item: E) -> Unit = {}
 ) = Box(modifier = modifier.drawBehind {
-    repeat(30) {
-        try {
+    repeat(this.size.height.roundToInt() / holderHeight.roundToPx()) {
+        val y = (it * holderHeight).toPx()
+
+        if (y < this.size.height)
             drawRect(
                 color = if (it % 2 == 0) bgPositive else bgNegative,
                 topLeft = Offset(x = 0f, y = (it * holderHeight).toPx()),
             )
-        } catch (e: Exception) {
-            return@repeat
-        }
     }
 }) {
     val scope = rememberCoroutineScope()
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = state
-    ) {
+    LazyColumn(state = state) {
         itemsIndexed(list, key = key) { position, item ->
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(holderHeight)
-            ) {
-                val itemBgColor by remember(item, position) {
-                    derivedStateOf {
-                        customItemBgColor(item)
-                            ?: if (position % 2 == 0)
-                                bgPositive
-                            else
-                                bgNegative
-                    }
+            val itemBgColor by remember(item, position) {
+                derivedStateOf {
+                    customItemBgColor(item)
+                        ?: if (position % 2 == 0)
+                            bgPositive
+                        else
+                            bgNegative
                 }
+            }
 
-                val maxOffset by remember {
-                    derivedStateOf {
-                        itemActionsCount(item) * holderHeight
-                    }
+            val maxOffset by remember {
+                derivedStateOf {
+                    itemActionsCount(item) * holderHeight
                 }
+            }
 
-                var itemOffset by remember(item) {
-                    mutableStateOf(IntOffset(0, 0))
+            var itemOffset by remember(item) {
+                mutableStateOf(IntOffset(0, 0))
+            }
+
+            Box(modifier = Modifier.pointerInput(item) {
+                val maxOffsetPx = maxOffset.roundToPx()
+
+                detectTapGestures {
+                    onTapItem(item)
+
+                    itemOffset = if (itemOffset.x >= maxOffsetPx)
+                        IntOffset(x = 0, y = 0)
+                    else
+                        IntOffset(x = maxOffsetPx, y = 0)
                 }
-
+            }) {
                 if (itemOffset.x > 0)
                     LazyRow {
                         itemActions(item)
                     }
 
                 Row(modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = holderHeight)
                     .drawBehind {
                         drawRect(
                             color = itemBgColor,
@@ -114,18 +122,6 @@ internal inline fun <E> MarshalList(
                                     itemOffset = IntOffset(maxOffsetPx, 0)
                             }
                         )
-                    }
-                    .pointerInput(item) {
-                        val maxOffsetPx = maxOffset.roundToPx()
-
-                        detectTapGestures {
-                            onTapItem(item)
-
-                            itemOffset = if (itemOffset.x >= maxOffsetPx)
-                                IntOffset(x = 0, y = 0)
-                            else
-                                IntOffset(x = maxOffsetPx, y = 0)
-                        }
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -173,3 +169,25 @@ internal inline fun <E> MarshalList(
         }
     }
 }
+
+
+@Composable
+internal fun RowScope.MarshalItemText(
+    text: String,
+    weight: Float,
+    color: Color = Color.Unspecified,
+    textAlign: TextAlign = TextAlign.Center
+) = Text(
+    text = text,
+    textAlign = TextAlign.Center,
+    modifier = Modifier.weight(weight).padding(Sizes.screenPadding / 2),
+    color = color
+)
+
+@Composable
+internal fun MarshalItemDivider() = Spacer(
+    modifier = Modifier
+        .width(1.dp)
+        .height(Sizes.fleet_view_holder_height - Sizes.screenPadding)
+        .background(Color.LightGray)
+)

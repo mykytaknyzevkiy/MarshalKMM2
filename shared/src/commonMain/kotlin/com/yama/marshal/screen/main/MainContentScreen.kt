@@ -87,9 +87,12 @@ internal abstract class MainContentScreen(
 }
 
 @Composable
-internal fun NSpacer() {
+private fun NSpacer() {
     Spacer(
-        modifier = Modifier.width(1.dp).fillMaxHeight().padding(vertical = Sizes.screenPadding / 2)
+        modifier = Modifier
+            .width(1.dp)
+            .fillMaxHeight()
+            .padding(vertical = Sizes.screenPadding / 2)
             .background(Color.LightGray)
     )
 }

@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.closeKeyboard
@@ -17,6 +18,7 @@ import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.navigation.findInt
 import com.yama.marshal.ui.theme.Sizes
+import com.yama.marshal.ui.view.*
 import com.yama.marshal.ui.view.Dialog
 import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.TextField
@@ -85,9 +87,10 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                     modifier = Modifier.weight(1f),
                     list = viewModel.messages,
                     itemContent = {
-                        Text(
-                            modifier = Modifier.padding(Sizes.screenPadding),
-                            text = it.message
+                        MarshalItemText(
+                            text = it.message,
+                            weight = 1f,
+                            textAlign = TextAlign.Start
                         )
                     },
                     onTapItem = {
@@ -95,26 +98,6 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                         viewModel.setMessage(it.message)
                     }
                 )
-
-                /*LazyColumn {
-                    items(viewModel.messages) {
-                        Box(
-                            modifier = Modifier
-                                .padding(vertical = Sizes.screenPadding / 2)
-                                .fillMaxWidth()
-                                .clickable {
-                                    closeKeyboard()
-                                    viewModel.setMessage(it.message)
-                                }
-                                .border(1.dp, Color.LightGray)
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(Sizes.screenPadding / 2),
-                                text = it.message
-                            )
-                        }
-                    }
-                }*/
             }
         }
 

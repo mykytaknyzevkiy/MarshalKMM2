@@ -14,15 +14,12 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
-import com.yama.marshal.screen.main.NSpacer
 import com.yama.marshal.screen.main.SortType
 import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.screen.send_message.SendMessageScreen
@@ -33,14 +30,14 @@ import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
+import com.yama.marshal.ui.view.MarshalItemDivider
+import com.yama.marshal.ui.view.MarshalItemText
 import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 internal class FleetListScreen(
-    navigationController: NavigationController,
-    override val viewModel: MainViewModel
+    navigationController: NavigationController, override val viewModel: MainViewModel
 ) : MainContentScreen(navigationController, viewModel) {
     companion object {
         const val ROUTE = "fleet_list"
@@ -61,17 +58,14 @@ internal class FleetListScreen(
         TableRow(
             sortList = remember {
                 SortType.SortFleet.values()
-            },
-            currentSort = currentSort.first,
-            currentDesc = currentSort.second
+            }, currentSort = currentSort.first, currentDesc = currentSort.second
         ) { viewModel.updateSort(it) }
 
         val itemList by remember(viewModel) {
             viewModel.fleetList
         }.collectAsState(emptyList())
 
-        MarshalList(
-            modifier = Modifier.fillMaxSize(),
+        MarshalList(modifier = Modifier.fillMaxSize(),
             list = itemList,
             state = listState,
             key = { _, item -> item.id },
@@ -81,39 +75,25 @@ internal class FleetListScreen(
             itemActionsCount = { item ->
                 var width = 0
 
-                if (item.currPosLat != null
-                    && item.currPosLon != null
-                    && item.currPosHole != null
-                    && item.currPosHole > 0
-                )
-                    width += 1
+                if (item.currPosLat != null && item.currPosLon != null && item.currPosHole != null && item.currPosHole > 0) width += 1
 
                 width += 1
 
-                if (item.isMessagingAvailable)
-                    width += 1
+                if (item.isMessagingAvailable) width += 1
 
                 width
             },
             itemActions = { item ->
-                if (item.currPosLat != null
-                    && item.currPosLon != null
-                    && item.currPosHole != null
-                    && item.currPosHole > 0
-                ) item {
-                    IconButton(
-                        modifier = Modifier.size(Sizes.fleet_view_holder_height)
-                            .background(YamaColor.view_cart_btn_bg_color),
-                        onClick = {
-                            navigationController.navigateTo(
-                                MapScreen.route,
-                                listOf(
-                                    NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
-                                    NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
-                                )
+                if (item.currPosLat != null && item.currPosLon != null && item.currPosHole != null && item.currPosHole > 0) item {
+                    IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                        .background(YamaColor.view_cart_btn_bg_color), onClick = {
+                        navigationController.navigateTo(
+                            MapScreen.route, listOf(
+                                NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
+                                NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
                             )
-                        }
-                    ) {
+                        )
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Place,
                             contentDescription = null,
@@ -122,74 +102,59 @@ internal class FleetListScreen(
                     }
                 }
 
-                if (item.isFlag)
-                    item {
-                        IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height)
-                                .background(YamaColor.flag_cart_btn_bg_color),
-                            onClick = {
-                                viewModel.unFlagCart(item)
-                            }
-                        ) {
-                            val screenPadding = Sizes.screenPadding
-                            val tintColor = MaterialTheme.colorScheme.onPrimary
-                            Icon(
-                                imageVector = Icons.Default.Flag,
-                                contentDescription = null,
-                                tint = tintColor,
-                            )
-                            Canvas(modifier = Modifier.fillMaxSize()) {
-                                val padding = screenPadding.toPx()
-                                drawLine(
-                                    color = tintColor,
-                                    start = Offset(padding, padding),
-                                    end =  Offset(this.size.width - padding, this.size.height - padding),
-                                    strokeWidth = 8f
-                                )
-                            }
-                        }
-                    }
-                else
-                    item {
-                        IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height)
-                                .background(YamaColor.flag_cart_btn_bg_color),
-                            onClick = {
-                                viewModel.flagCart(item)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Flag,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                if (item.isFlag) item {
+                    IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                        .background(YamaColor.flag_cart_btn_bg_color), onClick = {
+                        viewModel.unFlagCart(item)
+                    }) {
+                        val screenPadding = Sizes.screenPadding
+                        val tintColor = MaterialTheme.colorScheme.onPrimary
+                        Icon(
+                            imageVector = Icons.Default.Flag,
+                            contentDescription = null,
+                            tint = tintColor,
+                        )
+                        Canvas(modifier = Modifier.fillMaxSize()) {
+                            val padding = screenPadding.toPx()
+                            drawLine(
+                                color = tintColor, start = Offset(padding, padding), end = Offset(
+                                    this.size.width - padding, this.size.height - padding
+                                ), strokeWidth = 8f
                             )
                         }
                     }
+                }
+                else item {
+                    IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                        .background(YamaColor.flag_cart_btn_bg_color), onClick = {
+                        viewModel.flagCart(item)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Flag,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                }
 
-                if (item.isMessagingAvailable)
-                    item {
-                        IconButton(
-                            modifier = Modifier.size(Sizes.fleet_view_holder_height)
-                                .background(YamaColor.message_cart_btn_bg_color),
-                            onClick = {
-                                navigationController.navigateTo(
-                                    SendMessageScreen.ROUTE,
-                                    listOf(
-                                        NavArg(
-                                            key = SendMessageScreen.ARG_CART_ID,
-                                            value = item.id
-                                        ),
-                                    )
-                                )
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                if (item.isMessagingAvailable) item {
+                    IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
+                        .background(YamaColor.message_cart_btn_bg_color), onClick = {
+                        navigationController.navigateTo(
+                            SendMessageScreen.ROUTE, listOf(
+                                NavArg(
+                                    key = SendMessageScreen.ARG_CART_ID, value = item.id
+                                ),
                             )
-                        }
+                        )
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                        )
                     }
+                }
 
                 /*if (item.isShutdownEnable)
                     item {
@@ -228,82 +193,65 @@ internal class FleetListScreen(
                     }*/
             },
             customItemBgColor = {
-                if (it.isCartInShutdownMode)
-                    YamaColor.cart_shut_down_bg
-                else if (it.isFlag)
-                    YamaColor.item_cart_flag_container_bg
-                else
-                    null
-            }
-        )
+                if (it.isCartInShutdownMode) YamaColor.cart_shut_down_bg
+                else if (it.isFlag) YamaColor.item_cart_flag_container_bg
+                else null
+            })
 
         LaunchedEffect(Unit) {
-            viewModel.currentFleetSort
-                .onEach {
+            viewModel.currentFleetSort.onEach {
                     try {
                         listState.animateScrollToItem(0)
                         listState.animateScrollToItem(0)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                }
-                .launchIn(this)
+                }.launchIn(this)
         }
     }
 
     @Composable
     fun RowScope.ItemViewHolder(item: CartFullDetail) {
-        Text(
-            text = item.cartName,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortFleet.CAR.weight)
+        MarshalItemText(
+            text = item.cartName, weight = SortType.SortFleet.CAR.weight
         )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        Text(
-            text = if ((item.state != CartFullDetail.State.inUse || item.isOnClubHouse) && item.returnAreaSts != 0) {
-                if (item.isOnClubHouse)
-                    Strings.cart_not_in_use_ended_round
-                else
-                    Strings.cart_not_in_use
-            } else item.startTime.let {
+        MarshalItemText(
+            text = if ((item.state != CartFullDetail.State.inUse || item.isOnClubHouse)
+                && item.returnAreaSts != 0) {
+                if (item.isOnClubHouse) Strings.cart_not_in_use_ended_round
+                else Strings.cart_not_in_use
+            }
+            else item.startTime.let {
                 it?.format("h:mm a") ?: Strings.cart_not_in_use
             },
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortFleet.START_TIME.weight)
+            weight = SortType.SortFleet.START_TIME.weight
         )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        Text(
-            text = if (item.startTime == null || item.totalNetPace == null) "---" else PaceValueFormatter.getString(
-                item.totalNetPace,
-                PaceValueFormatter.PaceType.Short
+        MarshalItemText(
+            text = if (item.startTime == null || item.totalNetPace == null) "---"
+            else PaceValueFormatter.getString(
+                item.totalNetPace, PaceValueFormatter.PaceType.Short
             ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortFleet.PLACE_OF_PLAY.weight),
+            weight = SortType.SortFleet.PLACE_OF_PLAY.weight,
             color = PaceValueFormatter.getColor(
                 item.totalNetPace ?: 0
             )
         )
 
-        NSpacer()
+        MarshalItemDivider()
 
-        Text(
+        MarshalItemText(
             text = item.returnAreaSts.let { returnAreaSts ->
-                if (returnAreaSts == 0)
-                    if (item.startTime == null || item.currPosHole == null || item.currPosHole == -1) "---" else item.currPosHole.toString()
-                else
-                    if (item.isOnClubHouse)
-                        Strings.clubhouse
-                    else
-                        "---"
+                if (returnAreaSts == 0) if (item.startTime == null || item.currPosHole == null || item.currPosHole == -1) "---" else item.currPosHole.toString()
+                else if (item.isOnClubHouse) Strings.clubhouse
+                else "---"
             },
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(SortType.SortFleet.HOLE.weight)
+            weight = SortType.SortFleet.HOLE.weight
         )
-
-        NSpacer()
     }
 }
