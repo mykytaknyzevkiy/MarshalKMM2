@@ -37,7 +37,8 @@ internal inline fun <E> MarshalList(
     crossinline customItemBgColor: @DisallowComposableCalls (item: E) -> Color? = { null },
     crossinline itemActionsCount: @DisallowComposableCalls (item: E) -> Int = { 0 },
     crossinline itemActions: LazyListScope.(item: E) -> Unit = { },
-    crossinline itemContent: @Composable RowScope.(item: E) -> Unit
+    crossinline itemContent: @Composable RowScope.(item: E) -> Unit,
+    crossinline onTapItem: (item: E) -> Unit = {}
 ) = Box(modifier = modifier.drawBehind {
     repeat(30) {
         try {
@@ -118,6 +119,8 @@ internal inline fun <E> MarshalList(
                         val maxOffsetPx = maxOffset.roundToPx()
 
                         detectTapGestures {
+                            onTapItem(item)
+
                             itemOffset = if (itemOffset.x >= maxOffsetPx)
                                 IntOffset(x = 0, y = 0)
                             else

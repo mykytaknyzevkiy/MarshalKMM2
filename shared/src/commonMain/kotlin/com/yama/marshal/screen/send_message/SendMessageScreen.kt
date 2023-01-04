@@ -1,24 +1,27 @@
 package com.yama.marshal.screen.send_message
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.tool.Strings
+import com.yama.marshal.tool.closeKeyboard
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.navigation.findInt
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.Dialog
+import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.YamaScreen
 
 internal class SendMessageScreen(navigationController: NavigationController) :
@@ -34,89 +37,86 @@ internal class SendMessageScreen(navigationController: NavigationController) :
 
     private var cartID: Int = 0
 
-    private val sendSendMessageText = mutableStateOf("")
-
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    override fun content(args: List<NavArg>) {
+    override fun content(args: List<NavArg>) = Box(modifier = Modifier
+        .fillMaxSize()
+        .pointerInput(Unit) {
+            detectTapGestures {
+                closeKeyboard()
+            }
+        }
+    ) {
         val dimensions = LocalAppDimens.current
 
         cartID = args.findInt(ARG_CART_ID) ?: return
 
         val currentState by remember { viewModel.currentState }.collectAsState()
 
-        Column(modifier = Modifier.fillMaxSize().padding(Sizes.screenPadding)) {
-            if (currentState is SendMessageViewState.Loading)
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-            else {
-                Text("Custom message:", fontSize = dimensions.bodySmall)
+        if (currentState is SendMessageViewState.Loading)
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        else {
+            Column {
+                Text(
+                    "Custom message:",
+                    Modifier.fillMaxWidth().padding(Sizes.screenPadding),
+                    fontSize = dimensions.bodySmall
+                )
 
-                Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
+                val currentMessage by remember(viewModel) {
+                    viewModel.currentMessage
+                }.collectAsState()
 
-                Row {
-                    com.yama.marshal.ui.view.TextField(
-                        modifier = Modifier.weight(1f),
-                        value = sendSendMessageText.value,
-                        label = Strings.send_message_screen_message_text_field_label,
-                        onValueChange = { sendSendMessageText.value = it },
-                        isEnable = currentState !is SendMessageViewState.Loading,
-                        visualTransformation = VisualTransformation.None,
-                        isError = false
-                    )
+                com.yama.marshal.ui.view.TextField(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = Sizes.screenPadding),
+                    value = currentMessage,
+                    label = Strings.send_message_screen_message_text_field_label,
+                    onValueChange = { viewModel.setMessage(it) },
+                    isEnable = currentState !is SendMessageViewState.Loading,
+                    visualTransformation = VisualTransformation.None,
+                    isError = false
+                )
 
-                    IconButton(
-                        onClick = {
-                            viewModel.sendMessage(cartID, sendSendMessageText.value)
-                        },
-                        enabled = currentState !is SendMessageViewState.Loading
-                                && sendSendMessageText.value.isNotBlank()
-                    ) {
-                        Icon(
-                            Icons.Default.Send,
-                            contentDescription = null
+                Text(
+                    "Templates:",
+                    Modifier.fillMaxWidth().padding(Sizes.screenPadding),
+                    fontSize = dimensions.bodySmall
+                )
+
+                MarshalList(
+                    modifier = Modifier.weight(1f),
+                    list = viewModel.messages,
+                    itemContent = {
+                        Text(
+                            modifier = Modifier.padding(Sizes.screenPadding),
+                            text = it.message
                         )
+                    },
+                    onTapItem = {
+                        closeKeyboard()
+                        viewModel.setMessage(it.message)
                     }
-                }
+                )
 
-                Spacer(modifier = Modifier.height(Sizes.screenPadding))
-
-                Text("Templates:", fontSize = dimensions.bodySmall)
-
-                Spacer(modifier = Modifier.height(Sizes.screenPadding / 2))
-
-                LazyColumn {
+                /*LazyColumn {
                     items(viewModel.messages) {
-                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = Sizes.screenPadding / 2)) {
+                        Box(
+                            modifier = Modifier
+                                .padding(vertical = Sizes.screenPadding / 2)
+                                .fillMaxWidth()
+                                .clickable {
+                                    closeKeyboard()
+                                    viewModel.setMessage(it.message)
+                                }
+                                .border(1.dp, Color.LightGray)
+                        ) {
                             Text(
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.padding(Sizes.screenPadding / 2),
                                 text = it.message
                             )
-
-                            IconButton(
-                                onClick = {
-
-                                },
-                                enabled = currentState != SendMessageViewState.Loading
-                            ) {
-                                Icon(
-                                    Icons.Default.Send,
-                                    contentDescription = null
-                                )
-                            }
                         }
-
-                        Spacer(
-                            modifier = Modifier.fillMaxWidth().height(1.dp)
-                                .background(Color.LightGray)
-                                .padding(vertical = Sizes.screenPadding)
-                        )
                     }
-                }
+                }*/
             }
-        }
-
-        LaunchedEffect(viewModel) {
-            viewModel.loadMessages()
         }
 
         if (currentState is SendMessageViewState.Success)
@@ -128,10 +128,42 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                 },
                 onCancelClick = null
             )
+
+        LaunchedEffect(viewModel) {
+            viewModel.loadMessages()
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                closeKeyboard()
+            }
+        }
     }
 
     override val isToolbarEnable: Boolean = true
 
     @Composable
     override fun title(): String = Strings.send_message_screen_title
+
+    @Composable
+    override fun actions() {
+        val currentState by remember { viewModel.currentState }.collectAsState()
+
+        val currentMessage by remember(viewModel) {
+            viewModel.currentMessage
+        }.collectAsState()
+
+        IconButton(
+            onClick = {
+                closeKeyboard()
+                viewModel.sendMessage(cartID)
+            },
+            enabled = currentState !is SendMessageViewState.Loading && currentMessage.isNotBlank()
+        ) {
+            Icon(
+                Icons.Default.Send,
+                contentDescription = null
+            )
+        }
+    }
 }

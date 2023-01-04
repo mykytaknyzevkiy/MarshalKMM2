@@ -25,6 +25,10 @@ class SendMessageViewModel : YamaViewModel() {
     val currentState: StateFlow<SendMessageViewState>
         get() = _currentState
 
+    private val _currentMessage = MutableStateFlow("")
+    val currentMessage: StateFlow<String>
+        get() = _currentMessage
+
     fun loadMessages() {
         CompanyRepository
             .companyMessages
@@ -35,7 +39,9 @@ class SendMessageViewModel : YamaViewModel() {
             .launchIn(viewModelScope)
     }
 
-    fun sendMessage(cartID: Int, message: String) = viewModelScope.launch {
+    fun sendMessage(cartID: Int) = viewModelScope.launch {
+        val message = _currentMessage.value
+
         if (message.isBlank())
             return@launch
 
@@ -58,7 +64,17 @@ class SendMessageViewModel : YamaViewModel() {
             _currentState.emit(SendMessageViewState.Empty)
     }
 
+    fun setMessage(message: String) {
+        _currentMessage.value = message
+    }
+
     fun emptyState() {
         _currentState.value = SendMessageViewState.Empty
+    }
+
+    override fun onClear() {
+        super.onClear()
+        _currentMessage.value = ""
+        emptyState()
     }
 }

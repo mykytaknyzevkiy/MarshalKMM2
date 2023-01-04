@@ -3,6 +3,7 @@ package com.yama.marshal.ui.view
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.Layout
@@ -20,7 +21,6 @@ import kotlinx.coroutines.flow.onEach
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.*
 
-
 @Composable
 internal actual fun IGoldMap(
     modifier: Modifier,
@@ -28,6 +28,10 @@ internal actual fun IGoldMap(
     hole: Flow<Int>,
     carts: Flow<List<Cart>>
 ) {
+    val cartsIDs = remember(renderData) {
+        arrayListOf<Int>()
+    }
+
     val density = LocalDensity.current.density
 
     val screenPadding = Sizes.screenPadding.value
@@ -61,14 +65,16 @@ internal actual fun IGoldMap(
         igolfMapNativeRenderView.setVectors(renderData.vectors)
 
         onDispose {
+            cartsIDs.forEach {
+                igolfMapNativeRenderView.removeCart(it)
+            }
+
             igolfMapNativeRenderView.renderNUIViewController().removeFromParentViewController()
             igolfMapNativeRenderView.renderNUIViewController().view.removeFromSuperview()
         }
     }
 
     LaunchedEffect(renderData) {
-        val cartsIDs = arrayListOf<Int>()
-
         hole
             .filter {
                 it >= 0
