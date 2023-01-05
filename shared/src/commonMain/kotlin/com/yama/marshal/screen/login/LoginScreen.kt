@@ -11,10 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.OffsetEffect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.closeKeyboard
@@ -26,6 +28,7 @@ import com.yama.marshal.ui.tool.Orientation
 import com.yama.marshal.ui.tool.currentOrientation
 import com.yama.marshal.ui.view.TextField
 import com.yama.marshal.ui.view.YamaScreen
+import com.yama.marshal.ui.view.isKeyboardOpen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -54,8 +57,18 @@ internal class LoginScreen(navigationController: NavigationController) :
             mutableStateOf("")
         }
 
+        val isKeyboardOpen by isKeyboardOpen()
+
+        val screenPadding = Sizes.screenPadding
+
         Column(
             modifier = Modifier
+                .offset {
+                    if (isKeyboardOpen)
+                        IntOffset(0, -(screenPadding * 5).roundToPx())
+                    else
+                        IntOffset.Zero
+                }
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     detectTapGestures {

@@ -4,16 +4,16 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.VisualTransformation
+import com.yama.marshal.ComposeRootController
 import com.yama.marshal.currentRootView
+import com.yama.marshal.onKeyboardOpen
 import platform.CoreGraphics.CGRectMake
 import platform.Foundation.NSAttributedString
 import platform.Foundation.create
@@ -147,4 +147,21 @@ internal actual fun TextField(
             uiTextField.removeFromSuperview()
         }
     }
+}
+
+@Composable
+internal actual fun isKeyboardOpen(): State<Boolean> {
+    val keyboardState = remember { mutableStateOf(false) }
+
+    DisposableEffect(Unit) {
+        onKeyboardOpen = {
+            keyboardState.value = it
+        }
+
+        onDispose {
+            onKeyboardOpen = null
+        }
+    }
+
+    return keyboardState
 }

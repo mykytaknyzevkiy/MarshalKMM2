@@ -18,9 +18,12 @@ internal val currentRootView by lazy {
     }
 }
 
+internal var onKeyboardOpen: ((Boolean) -> Unit)? = null
+
 fun getRootController() = ComposeRootController()
 
 class ComposeRootController : UIViewController(null, null) {
+
     private val keyboardVisibilityListener = object : NSObject() {
         @Suppress("unused")
         @ObjCAction
@@ -37,6 +40,8 @@ class ComposeRootController : UIViewController(null, null) {
                     height = height.toDouble()
                 )
             )
+
+            onKeyboardOpen?.invoke(true)
         }
 
         @Suppress("unused")
@@ -44,12 +49,17 @@ class ComposeRootController : UIViewController(null, null) {
         fun keyboardWillHide(arg: NSNotification) {
             val (width, height) = getViewFrameSize()
             view.layer.setBounds(CGRectMake(0.0, 0.0, width.toDouble(), height.toDouble()))
+
+            onKeyboardOpen?.invoke(false)
         }
 
         @Suppress("unused")
         @ObjCAction
         fun keyboardDidHide(arg: NSNotification) {
             view.setClipsToBounds(false)
+
+            onKeyboardOpen?.invoke(false)
+
         }
     }
 
@@ -72,6 +82,13 @@ class ComposeRootController : UIViewController(null, null) {
             observer = keyboardVisibilityListener,
             selector = NSSelectorFromString("keyboardWillShow:"),
             name = UIKeyboardWillShowNotification,
+            `object` = null
+        )
+
+        NSNotificationCenter.defaultCenter.addObserver(
+            observer = keyboardVisibilityListener,
+            selector = NSSelectorFromString("keyboardWillHide:"),
+            name = UIKeyboardWillHideNotification,
             `object` = null
         )
     }
