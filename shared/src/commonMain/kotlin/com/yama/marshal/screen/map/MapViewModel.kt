@@ -58,7 +58,7 @@ class MapViewModel : YamaViewModel() {
             .launchIn(viewModelScope)
 
         CartRepository
-            .cartActiveList
+            .cartList
             .filterList {
                 it.currPosHole == id
             }

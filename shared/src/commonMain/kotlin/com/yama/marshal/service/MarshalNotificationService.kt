@@ -6,6 +6,7 @@ import com.yama.marshal.data.entity.AlertEntity
 import com.yama.marshal.data.entity.AlertType
 import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.data.model.AlertModel
+import com.yama.marshal.data.model.CartMessageModel
 import com.yama.marshal.network.MarshalSocket
 import com.yama.marshal.network.model.request.MarshalNotification
 import com.yama.marshal.repository.CartRepository
@@ -202,13 +203,64 @@ object MarshalNotificationService : CoroutineScope {
                 }
         }
 
+    private val messageNotificationManager = onNotification
+        .filterList { it is MarshalNotification.MarshalMessageNotification }
+        .mapList { it as MarshalNotification.MarshalMessageNotification }
+        .mapList { notification ->
+            Logger.i(TAG, message = {
+                "process MarshalNotification $notification"
+            })
+
+            val cartID = notification.idCart
+
+            val rawMessage = notification.message
+
+            val components = rawMessage.split(" - ".toRegex())
+
+            if (components.size >= 2) {
+                val type = components[0]
+
+                var customMessage = ""
+                for (i in 1 until components.size) {
+                    customMessage += components[i]
+                    if (i < components.size - 1) {
+                        customMessage += " - "
+                    }
+                }
+
+                if (type.equals("EMERGENCY", true))
+                    CartMessageModel.Emergency(
+                        cartID = cartID,
+                        message = rawMessage
+                    )
+                else if (type.equals("GOLF CAR ISSUE", true))
+                    CartMessageModel.Issue(
+                        cartID = cartID,
+                        message = rawMessage
+                    )
+                else
+                    CartMessageModel.Custom(
+                        cartID = cartID,
+                        message = rawMessage
+                    )
+            } else
+                CartMessageModel.Custom(
+                    cartID = cartID,
+                    message = rawMessage
+                )
+        }
+        .onEachList {
+            CartRepository.addCartMessage(it)
+        }
+
     fun start() = this.launch(Dispatchers.Default) {
         merge(
             penceNotificationManager,
             fenceNotificationManager,
             returnAreaNotificationManager,
             batteryAlertNotificationManager,
-            endTripNotificationManager
+            endTripNotificationManager,
+            messageNotificationManager
         ).launchIn(this)
 
         marshalSocket.connect()

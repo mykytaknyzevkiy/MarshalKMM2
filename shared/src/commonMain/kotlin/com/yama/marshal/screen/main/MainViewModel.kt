@@ -8,10 +8,8 @@ import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
-import com.yama.marshal.tool.FleetSorter
-import com.yama.marshal.tool.HoleSorter
+import com.yama.marshal.tool.*
 import com.yama.marshal.tool.Strings
-import com.yama.marshal.tool.format
 import io.ktor.util.date.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -90,7 +88,8 @@ class MainViewModel : YamaViewModel() {
         }
 
     val fleetList = CartRepository
-        .cartActiveList
+        .cartList
+        .filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
         .combine(_selectedCourse) { a, b ->
             if (b?.id.isNullOrBlank())
                 a

@@ -28,6 +28,9 @@ internal fun BoxScope.CartMessagesAlert(onOpenMap: (CartFullDetail) -> Unit) = C
         .align(Alignment.Center),
     elevation = CardDefaults.cardElevation(
         defaultElevation = 8.dp
+    ),
+    colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.background
     )
 ) {
     val messages = remember {
@@ -43,51 +46,55 @@ internal fun BoxScope.CartMessagesAlert(onOpenMap: (CartFullDetail) -> Unit) = C
         CartRepository.findCart(nMessage.cartID)
     }.collectAsState(null)
 
-    TopAppBar(
-        modifier = Modifier.fillMaxWidth(),
-        title = {
-            Text(cart?.cartName ?: "---")
-        }
-    )
+    Box(
+        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier.padding(Sizes.screenPadding / 2),
+            text = "Cart: ${cart?.cartName}",
+            fontSize = LocalAppDimens.current.title,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+    }
 
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-        text = nMessage.message,
-        textAlign = TextAlign.Center,
-        fontSize = LocalAppDimens.current.bodyLarge
-    )
+    Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+        Text(
+            text = nMessage.message,
+            textAlign = TextAlign.Center,
+            fontSize = LocalAppDimens.current.labelLarge
+        )
+    }
 
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Button(
             modifier = Modifier.weight(1f),
             onClick = {
                 CartRepository.removeCartMessage(0)
             },
             shape = RoundedCornerShape(0.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
         ) {
             Text(Strings.cart_messages_alert_skip_button_label.uppercase())
         }
 
-        Spacer(modifier = Modifier
-            .width(1.dp)
-            .height(Sizes.screenPadding)
-            .background(Color.LightGray))
+        if ((cart?.currPosHole ?: -1) >= 0
+            && (cart?.currPosLat ?: 0.0) > 0
+            && (cart?.currPosLon ?: 0.0) > 0) {
+            Spacer(modifier = Modifier
+                .width(1.dp)
+                .height(Sizes.screenPadding)
+                .background(Color.LightGray))
 
-        Button(
-            modifier = Modifier.weight(1f),
-            onClick = {
-                CartRepository.removeCartMessage(0)
-                onOpenMap(cart ?: return@Button)
-            },
-            shape = RoundedCornerShape(0.dp),
-            enabled = (cart?.currPosHole ?: -1) >= 0
-                    && (cart?.currPosLat ?: 0.0) > 0
-                    && (cart?.currPosLon ?: 0.0) > 0
-        ) {
-            Text(Strings.cart_messages_alert_map_button_label.uppercase())
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    CartRepository.removeCartMessage(0)
+                    onOpenMap(cart ?: return@Button)
+                },
+                shape = RoundedCornerShape(0.dp)
+            ) {
+                Text(Strings.cart_messages_alert_map_button_label.uppercase())
+            }
         }
     }
 }

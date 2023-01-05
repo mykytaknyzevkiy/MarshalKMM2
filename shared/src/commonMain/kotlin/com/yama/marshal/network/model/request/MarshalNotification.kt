@@ -32,7 +32,8 @@ sealed class MarshalNotification(
                 }
 
                 json["A"]?.jsonPrimitive?.int?.also {
-                    idCart = it
+                    if (it != 1 && json["C"]?.jsonPrimitive?.int != 6)
+                        idCart = it
                 }
 
                 json["Cr"]?.jsonPrimitive?.content?.also {

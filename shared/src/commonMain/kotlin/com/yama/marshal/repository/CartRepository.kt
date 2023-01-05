@@ -1,7 +1,6 @@
 package com.yama.marshal.repository
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.MutableSnapshot
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
 import com.yama.marshal.data.entity.CartItem
@@ -25,8 +24,7 @@ object CartRepository: YamaRepository() {
 
     private val dnaService = DNAService()
 
-    val cartActiveList = Database.cartList
-        .filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
+    val cartList = Database.cartList
         .combine(Database.cartRoundList) { cartsList, reportList ->
             cartsList.map { cart ->
                 val cartRound = reportList.findLast { it.id == cart.id}
@@ -262,8 +260,8 @@ object CartRepository: YamaRepository() {
             }
     }
 
-    fun addCartMessage(cartID: Int, message: String) {
-        _cartMessages.add(CartMessageModel(cartID, message))
+    fun addCartMessage(message: CartMessageModel) {
+        _cartMessages.add(message)
     }
 
     fun removeCartMessage(index: Int) {
@@ -273,7 +271,7 @@ object CartRepository: YamaRepository() {
         _cartMessages.removeAt(index)
     }
 
-    fun findCart(id: Int) = cartActiveList
+    fun findCart(id: Int) = cartList
         .map { l ->
             l.find { it.id == id }
         }

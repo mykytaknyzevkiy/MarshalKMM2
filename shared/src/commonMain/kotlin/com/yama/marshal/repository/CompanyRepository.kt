@@ -39,7 +39,7 @@ object CompanyRepository : CoroutineScope {
         .combine(CourseRepository.courseList) { alerts, coures ->
             Pair(alerts, coures)
         }
-        .combine(CartRepository.cartActiveList) { a, carts ->
+        .combine(CartRepository.cartList) { a, carts ->
             Pair(a, carts)
         }
         .map {
