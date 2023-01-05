@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.GolfCourse
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -77,6 +74,27 @@ internal class MainScreen(navigationController: NavigationController) :
                 fontSize = Sizes.title
             )
         }
+
+        val fullReloadState by remember(viewModel) {
+            viewModel.fullReloadState
+        }.collectAsState()
+
+        if (fullReloadState is MainFullReloadState.Empty)
+            IconButton(
+                modifier = Modifier.size(Sizes.buttonSize),
+                onClick = {
+                    viewModel.forceReload()
+                }) {
+                Icon(
+                    modifier = Modifier.size(Sizes.button_icon_size),
+                    imageVector = Icons.Default.Refresh, contentDescription = null
+                )
+            }
+        else
+            CircularProgressIndicator(
+                modifier = Modifier.size(Sizes.button_icon_size),
+                color = MaterialTheme.colorScheme.onPrimary
+            )
 
         IconButton(
             modifier = Modifier.size(Sizes.buttonSize),

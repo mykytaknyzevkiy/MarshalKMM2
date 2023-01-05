@@ -8,6 +8,8 @@ import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
+import com.yama.marshal.screen.login.LoginViewModel
+import com.yama.marshal.screen.login.UserDataViewModel
 import com.yama.marshal.tool.*
 import com.yama.marshal.tool.Strings
 import io.ktor.util.date.*
@@ -42,7 +44,15 @@ interface SortType {
     }
 }
 
-class MainViewModel : YamaViewModel() {
+sealed class MainFullReloadState {
+    object Empty: MainFullReloadState()
+
+    object Loading: MainFullReloadState()
+}
+
+class MainViewModel : YamaViewModel(), UserDataViewModel {
+    override val userRepository: UserRepository = UserRepository()
+
     val clock = flow {
         while (true) {
             emit(GMTDate())
@@ -66,6 +76,10 @@ class MainViewModel : YamaViewModel() {
 
     val cartMessages: List<CartMessageModel>
         get() = CartRepository.cartMessages
+
+    private val _fullReloadState = MutableStateFlow<MainFullReloadState>(MainFullReloadState.Empty)
+    val fullReloadState: StateFlow<MainFullReloadState>
+        get() = _fullReloadState
 
     val courseList = CourseRepository
         .courseList
@@ -157,6 +171,14 @@ class MainViewModel : YamaViewModel() {
 
     fun logOut() {
         UserRepository().logOut()
+    }
+
+    fun forceReload() = viewModelScope.launch {
+        _fullReloadState.emit(MainFullReloadState.Loading)
+
+        loadData()
+
+        _fullReloadState.emit(MainFullReloadState.Empty)
     }
 
     override fun onClear() {
