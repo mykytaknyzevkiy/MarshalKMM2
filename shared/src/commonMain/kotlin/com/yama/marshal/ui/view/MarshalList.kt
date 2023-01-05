@@ -179,7 +179,7 @@ internal fun RowScope.MarshalItemText(
     textAlign: TextAlign = TextAlign.Center
 ) = Text(
     text = text,
-    textAlign = TextAlign.Center,
+    textAlign = textAlign,
     modifier = Modifier.weight(weight).padding(Sizes.screenPadding / 2),
     color = color
 )

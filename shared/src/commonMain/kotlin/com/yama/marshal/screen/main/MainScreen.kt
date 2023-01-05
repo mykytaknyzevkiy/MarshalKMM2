@@ -12,10 +12,7 @@ import androidx.compose.material.icons.filled.GolfCourse
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,7 +23,9 @@ import com.yama.marshal.LocalAppDimens
 import com.yama.marshal.screen.alert_list.AlertsScreen
 import com.yama.marshal.screen.fleet_list.FleetListScreen
 import com.yama.marshal.screen.hole_list.HoleListScreen
+import com.yama.marshal.screen.map.MapScreen
 import com.yama.marshal.tool.Strings
+import com.yama.marshal.ui.alert.CartMessagesAlert
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Dimensions
@@ -122,6 +121,22 @@ internal class MainScreen(navigationController: NavigationController) :
                 }
             }
         }
+
+        val isAnyCartMessage by remember(viewModel.cartMessages) {
+            derivedStateOf {
+                viewModel.cartMessages.isNotEmpty()
+            }
+        }
+
+        if (isAnyCartMessage)
+            CartMessagesAlert { item ->
+                navigationController.navigateTo(
+                    MapScreen.route, listOf(
+                        NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
+                        NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
+                    )
+                )
+            }
     }
 
     @Composable
@@ -204,7 +219,7 @@ internal class MainScreen(navigationController: NavigationController) :
                 label = if (dimensions is Dimensions.Tablet) {
                     {
                         Text(
-                            Strings.main_screen_navigation_item_hole_label.uppercase()
+                            Strings.main_screen_navigation_item_alert_label.uppercase()
                         )
                     }
                 } else null,

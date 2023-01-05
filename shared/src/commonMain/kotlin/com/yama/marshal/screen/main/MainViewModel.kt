@@ -1,6 +1,7 @@
 package com.yama.marshal.screen.main
 
 import com.yama.marshal.data.model.CartFullDetail
+import com.yama.marshal.data.model.CartMessageModel
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.repository.CartRepository
 import com.yama.marshal.repository.CompanyRepository
@@ -64,6 +65,9 @@ class MainViewModel : YamaViewModel() {
     private val _selectedCourse = MutableStateFlow<CourseFullDetail?>(null)
     val selectedCourse: StateFlow<CourseFullDetail?>
         get() = _selectedCourse
+
+    val cartMessages: List<CartMessageModel>
+        get() = CartRepository.cartMessages
 
     val courseList = CourseRepository
         .courseList

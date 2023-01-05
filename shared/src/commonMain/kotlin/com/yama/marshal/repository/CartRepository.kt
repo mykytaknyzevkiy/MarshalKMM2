@@ -1,10 +1,13 @@
 package com.yama.marshal.repository
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.MutableSnapshot
 import co.touchlab.kermit.Logger
 import com.yama.marshal.data.Database
 import com.yama.marshal.data.entity.CartItem
 import com.yama.marshal.data.entity.CartRoundItem
 import com.yama.marshal.data.model.CartFullDetail
+import com.yama.marshal.data.model.CartMessageModel
 import com.yama.marshal.network.model.request.CartDetailsListRequest
 import com.yama.marshal.network.model.request.CartLastLocationRequest
 import com.yama.marshal.network.model.request.CartShutdownRequest
@@ -79,6 +82,10 @@ object CartRepository: YamaRepository() {
             }
         }
         .flowOn(Dispatchers.Default)
+
+    private val _cartMessages = mutableStateListOf<CartMessageModel>()
+    val cartMessages: List<CartMessageModel>
+        get() = _cartMessages
 
     suspend fun loadCarts(): Boolean {
         Logger.i(tag = TAG, message = {
@@ -253,6 +260,17 @@ object CartRepository: YamaRepository() {
             ?.also {
                 Database.updateCart(it.copy(assetControlOverride = 0))
             }
+    }
+
+    fun addCartMessage(cartID: Int, message: String) {
+        _cartMessages.add(CartMessageModel(cartID, message))
+    }
+
+    fun removeCartMessage(index: Int) {
+        if (index >= _cartMessages.size)
+            return
+
+        _cartMessages.removeAt(index)
     }
 
     fun findCart(id: Int) = cartActiveList

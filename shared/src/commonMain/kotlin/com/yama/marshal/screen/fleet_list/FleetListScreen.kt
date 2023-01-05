@@ -199,14 +199,15 @@ internal class FleetListScreen(
             })
 
         LaunchedEffect(Unit) {
-            viewModel.currentFleetSort.onEach {
-                    try {
+            viewModel
+                .currentFleetSort
+                .onEach {
+                    if (!listState.isScrollInProgress) {
                         listState.animateScrollToItem(0)
                         listState.animateScrollToItem(0)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
-                }.launchIn(this)
+                }
+                .launchIn(this)
         }
     }
 
