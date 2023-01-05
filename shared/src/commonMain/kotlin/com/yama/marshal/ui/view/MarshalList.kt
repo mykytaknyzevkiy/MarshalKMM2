@@ -133,7 +133,12 @@ internal inline fun <E> MarshalList(
 
     val showToTopBtn by remember {
         derivedStateOf {
-            state.firstVisibleItemIndex > 0
+            try {
+                state.firstVisibleItemIndex > 0
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
         }
     }
 

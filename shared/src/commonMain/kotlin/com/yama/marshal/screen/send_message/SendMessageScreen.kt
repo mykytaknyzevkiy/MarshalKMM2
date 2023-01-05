@@ -53,52 +53,50 @@ internal class SendMessageScreen(navigationController: NavigationController) :
 
         val currentState by remember { viewModel.currentState }.collectAsState()
 
-        if (currentState is SendMessageViewState.Loading)
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        else {
-            Column {
-                Text(
-                    "Custom message:",
-                    Modifier.fillMaxWidth().padding(Sizes.screenPadding),
-                    fontSize = dimensions.bodySmall
-                )
+        Column {
+            Text(
+                "Custom message:",
+                Modifier.fillMaxWidth().padding(Sizes.screenPadding),
+                fontSize = dimensions.bodySmall
+            )
 
-                val currentMessage = remember(viewModel) {
-                    viewModel.currentMessage
-                }.collectAsState()
+            val currentMessage = remember(viewModel) {
+                viewModel.currentMessage
+            }.collectAsState()
 
-                TextField(
-                    value = currentMessage.value,
-                    label = Strings.send_message_screen_message_text_field_label,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = Sizes.screenPadding),
-                    isError = false,
-                    visualTransformation = VisualTransformation.None,
-                    onValueChange = { viewModel.setMessage(it) },
-                    isEnable = true,
-                )
+            TextField(
+                value = currentMessage.value,
+                label = Strings.send_message_screen_message_text_field_label,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Sizes.screenPadding),
+                isError = false,
+                visualTransformation = VisualTransformation.None,
+                onValueChange = { viewModel.setMessage(it) },
+                isEnable = currentState != SendMessageViewState.Loading,
+            )
 
-                Text(
-                    "Templates:",
-                    Modifier.fillMaxWidth().padding(Sizes.screenPadding),
-                    fontSize = dimensions.bodySmall
-                )
+            Text(
+                "Templates:",
+                Modifier.fillMaxWidth().padding(Sizes.screenPadding),
+                fontSize = dimensions.bodySmall
+            )
 
-                MarshalList(
-                    modifier = Modifier.weight(1f),
-                    list = viewModel.messages,
-                    itemContent = {
-                        MarshalItemText(
-                            text = it.message,
-                            weight = 1f,
-                            textAlign = TextAlign.Start
-                        )
-                    },
-                    onTapItem = {
-                        closeKeyboard()
+            MarshalList(
+                modifier = Modifier.weight(1f),
+                list = viewModel.messages,
+                itemContent = {
+                    MarshalItemText(
+                        text = it.message,
+                        weight = 1f,
+                        textAlign = TextAlign.Start
+                    )
+                },
+                onTapItem = {
+                    closeKeyboard()
+
+                    if (currentState != SendMessageViewState.Loading)
                         viewModel.setMessage(it.message)
-                    }
-                )
-            }
+                }
+            )
         }
 
         if (currentState is SendMessageViewState.Success)
@@ -135,17 +133,23 @@ internal class SendMessageScreen(navigationController: NavigationController) :
             viewModel.currentMessage
         }.collectAsState()
 
-        IconButton(
-            onClick = {
-                closeKeyboard()
-                viewModel.sendMessage(cartID)
-            },
-            enabled = currentState !is SendMessageViewState.Loading && currentMessage.isNotBlank()
-        ) {
-            Icon(
-                Icons.Default.Send,
-                contentDescription = null
+        if (currentState is SendMessageViewState.Loading)
+            CircularProgressIndicator(
+                modifier = Modifier.size(Sizes.button_icon_size),
+                color = MaterialTheme.colorScheme.onPrimary
             )
-        }
+        else
+            IconButton(
+                onClick = {
+                    closeKeyboard()
+                    viewModel.sendMessage(cartID)
+                },
+                enabled = currentState !is SendMessageViewState.Loading && currentMessage.isNotBlank()
+            ) {
+                Icon(
+                    Icons.Default.Send,
+                    contentDescription = null
+                )
+            }
     }
 }

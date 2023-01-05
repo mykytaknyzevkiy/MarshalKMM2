@@ -1,7 +1,7 @@
 package com.yama.marshal.ui.view
 
 import androidx.compose.runtime.Composable
-import com.yama.marshal.currentRootView
+import com.yama.marshal.currentRootViewController
 import platform.UIKit.UIAlertAction
 import platform.UIKit.UIAlertController
 
@@ -10,7 +10,7 @@ internal actual fun Dialog(title: String,
                            message: String,
                            onConfirmClick: () -> Unit,
                            onCancelClick: (() -> Unit)?) {
-    currentRootView.presentModalViewController(
+    currentRootViewController.presentModalViewController(
         UIAlertController().apply {
         setTitle(title)
         setMessage(message)

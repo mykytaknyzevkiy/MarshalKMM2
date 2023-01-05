@@ -2,7 +2,6 @@ package com.yama.marshal
 
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.window.Application
-import androidx.compose.ui.window.Popup
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
@@ -12,17 +11,15 @@ import platform.Foundation.NSSelectorFromString
 import platform.UIKit.*
 import platform.darwin.NSObject
 
-internal val currentRootView by lazy {
-    Application(title = "Nek") {
-        App()
-    }
+internal val currentRootViewController by lazy {
+    ComposeRootController()
 }
 
 internal var onKeyboardOpen: ((Boolean) -> Unit)? = null
 
-fun getRootController() = ComposeRootController()
+fun getRootController() = currentRootViewController
 
-class ComposeRootController : UIViewController(null, null) {
+class ComposeRootController internal constructor(): UIViewController(null, null) {
 
     private val keyboardVisibilityListener = object : NSObject() {
         @Suppress("unused")
@@ -63,7 +60,9 @@ class ComposeRootController : UIViewController(null, null) {
         }
     }
 
-    private val composeView = currentRootView.view
+    private val composeView = Application(title = "Nek") {
+        App()
+    }.view
 
     override fun viewDidLoad() {
         super.viewDidLoad()

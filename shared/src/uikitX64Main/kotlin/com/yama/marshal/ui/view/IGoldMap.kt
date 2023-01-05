@@ -10,7 +10,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import co.touchlab.kermit.Logger
-import com.yama.marshal.currentRootView
+import com.yama.marshal.currentRootViewController
 import com.yama.marshal.tool.igolfMapNativeRenderView
 import com.yama.marshal.tool.onEachList
 import com.yama.marshal.ui.theme.Sizes
@@ -58,9 +58,9 @@ internal actual fun IGoldMap(
     )
 
     DisposableEffect(igolfMapNativeRenderView) {
-        currentRootView.addChildViewController(igolfMapNativeRenderView.renderNUIViewController())
-        currentRootView.view.addSubview(igolfMapNativeRenderView.renderNUIViewController().view)
-        igolfMapNativeRenderView.renderNUIViewController().didMoveToParentViewController(currentRootView)
+        currentRootViewController.addChildViewController(igolfMapNativeRenderView.renderNUIViewController())
+        currentRootViewController.view.addSubview(igolfMapNativeRenderView.renderNUIViewController().view)
+        igolfMapNativeRenderView.renderNUIViewController().didMoveToParentViewController(currentRootViewController)
 
         igolfMapNativeRenderView.setVectors(renderData.vectors)
 

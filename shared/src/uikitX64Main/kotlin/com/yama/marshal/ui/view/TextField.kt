@@ -11,9 +11,10 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.VisualTransformation
-import com.yama.marshal.ComposeRootController
-import com.yama.marshal.currentRootView
+import co.touchlab.kermit.Logger
+import com.yama.marshal.currentRootViewController
 import com.yama.marshal.onKeyboardOpen
+import kotlinx.coroutines.delay
 import platform.CoreGraphics.CGRectMake
 import platform.Foundation.NSAttributedString
 import platform.Foundation.create
@@ -52,22 +53,18 @@ internal actual fun TextField(
         alpha = MaterialTheme.colorScheme.error.alpha.toDouble()
     )
 
-    val testDelegate = remember {
+    val testDelegate = remember(modifier) {
         object : UITextFieldDelegateProtocol, NSObject() {
             override fun textFieldShouldReturn(textField: UITextField): Boolean {
                 textField.resignFirstResponder()
-                currentRootView.view.endEditing(true)
+                currentRootViewController.view.endEditing(true)
                 return true
             }
         }
     }
 
-    val uiTextField = remember {
+    val uiTextField = remember(testDelegate) {
         UITextField().apply {
-            this.translatesAutoresizingMaskIntoConstraints = false
-
-            this.setUserInteractionEnabled(true)
-
             this.setAttributedPlaceholder(
                 NSAttributedString.create(
                     string = label,
@@ -103,6 +100,8 @@ internal actual fun TextField(
             }, UIControlEventEditingChanged)
 
             this.autocorrectionType = UITextAutocorrectionType.UITextAutocorrectionTypeNo
+
+            this.layer.setZPosition(1.0)
         }
     }
 
@@ -141,8 +140,9 @@ internal actual fun TextField(
         uiTextField.setTextColor(secondaryColor)
     }
 
-    DisposableEffect(uiTextField) {
-        currentRootView.view.addSubview(uiTextField)
+    DisposableEffect(modifier){
+        currentRootViewController.view.addSubview(uiTextField)
+
         onDispose {
             uiTextField.removeFromSuperview()
         }
