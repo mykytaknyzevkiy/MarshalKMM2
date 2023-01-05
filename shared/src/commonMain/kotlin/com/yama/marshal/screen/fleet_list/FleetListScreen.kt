@@ -197,18 +197,6 @@ internal class FleetListScreen(
                 else if (it.isFlag) YamaColor.item_cart_flag_container_bg
                 else null
             })
-
-        LaunchedEffect(Unit) {
-            viewModel
-                .currentFleetSort
-                .onEach {
-                    if (!listState.isScrollInProgress) {
-                        listState.animateScrollToItem(0)
-                        listState.animateScrollToItem(0)
-                    }
-                }
-                .launchIn(this)
-        }
     }
 
     @Composable

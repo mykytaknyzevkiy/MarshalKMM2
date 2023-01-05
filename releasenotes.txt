@@ -1,3 +1,2 @@
-1) Sort in desc mode
-2) Font size in sort tab
-3) Send message screen
+1) Income message alert
+2) Remove auto scroll

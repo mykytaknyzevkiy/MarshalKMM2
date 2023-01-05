@@ -20,11 +20,10 @@ import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.closeKeyboard
 import com.yama.marshal.ui.theme.Sizes
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BoxScope.CartMessagesAlert(onOpenMap: (CartFullDetail) -> Unit) = Card(
     modifier = Modifier
-        .fillMaxSize(0.4f)
+        .fillMaxWidth(0.7f)
         .align(Alignment.Center),
     elevation = CardDefaults.cardElevation(
         defaultElevation = 8.dp
@@ -47,7 +46,8 @@ internal fun BoxScope.CartMessagesAlert(onOpenMap: (CartFullDetail) -> Unit) = C
     }.collectAsState(null)
 
     Box(
-        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary),
+        modifier = Modifier.fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -58,7 +58,10 @@ internal fun BoxScope.CartMessagesAlert(onOpenMap: (CartFullDetail) -> Unit) = C
         )
     }
 
-    Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier.fillMaxWidth().padding(Sizes.screenPadding * 2),
+        contentAlignment = Alignment.Center
+    ) {
         Text(
             text = nMessage.message,
             textAlign = TextAlign.Center,
@@ -79,11 +82,14 @@ internal fun BoxScope.CartMessagesAlert(onOpenMap: (CartFullDetail) -> Unit) = C
 
         if ((cart?.currPosHole ?: -1) >= 0
             && (cart?.currPosLat ?: 0.0) > 0
-            && (cart?.currPosLon ?: 0.0) > 0) {
-            Spacer(modifier = Modifier
-                .width(1.dp)
-                .height(Sizes.screenPadding)
-                .background(Color.LightGray))
+            && (cart?.currPosLon ?: 0.0) > 0
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(Sizes.screenPadding)
+                    .background(Color.LightGray)
+            )
 
             Button(
                 modifier = Modifier.weight(1f),

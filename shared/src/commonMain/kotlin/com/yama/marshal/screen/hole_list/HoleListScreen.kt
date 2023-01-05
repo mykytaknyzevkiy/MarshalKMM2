@@ -88,19 +88,6 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             },
             list = holeList
         )
-
-        LaunchedEffect(viewModel) {
-            viewModel.currentHoleSort
-                .onEach {
-                    try {
-                        listState.animateScrollToItem(0)
-                        listState.animateScrollToItem(0)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-                .launchIn(this)
-        }
     }
 
     @Composable

@@ -70,7 +70,7 @@ internal abstract class MainContentScreen(
 
                 if (type == currentSort)
                     Icon(
-                        modifier = Modifier.align(Alignment.CenterEnd),
+                        modifier = Modifier.align(Alignment.BottomEnd),
                         imageVector = if (currentDesc)
                             Icons.Default.ArrowDropUp
                         else

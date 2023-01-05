@@ -71,21 +71,6 @@ internal class AlertsScreen(
                 position
             }
         )
-
-        LaunchedEffect(viewModel) {
-            viewModel.alertList
-                .onEach {
-                    if (listState.isScrollInProgress) {
-                        try {
-                            listState.animateScrollToItem(0)
-                            listState.animateScrollToItem(0)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                }
-                .launchIn(this)
-        }
     }
 
     @Composable
