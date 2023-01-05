@@ -88,7 +88,7 @@ internal inline fun <E> MarshalList(
                     else
                         IntOffset(x = maxOffsetPx, y = 0)
                 }
-            }) {
+            }, contentAlignment = Alignment.CenterStart) {
                 if (itemOffset.x > 0)
                     LazyRow {
                         itemActions(item)
