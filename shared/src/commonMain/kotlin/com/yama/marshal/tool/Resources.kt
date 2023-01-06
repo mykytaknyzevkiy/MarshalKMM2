@@ -52,7 +52,7 @@ internal object Strings {
 
     const val map_screen_cart_in_shut_down_label = "Car is in shutdown mode"
 
-    const val cart_messages_alert_skip_button_label = "Skip"
+    const val cart_messages_alert_skip_button_label = "Close"
     const val cart_messages_alert_map_button_label = "View on map"
 } 
 
