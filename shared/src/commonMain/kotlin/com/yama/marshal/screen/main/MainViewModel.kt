@@ -16,6 +16,7 @@ import com.yama.marshal.service.MarshalNotificationService
 import com.yama.marshal.tool.*
 import com.yama.marshal.tool.Strings
 import io.ktor.util.date.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -48,9 +49,9 @@ interface SortType {
 }
 
 sealed class MainFullReloadState {
-    object Empty: MainFullReloadState()
+    object Empty : MainFullReloadState()
 
-    object Loading: MainFullReloadState()
+    object Loading : MainFullReloadState()
 }
 
 class MainViewModel : YamaViewModel(), UserDataViewModel {
@@ -88,15 +89,17 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
         .courseList
         .map {
             it.toMutableList().apply {
-                add(0, CourseFullDetail(
-                    id = null,
-                    courseName = "All",
-                    defaultCourse = 0,
-                    playersNumber = 0,
-                    layoutHoles = null,
-                    holes = emptyList(),
-                    vectors = ""
-                ))
+                add(
+                    0, CourseFullDetail(
+                        id = null,
+                        courseName = "All",
+                        defaultCourse = 0,
+                        playersNumber = 0,
+                        layoutHoles = null,
+                        holes = emptyList(),
+                        vectors = ""
+                    )
+                )
             }
         }
         .onEach {
@@ -104,22 +107,38 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
                 _selectedCourse.emit(if (it.size == 1) it.first() else it[1])
         }
 
-    val fleetList = CartRepository
+    private val fleetListState = CartRepository
         .cartList
         .filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
         .combine(_selectedCourse) { a, b ->
             if (b?.id.isNullOrBlank())
                 a
-        else
-            a.filter { c -> c.course?.id == b?.id }
+            else
+                a.filter { c -> c.course?.id == b?.id }
         }
         .combine(_currentFleetSort) { a, b ->
             a.sortedWith(FleetSorter(b.first, b.second))
         }
+        .onEach { newList ->
+            if (newList.size > _fleetList.size)
+                _fleetList.addAll(newList.filter { !_fleetList.any { i -> i.id == it.id } })
+            else if (newList.size < _fleetList.size)
+                _fleetList.removeAll(_fleetList.filter { !newList.any { i -> i.id == it.id } })
+
+            newList.forEachIndexed { index, item ->
+                if (_fleetList[index] != item)
+                    _fleetList[index] = item
+            }
+        }
+        .flowOn(Dispatchers.Default)
+
+    private val _fleetList = SnapshotStateList<CartFullDetail>()
+    val fleetList: List<CartFullDetail>
+        get() = _fleetList
 
     val holeList = CourseRepository
         .holeList
-        .combine(_selectedCourse) {a, b ->
+        .combine(_selectedCourse) { a, b ->
             if (b?.id.isNullOrBlank())
                 a
             else
@@ -141,8 +160,15 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
             it.reversed()
         }
         .onEach { newList ->
-            _alertsList.clear()
-            _alertsList.addAll(newList)
+            if (newList.size > _alertsList.size)
+                _alertsList.addAll(newList.filter { !_alertsList.any { i -> i.id == it.id } })
+            else if (newList.size < _alertsList.size)
+                _alertsList.removeAll(_alertsList.filter { !newList.any { i -> i.id == it.id } })
+
+            newList.forEachIndexed { index, item ->
+                if (_alertsList[index] != item)
+                    _alertsList[index] = item
+            }
         }
 
     private val _alertsList = SnapshotStateList<AlertModel>()
@@ -151,6 +177,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
 
     fun load() {
         alertListState.launchIn(viewModelScope)
+        fleetListState.launchIn(viewModelScope)
     }
 
     fun updateSort(type: SortType.SortFleet) {
@@ -203,5 +230,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
     override fun onClear() {
         super.onClear()
         _selectedCourse.value = null
+        _alertsList.clear()
+        _fleetList.clear()
     }
 }

@@ -35,6 +35,7 @@ import com.yama.marshal.ui.view.MarshalItemText
 import com.yama.marshal.ui.view.MarshalList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 internal class FleetListScreen(
     navigationController: NavigationController, override val viewModel: MainViewModel
@@ -49,6 +50,8 @@ internal class FleetListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
+        val scope = rememberCoroutineScope()
+
         val listState = rememberLazyListState()
 
         val currentSort by remember(viewModel) {
@@ -58,12 +61,14 @@ internal class FleetListScreen(
         TableRow(
             sortList = remember {
                 SortType.SortFleet.values()
-            }, currentSort = currentSort.first, currentDesc = currentSort.second
+            },
+            currentSort = currentSort.first,
+            currentDesc = currentSort.second
         ) { viewModel.updateSort(it) }
 
-        val itemList by remember(viewModel) {
+        val itemList = remember(viewModel) {
             viewModel.fleetList
-        }.collectAsState(emptyList())
+        }
 
         MarshalList(modifier = Modifier.fillMaxSize(),
             list = itemList,
@@ -197,6 +202,13 @@ internal class FleetListScreen(
                 else if (it.isFlag) YamaColor.item_cart_flag_container_bg
                 else null
             })
+
+        viewModel.currentFleetSort
+            .onEach {
+                if (!listState.isScrollInProgress)
+                    listState.scrollToItem(0)
+            }
+            .launchIn(scope)
     }
 
     @Composable
