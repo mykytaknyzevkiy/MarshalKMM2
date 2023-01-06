@@ -52,6 +52,7 @@ object CompanyRepository : CoroutineScope {
                 else
                     when (alert.type) {
                         AlertType.Pace -> AlertModel.Pace(
+                            id = alert.id,
                             courseID = alert.courseID,
                             cart = cart,
                             course = course,
@@ -60,6 +61,7 @@ object CompanyRepository : CoroutineScope {
                         )
 
                         AlertType.Fence -> AlertModel.Fence(
+                            id = alert.id,
                             courseID = alert.courseID,
                             cart = cart,
                             course = course,
@@ -68,6 +70,7 @@ object CompanyRepository : CoroutineScope {
                         )
 
                         AlertType.Battery -> AlertModel.Battery(
+                            id = alert.id,
                             courseID = alert.courseID,
                             cart = cart,
                             course = course,

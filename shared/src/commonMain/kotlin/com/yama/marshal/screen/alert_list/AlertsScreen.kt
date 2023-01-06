@@ -67,8 +67,8 @@ internal class AlertsScreen(
                 else
                     null
             },
-            key = { position, _ ->
-                position
+            key = { _, item ->
+                item.id
             }
         )
     }

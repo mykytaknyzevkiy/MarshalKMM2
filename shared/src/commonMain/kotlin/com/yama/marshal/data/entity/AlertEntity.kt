@@ -7,6 +7,7 @@ enum class AlertType {
 }
 
 data class AlertEntity(
+    val id: Int = 0,
     val courseID: String,
     val date: GMTDate,
     val cartID: Int,

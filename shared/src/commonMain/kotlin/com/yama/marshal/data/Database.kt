@@ -8,6 +8,7 @@ import com.yama.marshal.tool.set
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlin.jvm.Synchronized
 
 internal object Database {
     private const val TAG = "Database"
@@ -40,11 +41,12 @@ internal object Database {
     val alerts: StateFlow<List<AlertEntity>>
         get() = _alerts
 
-    suspend fun addAlert(data: AlertEntity) {
+    @Synchronized
+    fun addAlert(data: AlertEntity) {
         _alerts.value.toMutableList().apply {
-            add(data)
+            add(data.copy(id = this.size))
         }.also {
-            _alerts.emit(it)
+            _alerts.value = it
         }
     }
 
