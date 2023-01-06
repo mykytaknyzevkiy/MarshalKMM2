@@ -35,7 +35,6 @@ internal actual fun IGoldMap(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
                 )
-                this.setIsCalloutOverlay(false)
             }
     }
 

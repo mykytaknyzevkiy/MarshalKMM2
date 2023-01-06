@@ -5,6 +5,7 @@ import com.yama.marshal.data.entity.*
 import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.tool.indexOfFirst
 import com.yama.marshal.tool.set
+import io.ktor.util.date.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -44,7 +45,7 @@ internal object Database {
     @Synchronized
     fun addAlert(data: AlertEntity) {
         _alerts.value.toMutableList().apply {
-            add(data.copy(id = this.size))
+            add(data.copy(id = this.size, date = GMTDate(timestamp = data.date.timestamp + this.size)))
         }.also {
             _alerts.value = it
         }

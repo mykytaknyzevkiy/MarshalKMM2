@@ -14,10 +14,9 @@ import com.yama.marshal.repository.CartRepository.findCart
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.repository.CourseRepository.findCourse
-import com.yama.marshal.tool.any
-import com.yama.marshal.tool.filterList
-import com.yama.marshal.tool.mapList
-import com.yama.marshal.tool.onEachList
+import com.yama.marshal.repository.UserRepository
+import com.yama.marshal.tool.*
+import com.yama.marshal.tool.prefs
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
@@ -264,7 +263,18 @@ object MarshalNotificationService : CoroutineScope {
         marshalSocket.connect()
 
         while (true) {
-            delay(5 * 60 * 1000L)
+            delay(2 * 60 * 1000L)
+
+            val userName = prefs.userName
+            val userPassword = prefs.userPassword
+
+            UserRepository().login(
+                userName ?: break,
+                userPassword ?: break
+            )
+
+            marshalSocket.disconnect()
+            marshalSocket.connect()
 
             CourseRepository.loadHoles()
             CartRepository.loadCarts()

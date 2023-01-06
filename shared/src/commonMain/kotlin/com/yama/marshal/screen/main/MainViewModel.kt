@@ -1,5 +1,7 @@
 package com.yama.marshal.screen.main
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CartMessageModel
 import com.yama.marshal.data.model.CourseFullDetail
@@ -127,14 +129,29 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
             a.sortedWith(HoleSorter(b.first, b.second))
         }
 
-    val alertList = CompanyRepository
+    private val alertListState = CompanyRepository
         .alerts
         .combine(_selectedCourse) { a, b ->
             a.filter { b?.id.isNullOrBlank() || it.courseID == b?.id }
         }
         .map {
-            it.sortedByDescending { a -> a.date.timestamp }
+            it.distinctBy { i -> i.id }
         }
+        .map {
+            it.reversed()
+        }
+        .onEach { newList ->
+            _alertsList.clear()
+            _alertsList.addAll(newList)
+        }
+
+    private val _alertsList = SnapshotStateList<AlertModel>()
+    val alertList: List<AlertModel>
+        get() = _alertsList
+
+    fun load() {
+        alertListState.launchIn(viewModelScope)
+    }
 
     fun updateSort(type: SortType.SortFleet) {
         _currentFleetSort.value = Pair(

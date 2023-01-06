@@ -6,6 +6,9 @@ import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.service.MarshalNotificationService
+import com.yama.marshal.tool.prefs
+import com.yama.marshal.tool.userName
+import com.yama.marshal.tool.userPassword
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,6 +17,14 @@ interface UserDataViewModel {
     val userRepository: UserRepository
     
     suspend fun loadData(): Boolean {
+        val userName = prefs.userName
+        val userPassword = prefs.userPassword
+
+        userRepository.login(
+            userName ?: return false,
+            userPassword ?: return false
+        )
+
         userRepository.userData().also {
             if (!it)
                 return false

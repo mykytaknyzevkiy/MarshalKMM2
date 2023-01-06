@@ -18,9 +18,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.yama.marshal.tool.*
 import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.closeKeyboard
 import com.yama.marshal.tool.painterResource
+import com.yama.marshal.tool.prefs
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.Sizes
@@ -51,10 +53,10 @@ internal class LoginScreen(navigationController: NavigationController) :
         }.collectAsState()
 
         val userName = remember {
-            mutableStateOf("")
+            mutableStateOf(prefs.userName ?: "")
         }
         val password = remember {
-            mutableStateOf("")
+            mutableStateOf(prefs.userPassword ?: "")
         }
 
         val isKeyboardOpen by isKeyboardOpen()

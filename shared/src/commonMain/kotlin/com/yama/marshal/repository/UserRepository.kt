@@ -35,6 +35,7 @@ class UserRepository {
             prefs.userName = userName
             prefs.userID = it.idUser
             prefs.secretKey = it.secretKey
+            prefs.userPassword = password
 
             return true
         }
@@ -60,12 +61,12 @@ class UserRepository {
     }
 
     fun logOut(): Boolean {
-        prefs.userName = null
+       // prefs.userName = null
         prefs.userID = -1
         prefs.secretKey = null
 
         return true
     }
 
-    fun isUserLogin(): Boolean = !prefs.userName.isNullOrEmpty()
+    fun isUserLogin(): Boolean = !prefs.secretKey.isNullOrEmpty()
 }

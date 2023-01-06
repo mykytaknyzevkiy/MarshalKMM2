@@ -49,11 +49,11 @@ internal class FleetListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
+        val listState = rememberLazyListState()
+
         val currentSort by remember(viewModel) {
             viewModel.currentFleetSort
         }.collectAsState()
-
-        val listState = rememberLazyListState()
 
         TableRow(
             sortList = remember {

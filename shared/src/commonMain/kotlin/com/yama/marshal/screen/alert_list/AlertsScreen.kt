@@ -42,11 +42,14 @@ internal class AlertsScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column {
-        val itemList by remember(viewModel) {
+        val itemList = remember {
             viewModel.alertList
-        }.collectAsState(emptyList())
+        }
 
         val listState = rememberLazyListState()
+
+        val bgPositive: Color = YamaColor.itemColor(0)
+        val bgNegative: Color = YamaColor.itemColor(1)
 
         MarshalList(
             modifier = Modifier
@@ -65,10 +68,10 @@ internal class AlertsScreen(
                 else if (cart.isFlag)
                     YamaColor.item_cart_flag_container_bg
                 else
-                    null
+                    if (it.id % 2 == 0) bgPositive else bgNegative
             },
             key = { _, item ->
-                item.id
+                item.date.timestamp
             }
         )
     }
