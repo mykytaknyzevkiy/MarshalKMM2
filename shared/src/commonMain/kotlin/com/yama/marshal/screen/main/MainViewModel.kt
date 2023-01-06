@@ -10,6 +10,7 @@ import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
 import com.yama.marshal.screen.login.LoginViewModel
 import com.yama.marshal.screen.login.UserDataViewModel
+import com.yama.marshal.service.MarshalNotificationService
 import com.yama.marshal.tool.*
 import com.yama.marshal.tool.Strings
 import io.ktor.util.date.*
@@ -171,6 +172,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
 
     fun logOut() {
         UserRepository().logOut()
+        MarshalNotificationService.stop()
     }
 
     fun forceReload() = viewModelScope.launch {

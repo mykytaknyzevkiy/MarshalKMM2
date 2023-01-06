@@ -18,11 +18,8 @@ import com.yama.marshal.tool.any
 import com.yama.marshal.tool.filterList
 import com.yama.marshal.tool.mapList
 import com.yama.marshal.tool.onEachList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlin.coroutines.CoroutineContext
@@ -30,7 +27,8 @@ import kotlin.coroutines.CoroutineContext
 object MarshalNotificationService : CoroutineScope {
     private const val TAG = "MarshalNotificationService"
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Default
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = Dispatchers.Default + job
 
     private val marshalSocket = MarshalSocket()
 
@@ -272,5 +270,19 @@ object MarshalNotificationService : CoroutineScope {
             CartRepository.loadCarts()
             CartRepository.loadCartsRound()
         }
+    }
+
+    fun stop() {
+        marshalSocket.disconnect()
+        job.cancelChildren()
+    }
+
+    fun restart() {
+        try {
+            stop()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        start()
     }
 }

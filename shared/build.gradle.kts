@@ -52,7 +52,7 @@ kotlin {
     cocoapods {
         ios.deploymentTarget = "14.1"
 
-        version = "1.5"
+        version = "${Config.version_name}.${Config.version_build}"
 
         summary = "This is sample Summary"
         homepage = "Home URL"
@@ -160,6 +160,8 @@ android {
             add("mips")
             add("arm64-v8a")
         }
+
+        version = Config.version_name
     }
 
     sourceSets["main"].apply {

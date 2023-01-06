@@ -49,7 +49,7 @@ interface UserDataViewModel {
                 return false
         }
 
-        MarshalNotificationService.start()
+        MarshalNotificationService.restart()
 
         return true
     }

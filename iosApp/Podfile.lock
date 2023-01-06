@@ -1,6 +1,6 @@
 PODS:
   - Ios (1.30)
-  - shared (1.5):
+  - shared (2.0.28):
     - Ios
 
 DEPENDENCIES:
@@ -15,7 +15,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Ios: 7f27b76b1338aa31c96bf477ba987e5787a17732
-  shared: a74c3e617572127899480f9dbdeede8f4851eddc
+  shared: c77c33bbe2b57606f4ecf9468c00cc1dad5d1129
 
 PODFILE CHECKSUM: 660c4279d9208064081919fb1870e37578d3f0a3
 

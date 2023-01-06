@@ -27,8 +27,8 @@ android {
         applicationId = "com.l1inc.yamatrackmarshal"
         minSdk 23
         targetSdk 33
-        versionCode 27
-        versionName "2.0"
+        versionCode Config.version_build
+        versionName Config.version_name
         archivesBaseName = "Marshall_" + versionName + "_" + versionCode
     }
 
