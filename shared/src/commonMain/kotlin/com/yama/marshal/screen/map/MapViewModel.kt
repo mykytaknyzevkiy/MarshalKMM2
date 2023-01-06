@@ -60,7 +60,7 @@ class MapViewModel : YamaViewModel() {
         CartRepository
             .cartList
             .filterList {
-                it.currPosHole == id
+                it.currPosHole == id && it.course?.id == courseID
             }
             .onEach {
                 _cartsState.value = it
