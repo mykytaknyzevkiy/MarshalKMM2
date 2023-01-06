@@ -65,7 +65,7 @@ internal class LoginScreen(navigationController: NavigationController) :
             modifier = Modifier
                 .offset {
                     if (isKeyboardOpen)
-                        IntOffset(0, -(screenPadding * 5).roundToPx())
+                        IntOffset(0, -(screenPadding * 6).roundToPx())
                     else
                         IntOffset.Zero
                 }
