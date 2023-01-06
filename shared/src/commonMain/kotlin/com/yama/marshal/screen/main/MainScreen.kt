@@ -155,10 +155,6 @@ internal class MainScreen(navigationController: NavigationController) :
                     )
                 )
             }
-
-        LaunchedEffect(Unit) {
-            viewModel.load()
-        }
     }
 
     @Composable

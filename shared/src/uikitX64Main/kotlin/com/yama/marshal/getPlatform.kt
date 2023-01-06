@@ -7,3 +7,5 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+
+internal actual val mPlatform: MPlatform = MPlatform.IOS

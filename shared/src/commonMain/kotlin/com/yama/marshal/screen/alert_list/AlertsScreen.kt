@@ -1,17 +1,10 @@
 package com.yama.marshal.screen.alert_list
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -20,13 +13,10 @@ import com.yama.marshal.tool.Strings
 import com.yama.marshal.tool.format
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
-import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalItemDivider
 import com.yama.marshal.ui.view.MarshalItemText
-import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.yama.marshal.ui.view.PlatformList
 
 internal class AlertsScreen(
     navigationController: NavigationController,
@@ -42,20 +32,14 @@ internal class AlertsScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column {
-        val itemList = remember {
-            viewModel.alertList
-        }
-
-        val listState = rememberLazyListState()
-
         val bgPositive: Color = YamaColor.itemColor(0)
         val bgNegative: Color = YamaColor.itemColor(1)
 
-        MarshalList(
-            modifier = Modifier
-                .fillMaxSize()
-                .border(width = 1.dp, color = Color.LightGray),
-            state = listState,
+        val itemList = remember(viewModel) {
+            viewModel.alertList
+        }
+
+        PlatformList(
             list = itemList,
             itemContent = {
                 ItemViewHolder(it)
@@ -71,7 +55,7 @@ internal class AlertsScreen(
                     if (it.id % 2 == 0) bgPositive else bgNegative
             },
             key = { _, item ->
-                item.date.timestamp
+                item.id
             }
         )
     }

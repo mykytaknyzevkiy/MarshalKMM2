@@ -5,3 +5,5 @@ class AndroidPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
+
+internal actual val mPlatform: MPlatform = MPlatform.ANDROID

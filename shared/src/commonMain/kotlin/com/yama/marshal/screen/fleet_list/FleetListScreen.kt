@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Flag
@@ -14,7 +13,10 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import com.yama.marshal.data.model.CartFullDetail
@@ -32,10 +34,7 @@ import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalItemDivider
 import com.yama.marshal.ui.view.MarshalItemText
-import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import com.yama.marshal.ui.view.PlatformList
 
 internal class FleetListScreen(
     navigationController: NavigationController, override val viewModel: MainViewModel
@@ -50,11 +49,7 @@ internal class FleetListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        val scope = rememberCoroutineScope()
-
-        val listState = rememberLazyListState()
-
-        val currentSort by remember(viewModel) {
+        val currentSort by remember {
             viewModel.currentFleetSort
         }.collectAsState()
 
@@ -70,10 +65,8 @@ internal class FleetListScreen(
             viewModel.fleetList
         }
 
-        MarshalList(modifier = Modifier.fillMaxSize(),
+        PlatformList(
             list = itemList,
-            state = listState,
-            key = { _, item -> item.id },
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -89,7 +82,11 @@ internal class FleetListScreen(
                 width
             },
             itemActions = { item ->
-                if (item.currPosLat != null && item.currPosLon != null && item.currPosHole != null && item.currPosHole > 0) item {
+                if (item.currPosLat != null
+                    && item.currPosLon != null
+                    && item.currPosHole != null
+                    && item.currPosHole > 0
+                )
                     IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
                         .background(YamaColor.view_cart_btn_bg_color), onClick = {
                         navigationController.navigateTo(
@@ -105,9 +102,8 @@ internal class FleetListScreen(
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                }
 
-                if (item.isFlag) item {
+                if (item.isFlag)
                     IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
                         .background(YamaColor.flag_cart_btn_bg_color), onClick = {
                         viewModel.unFlagCart(item)
@@ -128,8 +124,7 @@ internal class FleetListScreen(
                             )
                         }
                     }
-                }
-                else item {
+                else
                     IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
                         .background(YamaColor.flag_cart_btn_bg_color), onClick = {
                         viewModel.flagCart(item)
@@ -140,9 +135,8 @@ internal class FleetListScreen(
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                }
 
-                if (item.isMessagingAvailable) item {
+                if (item.isMessagingAvailable)
                     IconButton(modifier = Modifier.size(Sizes.fleet_view_holder_height)
                         .background(YamaColor.message_cart_btn_bg_color), onClick = {
                         navigationController.navigateTo(
@@ -159,56 +153,13 @@ internal class FleetListScreen(
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                }
-
-                /*if (item.isShutdownEnable)
-                    item {
-                        IconButton(
-                            modifier = Modifier
-                                .size(Sizes.fleet_view_holder_height)
-                                .background(YamaColor.shutdown_cart_btn_bg_color),
-                            onClick = {
-                                viewModel.shutDown(item.id)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.PowerOff,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        }
-                    }
-
-                if (item.isCartInShutdownMode)
-                    item {
-                        IconButton(
-                            modifier = Modifier
-                                .size(Sizes.fleet_view_holder_height)
-                                .background(YamaColor.restore_cart_btn_bg_color),
-                            onClick = {
-                                viewModel.restore(item.id)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Power,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                            )
-                        }
-                    }*/
             },
             customItemBgColor = {
                 if (it.isCartInShutdownMode) YamaColor.cart_shut_down_bg
                 else if (it.isFlag) YamaColor.item_cart_flag_container_bg
                 else null
-            })
-
-        viewModel.currentFleetSort
-            .onEach {
-                if (!listState.isScrollInProgress)
-                    listState.scrollToItem(0)
             }
-            .launchIn(scope)
+        )
     }
 
     @Composable
