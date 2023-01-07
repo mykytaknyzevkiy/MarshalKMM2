@@ -79,7 +79,7 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
                 }
             },
             key = { _, item ->
-                item.holeNumber
+                "${item.idCourse}_${item.holeNumber}"
             }
         )
     }
