@@ -2,8 +2,7 @@ package com.yama.marshal.ui.view
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,6 +21,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.input.pointer.positionChangeConsumed
+import androidx.compose.ui.input.pointer.positionChangeIgnoreConsumed
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.yama.marshal.MPlatform
@@ -32,6 +34,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @Composable
@@ -322,18 +325,18 @@ private fun <E> MarshallListItemLogic(
 
     Box(
         modifier = Modifier
-            .pointerInput(item) {
-                val maxOffsetPx = maxOffset.roundToPx()
+        .pointerInput(item) {
+            val maxOffsetPx = maxOffset.roundToPx()
 
-                detectTapGestures {
-                    onTapItem(item)
+            detectTapGestures {
+                onTapItem(item)
 
-                    itemOffset = if (itemOffset.x >= maxOffsetPx)
-                        IntOffset(x = 0, y = 0)
-                    else
-                        IntOffset(x = maxOffsetPx, y = 0)
-                }
-            },
+                itemOffset = if (itemOffset.x >= maxOffsetPx)
+                    IntOffset(x = 0, y = 0)
+                else
+                    IntOffset(x = maxOffsetPx, y = 0)
+            }
+        },
         contentAlignment = Alignment.CenterStart
     ) {
         if (itemOffset.x > 0)
@@ -351,29 +354,38 @@ private fun <E> MarshallListItemLogic(
                 )
             }
             .offset { itemOffset }
-            .let {
-                if (maxOffset.value > 0)
-                    it.pointerInput(item) {
+            .pointerInput(item) {
+                forEachGesture {
+                    awaitPointerEventScope {
+                        val down = awaitFirstDown(requireUnconsumed = false)
+
                         val maxOffsetPx = maxOffset.roundToPx()
 
-                        detectHorizontalDragGestures(
-                            onHorizontalDrag = { _, x ->
-                                val original = itemOffset
-                                val summed = original + IntOffset(x = x.roundToInt(), y = 0)
+                        this.horizontalDrag(
+                            pointerId = down.id
+                        ) {
+                            val original = itemOffset
+                            val summed = original + IntOffset(
+                                x = it.positionChange().x.roundToInt(),
+                                y = 0
+                            )
 
-                                if (summed.x in 0..maxOffsetPx)
-                                    itemOffset = summed
-                            },
-                            onDragEnd = {
-                                if (itemOffset.x < maxOffsetPx / 2f)
-                                    itemOffset = IntOffset(0, 0)
-                                else if (itemOffset.x > maxOffsetPx / 2f)
-                                    itemOffset = IntOffset(maxOffsetPx, 0)
-                            }
-                        )
+                            if (abs(it.positionChange().x) < 20 && summed.x < maxOffsetPx / 4)
+                                itemOffset = IntOffset(0, 0)
+                            /*else if (summed.x < maxOffsetPx / 2f)
+                                itemOffset = IntOffset(0, 0)
+                            else if (summed.x > maxOffsetPx / 2f)
+                                itemOffset = IntOffset(maxOffsetPx, 0)*/
+                            else if (summed.x in 0..maxOffsetPx)
+                                itemOffset = summed
+                        }
+
+                        if (itemOffset.x < maxOffsetPx / 2f)
+                            itemOffset = IntOffset(0, 0)
+                        else if (itemOffset.x > maxOffsetPx / 2f)
+                            itemOffset = IntOffset(maxOffsetPx, 0)
                     }
-                else
-                    it
+                }
             },
             verticalAlignment = Alignment.CenterVertically
         ) {

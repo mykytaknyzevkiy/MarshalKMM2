@@ -171,7 +171,7 @@ internal class MainScreen(navigationController: NavigationController) :
         BottomAppBar(
             modifier = Modifier.let {
                 if (dimensions !is Dimensions.Tablet)
-                    it.height(60.dp)
+                    it.height(50.dp)
                 else
                     it
             },
