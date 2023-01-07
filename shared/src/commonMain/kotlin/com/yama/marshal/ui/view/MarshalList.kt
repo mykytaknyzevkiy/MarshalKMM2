@@ -6,7 +6,6 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.lazy.layout.rememberLazyNearestItemsRangeState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -22,17 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
-import com.yama.marshal.screen.main.SortType
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -41,7 +36,7 @@ import kotlin.math.roundToInt
 
 @Composable
 internal fun <E> PlatformList(
-    list: Flow<List<E>>,
+    listItem: State<List<E>>,
     key: ((position: Int, item: E) -> Any)? = null,
     customItemBgColor: (item: E) -> Color? = { null },
     itemActionsCount: (item: E) -> Int = { 0 },
@@ -54,10 +49,6 @@ internal fun <E> PlatformList(
     val bgPositive: Color = YamaColor.itemColor(0)
     val bgNegative: Color = YamaColor.itemColor(1)
     val holderHeight = Sizes.fleet_view_holder_height
-
-    val listItem by remember(mPlatform) {
-        list
-    }.collectAsState(emptyList())
 
     Box(modifier = Modifier.fillMaxSize()) {
         val scrollConnection = rememberScrollState()
@@ -82,7 +73,7 @@ internal fun <E> PlatformList(
                 }
                 .verticalScroll(scrollConnection)
             ) {
-                val iterator = listItem.listIterator()
+                val iterator = listItem.value.listIterator()
                 var position = 0
 
                 while (iterator.hasNext()) {
@@ -105,25 +96,26 @@ internal fun <E> PlatformList(
                 }
             }
         else
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .drawBehind {
-                    val itemHeightPX = holderHeight.roundToPx()
-                    val maxHeightPX = this.size.height.roundToInt()
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .drawBehind {
+                        val itemHeightPX = holderHeight.roundToPx()
+                        val maxHeightPX = this.size.height.roundToInt()
 
-                    repeat(maxHeightPX / itemHeightPX) {
-                        val y = it * itemHeightPX
+                        repeat(maxHeightPX / itemHeightPX) {
+                            val y = it * itemHeightPX
 
-                        if (y < maxHeightPX)
-                            drawRect(
-                                color = if (it % 2 == 0) bgPositive else bgNegative,
-                                topLeft = Offset(x = 0f, y = y.toFloat()),
-                            )
-                    }
-                },
+                            if (y < maxHeightPX)
+                                drawRect(
+                                    color = if (it % 2 == 0) bgPositive else bgNegative,
+                                    topLeft = Offset(x = 0f, y = y.toFloat()),
+                                )
+                        }
+                    },
                 state = lazyScroll
             ) {
-                itemsIndexed(listItem, key) { position, item ->
+                itemsIndexed(listItem.value, key) { position, item ->
                     MarshallListItemLogic(
                         position,
                         item,
@@ -139,6 +131,25 @@ internal fun <E> PlatformList(
                 }
             }
 
+        val firstItem = remember(mPlatform) {
+            mutableStateOf<E?>(null)
+        }
+
+        val scrollToTop by remember {
+            derivedStateOf {
+                !lazyScroll.isScrollInProgress && !scrollConnection.isScrollInProgress &&
+                        listItem.value.isNotEmpty() && listItem.value.first() != firstItem.value
+            }
+        }
+
+        if (scrollToTop) {
+            scope.launch {
+                scrollConnection.scrollTo(0)
+                lazyScroll.scrollToItem(0)
+            }
+
+            firstItem.value = listItem.value.first()
+        }
 
         val isScrolled by remember {
             derivedStateOf {
@@ -167,6 +178,7 @@ internal fun <E> PlatformList(
                 onClick = {
                     scope.launch {
                         scrollConnection.scrollTo(0)
+                        lazyScroll.scrollToItem(0)
                     }
                 }
             ) {
@@ -176,26 +188,6 @@ internal fun <E> PlatformList(
                     contentDescription = null
                 )
             }
-        }
-
-        LaunchedEffect(Unit) {
-            var lastFirstItem: E? = null
-
-            list
-                .filter { it.isNotEmpty() }
-                .onEach {
-                    if (lastFirstItem != it.first()) {
-                        if (!scrollConnection.isScrollInProgress
-                            && !lazyScroll.isScrollInProgress
-                        ) {
-                            scrollConnection.scrollTo(0)
-                            lazyScroll.scrollToItem(0)
-                        }
-                    }
-
-                    lastFirstItem = it.first()
-                }
-                .launchIn(this)
         }
     }
 }

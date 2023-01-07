@@ -27,7 +27,11 @@ abstract class MarshalSocketIO: CoroutineScope {
     }
 
     override val coroutineContext: CoroutineContext = Dispatchers.Default + CoroutineExceptionHandler { _, throwable ->
-        onError(throwable.message ?: "Unknown")
+        try {
+            onError(throwable.message ?: "Unknown")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private val _onMessage = MutableSharedFlow<String>()

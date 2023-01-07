@@ -2,16 +2,13 @@ package com.yama.marshal.screen.hole_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import com.yama.marshal.data.model.CourseFullDetail
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -24,9 +21,7 @@ import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalItemDivider
 import com.yama.marshal.ui.view.MarshalItemText
-import com.yama.marshal.ui.view.MarshalList
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.yama.marshal.ui.view.PlatformList
 
 internal class HoleListScreen(navigationController: NavigationController, viewModel: MainViewModel) :
     MainContentScreen(navigationController, viewModel)  {
@@ -50,13 +45,12 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             viewModel.updateSort(it)
         }
 
-        val holeList by remember(viewModel) { viewModel.holeList }.collectAsState(emptyList())
+        val itemList = remember(viewModel) {
+            viewModel.holeList
+        }.collectAsState(emptyList())
 
-        val listState = rememberLazyListState()
-
-        MarshalList(
-            modifier = Modifier.fillMaxSize(),
-            state = listState,
+        PlatformList(
+            listItem = itemList,
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -64,29 +58,29 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
                 1
             },
             itemActions = { item ->
-                item {
-                    IconButton(
-                        modifier = Modifier.size(Sizes.fleet_view_holder_height).background(
-                            YamaColor.view_cart_btn_bg_color),
-                        onClick = {
-                            navigationController.navigateTo(
-                                MapScreen.route,
-                                listOf(
-                                    NavArg(key = MapScreen.ARG_HOLE_ID, value = item.holeNumber),
-                                    NavArg(key = MapScreen.ARG_COURSE_ID, value = item.idCourse)
-                                )
+                IconButton(
+                    modifier = Modifier.size(Sizes.fleet_view_holder_height).background(
+                        YamaColor.view_cart_btn_bg_color),
+                    onClick = {
+                        navigationController.navigateTo(
+                            MapScreen.route,
+                            listOf(
+                                NavArg(key = MapScreen.ARG_HOLE_ID, value = item.holeNumber),
+                                NavArg(key = MapScreen.ARG_COURSE_ID, value = item.idCourse)
                             )
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Place,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Place,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
                 }
             },
-            list = holeList
+            key = { _, item ->
+                item.holeNumber
+            }
         )
     }
 

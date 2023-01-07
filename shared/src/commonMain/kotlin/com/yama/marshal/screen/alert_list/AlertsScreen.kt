@@ -3,8 +3,8 @@ package com.yama.marshal.screen.alert_list
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -32,15 +32,12 @@ internal class AlertsScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column {
-        val bgPositive: Color = YamaColor.itemColor(0)
-        val bgNegative: Color = YamaColor.itemColor(1)
-
-        val itemList = remember(viewModel) {
+        val listItem = remember {
             viewModel.alertList
-        }
+        }.collectAsState(emptyList())
 
         PlatformList(
-            list = itemList,
+            listItem = listItem,
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -52,7 +49,7 @@ internal class AlertsScreen(
                 else if (cart.isFlag)
                     YamaColor.item_cart_flag_container_bg
                 else
-                    if (it.id % 2 == 0) bgPositive else bgNegative
+                    null
             },
             key = { _, item ->
                 item.id

@@ -61,7 +61,11 @@ actual class MarshalSocket:MarshalSocketIO(), IOCallback {
     }
 
     actual override fun disconnect() {
-        socketIO?.disconnect()
+        try {
+            socketIO?.disconnect()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     actual override fun sendMessage(topic: String, json: String) {
