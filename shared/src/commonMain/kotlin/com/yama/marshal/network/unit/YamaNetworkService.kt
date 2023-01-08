@@ -2,6 +2,7 @@ package com.yama.marshal.network.unit
 
 import co.touchlab.kermit.Logger
 import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -14,7 +15,11 @@ abstract class YamaNetworkService(val host: String) {
         const val TAG = "YamaNetworkService"
     }
 
-    val client = HttpClient()
+    val client = HttpClient {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 100 * 1000
+        }
+    }
 
     suspend inline fun <reified P, reified R> post(action: Action, payload: P): R? {
         val url = Url(host + AuthManager.getUrlForAction(action))
