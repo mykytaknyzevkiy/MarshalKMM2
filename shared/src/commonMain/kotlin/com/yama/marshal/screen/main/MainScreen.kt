@@ -59,7 +59,7 @@ internal class MainScreen(navigationController: NavigationController) :
             modifier = Modifier.clickable { onSelectCourseState.value = true },
             text = selectedCourse!!.courseName,
             fontSize = Sizes.title,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Start,
         )
     }
 

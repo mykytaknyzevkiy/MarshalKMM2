@@ -114,7 +114,8 @@ object CourseRepository : YamaRepository() {
             .cartReportByType(
                 body = CartReportByTypeRequest(
                     idCompany = prefs.companyID,
-                    reportTypeID = 43
+                    reportTypeID = 43,
+                    active = 1
                 )
             )
             .let {

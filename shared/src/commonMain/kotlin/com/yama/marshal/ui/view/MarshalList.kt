@@ -18,13 +18,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.positionChangeConsumed
 import androidx.compose.ui.input.pointer.positionChangeIgnoreConsumed
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
@@ -325,18 +328,18 @@ private fun <E> MarshallListItemLogic(
 
     Box(
         modifier = Modifier
-        .pointerInput(item) {
-            val maxOffsetPx = maxOffset.roundToPx()
+            .pointerInput(item) {
+                val maxOffsetPx = maxOffset.roundToPx()
 
-            detectTapGestures {
-                onTapItem(item)
+                detectTapGestures {
+                    onTapItem(item)
 
-                itemOffset = if (itemOffset.x >= maxOffsetPx)
-                    IntOffset(x = 0, y = 0)
-                else
-                    IntOffset(x = maxOffsetPx, y = 0)
-            }
-        },
+                    itemOffset = if (itemOffset.x >= maxOffsetPx)
+                        IntOffset(x = 0, y = 0)
+                    else
+                        IntOffset(x = maxOffsetPx, y = 0)
+                }
+            },
         contentAlignment = Alignment.CenterStart
     ) {
         if (itemOffset.x > 0)
@@ -400,12 +403,36 @@ internal fun RowScope.MarshalItemText(
     weight: Float,
     color: Color = Color.Unspecified,
     textAlign: TextAlign = TextAlign.Center
-) = Text(
-    text = text,
-    textAlign = textAlign,
-    modifier = Modifier.weight(weight).padding(Sizes.screenPadding / 2),
-    color = color
-)
+) {
+    val style: TextStyle = MaterialTheme.typography.bodyMedium
+
+    var textRealStyle by remember {
+        mutableStateOf(style)
+    }
+    var readyToDraw by remember { mutableStateOf(false) }
+
+    Text(
+        text = text,
+        textAlign = textAlign,
+        modifier = Modifier.weight(weight)
+            .padding(Sizes.screenPadding / 2)
+            .drawWithContent {
+                if (readyToDraw)
+                    drawContent()
+            },
+        color = color,
+        softWrap = text.contains(" "),
+        style = textRealStyle,
+        onTextLayout = {
+            if (it.didOverflowWidth)
+                textRealStyle = textRealStyle.copy(
+                    fontSize = textRealStyle.fontSize * 0.9
+                )
+            else
+                readyToDraw = true
+        }
+    )
+}
 
 @Composable
 internal fun MarshalItemDivider() = Spacer(

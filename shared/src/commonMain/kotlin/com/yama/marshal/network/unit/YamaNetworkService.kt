@@ -17,7 +17,7 @@ abstract class YamaNetworkService(val host: String) {
 
     val client = HttpClient {
         install(HttpTimeout) {
-            requestTimeoutMillis = 100 * 1000
+            requestTimeoutMillis = HttpTimeout.INFINITE_TIMEOUT_MS
         }
     }
 
