@@ -61,12 +61,8 @@ internal class FleetListScreen(
             currentDesc = currentSort.second
         ) { viewModel.updateSort(it) }
 
-        val listItem = remember(viewModel) {
-            viewModel.fleetList
-        }.collectAsState(emptyList())
-
         PlatformList(
-            listItem = listItem,
+            listItem = viewModel.fleetList,
             itemContent = {
                 ItemViewHolder(it)
             },

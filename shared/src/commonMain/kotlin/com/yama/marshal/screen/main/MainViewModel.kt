@@ -109,7 +109,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
 
     val fleetList = CartRepository
         .cartList
-        .filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
+       // .filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
         .combine(_selectedCourse) { a, b ->
             if (b?.id.isNullOrBlank())
                 a

@@ -5,15 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.layout.rememberLazyNearestItemsRangeState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PanToolAlt
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +30,10 @@ import androidx.compose.ui.unit.*
 import co.touchlab.kermit.Logger
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
+import com.yama.marshal.tool.toYamaPagingState
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -43,7 +43,73 @@ import kotlin.math.roundToInt
 
 @Composable
 internal fun <E> PlatformList(
+    listItem: Flow<List<E>>,
+    key: ((position: Int, item: E) -> Any)? = null,
+    customItemBgColor: (item: E) -> Color? = { null },
+    itemActionsCount: (item: E) -> Int = { 0 },
+    itemActions: @Composable RowScope.(item: E) -> Unit = { },
+    itemContent: @Composable RowScope.(item: E) -> Unit,
+    onTapItem: (item: E) -> Unit = {}
+) {
+    val bgPositive: Color = YamaColor.itemColor(0)
+    val bgNegative: Color = YamaColor.itemColor(1)
+    val holderHeight = Sizes.fleet_view_holder_height
+
+    val scope = rememberCoroutineScope()
+
+    val yamaPaging = listItem.toYamaPagingState(scope)
+
+    val lazyScroll: LazyListState = rememberLazyListState()
+
+    val listState by remember {
+        yamaPaging.list
+    }.collectAsState()
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .drawBehind {
+                val itemHeightPX = holderHeight.roundToPx()
+                val maxHeightPX = this.size.height.roundToInt()
+
+                repeat(maxHeightPX / itemHeightPX) {
+                    val y = it * itemHeightPX
+
+                    if (y < maxHeightPX)
+                        drawRect(
+                            color = if (it % 2 == 0) bgPositive else bgNegative,
+                            topLeft = Offset(x = 0f, y = y.toFloat()),
+                        )
+                }
+            },
+        state = lazyScroll
+    ) {
+        itemsIndexed(listState) { position, item ->
+            MarshallListItemLogic(
+                position,
+                item,
+                holderHeight,
+                bgPositive,
+                bgNegative,
+                customItemBgColor,
+                itemActionsCount,
+                itemActions,
+                itemContent,
+                onTapItem
+            )
+        }
+    }
+
+    yamaPaging.load(
+        lazyScroll.firstVisibleItemIndex,
+        lazyScroll.layoutInfo.visibleItemsInfo.size
+    )
+}
+
+@Composable
+internal fun <E> PlatformList(
     listItem: State<List<E>>,
+    lazyScroll: LazyListState = rememberLazyListState(),
     key: ((position: Int, item: E) -> Any)? = null,
     customItemBgColor: (item: E) -> Color? = { null },
     itemActionsCount: (item: E) -> Int = { 0 },
@@ -59,7 +125,6 @@ internal fun <E> PlatformList(
 
     Box(modifier = Modifier.fillMaxSize()) {
         val scrollConnection = rememberScrollState()
-        val lazyScroll = rememberLazyListState()
 
         if (mPlatform == MPlatform.IOS)
             Column(modifier = Modifier
@@ -149,14 +214,14 @@ internal fun <E> PlatformList(
             }
         }
 
-        if (scrollToTop) {
+        /*if (scrollToTop) {
             scope.launch {
                 scrollConnection.scrollTo(0)
                 lazyScroll.scrollToItem(0)
             }
 
             firstItem.value = listItem.value.first()
-        }
+        }*/
 
         val isScrolled by remember {
             derivedStateOf {
