@@ -49,24 +49,10 @@ internal class FleetListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        val currentSort by remember(viewModel) {
-            viewModel.currentFleetSort
-        }.collectAsState()
-
-        TableRow(
-            sortList = remember {
-                SortType.SortFleet.values()
-            },
-            currentSort = currentSort.first,
-            currentDesc = currentSort.second
-        ) { viewModel.updateSort(it) }
-
-        val listItem = remember(viewModel) {
-            viewModel.fleetList
-        }.collectAsState(emptyList())
+        Row()
 
         PlatformList(
-            listItem = listItem,
+            listState = viewModel.fleetList,
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -160,6 +146,21 @@ internal class FleetListScreen(
                 else null
             }
         )
+    }
+
+    @Composable
+    private fun Row() {
+        val currentSort by remember(viewModel) {
+            viewModel.currentFleetSort
+        }.collectAsState()
+
+        TableRow(
+            sortList = remember {
+                SortType.SortFleet.values()
+            },
+            currentSort = currentSort.first,
+            currentDesc = currentSort.second
+        ) { viewModel.updateSort(it) }
     }
 
     @Composable

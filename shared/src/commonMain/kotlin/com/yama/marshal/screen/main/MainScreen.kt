@@ -50,6 +50,10 @@ internal class MainScreen(navigationController: NavigationController) :
 
     @Composable
     override fun titleContent() {
+        remember(viewModel) {
+            viewModel.courseList
+        }.collectAsState(emptyList())
+
         val selectedCourse by remember { viewModel.selectedCourse }.collectAsState()
 
         if (selectedCourse == null)
@@ -114,14 +118,44 @@ internal class MainScreen(navigationController: NavigationController) :
         NavHost(
             modifier = Modifier.fillMaxSize(),
             navigationController = mainNavigationController,
-            screens = arrayOf(fleetListScreen, holeListScreen, alertListScreen)
+            screens = remember { arrayOf(fleetListScreen, holeListScreen, alertListScreen) }
         )
 
-        val courses by viewModel.courseList.collectAsState(emptyList())
+        SelectCourseBox()
 
-        val onSelectCourse by onSelectCourseState.collectAsState()
+        CartMessageBox()
+    }
+
+    @Composable
+    private fun BoxScope.CartMessageBox() {
+        val isAnyCartMessage by remember(viewModel.cartMessages) {
+            derivedStateOf {
+                viewModel.cartMessages.isNotEmpty()
+            }
+        }
+
+        if (isAnyCartMessage)
+            CartMessagesAlert { item ->
+                navigationController.navigateTo(
+                    MapScreen.route, listOf(
+                        NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
+                        NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
+                    )
+                )
+            }
+    }
+
+    @Composable
+    private fun BoxScope.SelectCourseBox() {
+        val onSelectCourse by remember(viewModel) {
+            onSelectCourseState
+        }.collectAsState()
 
         if (onSelectCourse) {
+            val courses by remember(viewModel) {
+                viewModel.courseList
+            }.collectAsState(emptyList())
+
             LazyColumn(
                 modifier = Modifier.padding(horizontal = Sizes.screenPadding)
                     .background(MaterialTheme.colorScheme.background).align(Alignment.TopStart)
@@ -139,22 +173,6 @@ internal class MainScreen(navigationController: NavigationController) :
                 }
             }
         }
-
-        val isAnyCartMessage by remember(viewModel.cartMessages) {
-            derivedStateOf {
-                viewModel.cartMessages.isNotEmpty()
-            }
-        }
-
-        if (isAnyCartMessage)
-            CartMessagesAlert { item ->
-                navigationController.navigateTo(
-                    MapScreen.route, listOf(
-                        NavArg(key = MapScreen.ARG_CART_ID, value = item.id),
-                        NavArg(key = MapScreen.ARG_COURSE_ID, value = item.course?.id)
-                    )
-                )
-            }
     }
 
     @Composable

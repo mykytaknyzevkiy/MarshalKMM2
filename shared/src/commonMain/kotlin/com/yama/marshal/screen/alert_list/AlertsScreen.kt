@@ -1,10 +1,7 @@
 package com.yama.marshal.screen.alert_list
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
@@ -31,31 +28,25 @@ internal class AlertsScreen(
     override val toolbarColor = YamaColor.alert_navigation_card_bg
 
     @Composable
-    override fun content(args: List<NavArg>) = Column {
-        val listItem = remember(viewModel) {
-            viewModel.alertList
-        }.collectAsState(emptyList())
+    override fun content(args: List<NavArg>) = PlatformList(
+        listState = viewModel.alertList,
+        itemContent = {
+            ItemViewHolder(it)
+        },
+        customItemBgColor = {
+            val cart = it.cart
 
-        PlatformList(
-            listItem = listItem,
-            itemContent = {
-                ItemViewHolder(it)
-            },
-            customItemBgColor = {
-                val cart = it.cart
-
-                if (cart.isCartInShutdownMode)
-                    YamaColor.cart_shut_down_bg
-                else if (cart.isFlag)
-                    YamaColor.item_cart_flag_container_bg
-                else
-                    null
-            },
-            key = { _, item ->
-                item.id
-            }
-        )
-    }
+            if (cart.isCartInShutdownMode)
+                YamaColor.cart_shut_down_bg
+            else if (cart.isFlag)
+                YamaColor.item_cart_flag_container_bg
+            else
+                null
+        },
+        key = { _, item ->
+            item.id
+        }
+    )
 
     @Composable
     fun RowScope.ItemViewHolder(item: AlertModel) {

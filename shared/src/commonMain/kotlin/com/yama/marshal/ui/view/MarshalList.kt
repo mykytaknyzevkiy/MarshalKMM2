@@ -1,6 +1,7 @@
 package com.yama.marshal.ui.view
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
@@ -23,18 +24,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
-import androidx.compose.ui.input.pointer.positionChangeConsumed
-import androidx.compose.ui.input.pointer.positionChangeIgnoreConsumed
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
-import co.touchlab.kermit.Logger
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -43,7 +40,7 @@ import kotlin.math.roundToInt
 
 @Composable
 internal fun <E> PlatformList(
-    listItem: State<List<E>>,
+    listState: Flow<List<E>>,
     key: ((position: Int, item: E) -> Any)? = null,
     customItemBgColor: (item: E) -> Color? = { null },
     itemActionsCount: (item: E) -> Int = { 0 },
@@ -51,220 +48,76 @@ internal fun <E> PlatformList(
     itemContent: @Composable RowScope.(item: E) -> Unit,
     onTapItem: (item: E) -> Unit = {}
 ) {
-    val scope = rememberCoroutineScope()
-
     val bgPositive: Color = YamaColor.itemColor(0)
     val bgNegative: Color = YamaColor.itemColor(1)
-    val holderHeight = Sizes.fleet_view_holder_height
+    val holderHeight: Dp = Sizes.fleet_view_holder_height
+
+    val scrollConnection: ScrollState = rememberScrollState()
+    val lazyScroll: LazyListState = rememberLazyListState()
+
+    val listItem = remember {
+        listState
+    }
+        .collectAsState(emptyList())
 
     Box(modifier = Modifier.fillMaxSize()) {
-        val scrollConnection = rememberScrollState()
-        val lazyScroll = rememberLazyListState()
+        NList(
+            listItem = listItem,
+            bgPositive = bgPositive,
+            bgNegative = bgNegative,
+            holderHeight = holderHeight,
+            scrollConnection = scrollConnection,
+            lazyScroll = lazyScroll,
+            key = key,
+            customItemBgColor = customItemBgColor,
+            itemActionsCount = itemActionsCount,
+            itemActions = itemActions,
+            itemContent = itemContent,
+            onTapItem = onTapItem
+        )
 
-        if (mPlatform == MPlatform.IOS)
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .drawBehind {
-                    val itemHeightPX = holderHeight.roundToPx()
-                    val maxHeightPX = this.size.height.roundToInt()
+        scrollTopBtn(scrollConnection, lazyScroll)
+    }
 
-                    repeat(maxHeightPX / itemHeightPX) {
-                        val y = it * itemHeightPX
+    LaunchedEffect(Unit) {
+        var firstItem: E? = null
 
-                        if (y < maxHeightPX)
-                            drawRect(
-                                color = if (it % 2 == 0) bgPositive else bgNegative,
-                                topLeft = Offset(x = 0f, y = y.toFloat()),
-                            )
-                    }
-                }
-                .verticalScroll(scrollConnection)
-            ) {
-                val iterator = listItem.value.listIterator()
-                var position = 0
-
-                while (iterator.hasNext()) {
-                    val item = iterator.next()
-
-                    MarshallListItemLogic(
-                        position,
-                        item,
-                        holderHeight,
-                        bgPositive,
-                        bgNegative,
-                        customItemBgColor,
-                        itemActionsCount,
-                        itemActions,
-                        itemContent,
-                        onTapItem
-                    )
-
-                    position++
-                }
-            }
-        else
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .drawBehind {
-                        val itemHeightPX = holderHeight.roundToPx()
-                        val maxHeightPX = this.size.height.roundToInt()
-
-                        repeat(maxHeightPX / itemHeightPX) {
-                            val y = it * itemHeightPX
-
-                            if (y < maxHeightPX)
-                                drawRect(
-                                    color = if (it % 2 == 0) bgPositive else bgNegative,
-                                    topLeft = Offset(x = 0f, y = y.toFloat()),
-                                )
-                        }
-                    },
-                state = lazyScroll
-            ) {
-                itemsIndexed(listItem.value, key) { position, item ->
-                    MarshallListItemLogic(
-                        position,
-                        item,
-                        holderHeight,
-                        bgPositive,
-                        bgNegative,
-                        customItemBgColor,
-                        itemActionsCount,
-                        itemActions,
-                        itemContent,
-                        onTapItem
-                    )
-                }
-            }
-
-        val firstItem = remember(mPlatform) {
-            mutableStateOf<E?>(null)
-        }
-
-        val scrollToTop by remember {
-            derivedStateOf {
-                !lazyScroll.isScrollInProgress && !scrollConnection.isScrollInProgress &&
-                        listItem.value.isNotEmpty() && listItem.value.first() != firstItem.value
-            }
-        }
-
-        if (scrollToTop) {
-            scope.launch {
-                scrollConnection.scrollTo(0)
+        listState
+            .onEach {
+            if (it.isNotEmpty() && firstItem != it.first()) {
                 lazyScroll.scrollToItem(0)
-            }
-
-            firstItem.value = listItem.value.first()
-        }
-
-        val isScrolled by remember {
-            derivedStateOf {
-                scrollConnection.value > 0
-                        || lazyScroll.firstVisibleItemIndex > 0
+                firstItem = it.first()
             }
         }
-
-        AnimatedVisibility(
-            isScrolled,
-            enter = slideInHorizontally(
-                initialOffsetX = { +300 }
-            ),
-            exit = slideOutHorizontally(
-                targetOffsetX = { +300 }
-            ),
-            modifier = Modifier.align(Alignment.BottomEnd).padding(Sizes.screenPadding)
-        ) {
-            IconButton(
-                modifier = Modifier
-                    .size(Sizes.screenPadding * 3)
-                    .background(
-                        MaterialTheme.colorScheme.primary,
-                        CircleShape
-                    ),
-                onClick = {
-                    scope.launch {
-                        scrollConnection.scrollTo(0)
-                        lazyScroll.scrollToItem(0)
-                    }
-                }
-            ) {
-                Icon(
-                    Icons.Default.PanToolAlt,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    contentDescription = null
-                )
-            }
-        }
+            .launchIn(this)
     }
 }
 
 @Composable
-internal fun <E> MarshalList(
-    modifier: Modifier = Modifier,
-    state: LazyListState = rememberLazyListState(),
-    list: List<E>,
-    holderHeight: Dp = Sizes.fleet_view_holder_height,
-    bgPositive: Color = YamaColor.itemColor(0),
-    bgNegative: Color = YamaColor.itemColor(1),
-    key: ((position: Int, item: E) -> Any)? = null,
-    customItemBgColor: @DisallowComposableCalls (item: E) -> Color? = { null },
-    itemActionsCount: @DisallowComposableCalls (item: E) -> Int = { 0 },
-    itemActions: LazyListScope.(item: E) -> Unit = { },
-    itemContent: @Composable RowScope.(item: E) -> Unit,
-    onTapItem: (item: E) -> Unit = {}
-) = Box(modifier = modifier.drawBehind {
-    repeat(this.size.height.roundToInt() / holderHeight.roundToPx()) {
-        val y = (it * holderHeight).toPx()
-
-        if (y < this.size.height)
-            drawRect(
-                color = if (it % 2 == 0) bgPositive else bgNegative,
-                topLeft = Offset(x = 0f, y = (it * holderHeight).toPx()),
-            )
-    }
-}) {
+private fun BoxScope.scrollTopBtn(
+    scrollConnection: ScrollState,
+    lazyScroll: LazyListState
+) {
     val scope = rememberCoroutineScope()
 
-    val scrollState = rememberScrollState()
-
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
-        list.forEachIndexed { position, item ->
-            MarshallListItemLogic(
-                position,
-                item,
-                holderHeight,
-                bgPositive,
-                bgNegative,
-                customItemBgColor,
-                itemActionsCount,
-                itemActions = {},
-                itemContent,
-                onTapItem
-            )
+    val isScrolled by remember {
+        derivedStateOf {
+            scrollConnection.value > 0
+                    || lazyScroll.firstVisibleItemIndex > 0
         }
     }
 
-    val showToTopBtn by remember {
-        if (mPlatform == MPlatform.ANDROID)
-            derivedStateOf {
-                state.firstVisibleItemIndex > 0
-            }
-        else
-            derivedStateOf {
-                scrollState.value > 0
-            }
-    }
-
     AnimatedVisibility(
-        showToTopBtn,
+        isScrolled,
         enter = slideInHorizontally(
             initialOffsetX = { +300 }
         ),
         exit = slideOutHorizontally(
             targetOffsetX = { +300 }
         ),
-        modifier = Modifier.align(Alignment.BottomEnd).padding(Sizes.screenPadding)
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(Sizes.screenPadding)
     ) {
         IconButton(
             modifier = Modifier
@@ -275,13 +128,8 @@ internal fun <E> MarshalList(
                 ),
             onClick = {
                 scope.launch {
-                    if (mPlatform == MPlatform.ANDROID) {
-                        if (!state.isScrollInProgress)
-                            state.scrollToItem(0)
-                    } else {
-                        if (!scrollState.isScrollInProgress)
-                            scrollState.scrollTo(0)
-                    }
+                    scrollConnection.scrollTo(0)
+                    lazyScroll.scrollToItem(0)
                 }
             }
         ) {
@@ -295,28 +143,105 @@ internal fun <E> MarshalList(
 }
 
 @Composable
+private fun <E> NList(
+    listItem: State<List<E>>,
+    bgPositive: Color,
+    bgNegative: Color,
+    holderHeight: Dp,
+    scrollConnection: ScrollState,
+    lazyScroll: LazyListState,
+    key: ((position: Int, item: E) -> Any)? = null,
+    customItemBgColor: (item: E) -> Color? = { null },
+    itemActionsCount: (item: E) -> Int = { 0 },
+    itemActions: @Composable RowScope.(item: E) -> Unit = { },
+    itemContent: @Composable RowScope.(item: E) -> Unit,
+    onTapItem: (item: E) -> Unit = {}
+) = if (mPlatform == MPlatform.IOS)
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .drawBehind {
+            val itemHeightPX = holderHeight.roundToPx()
+            val maxHeightPX = this.size.height.roundToInt()
+
+            repeat(maxHeightPX / itemHeightPX) {
+                val y = it * itemHeightPX
+
+                if (y < maxHeightPX)
+                    drawRect(
+                        color = if (it % 2 == 0) bgPositive else bgNegative,
+                        topLeft = Offset(x = 0f, y = y.toFloat()),
+                    )
+            }
+        }
+        .verticalScroll(scrollConnection)
+    ) {
+        val iterator = listItem.value.listIterator()
+
+        var bg: Color = bgPositive
+
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+
+            MarshallListItemLogic(
+                item,
+                holderHeight,
+                bg,
+                customItemBgColor,
+                itemActionsCount,
+                itemActions,
+                itemContent,
+                onTapItem
+            )
+
+            bg = if (bg == bgPositive) bgNegative else bgPositive
+        }
+    }
+else {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .drawBehind {
+                val itemHeightPX = holderHeight.roundToPx()
+                val maxHeightPX = this.size.height.roundToInt()
+
+                repeat(maxHeightPX / itemHeightPX) {
+                    val y = it * itemHeightPX
+
+                    if (y < maxHeightPX)
+                        drawRect(
+                            color = if (it % 2 == 0) bgPositive else bgNegative,
+                            topLeft = Offset(x = 0f, y = y.toFloat()),
+                        )
+                }
+            },
+        state = lazyScroll
+    ) {
+        itemsIndexed(listItem.value, key = key) { position, item ->
+            MarshallListItemLogic(
+                item,
+                holderHeight,
+                if (position % 2 == 0) bgPositive else bgNegative,
+                customItemBgColor,
+                itemActionsCount,
+                itemActions,
+                itemContent,
+                onTapItem
+            )
+        }
+    }
+}
+
+@Composable
 private fun <E> MarshallListItemLogic(
-    position: Int,
     item: E,
     holderHeight: Dp = Sizes.fleet_view_holder_height,
-    bgPositive: Color = YamaColor.itemColor(0),
-    bgNegative: Color = YamaColor.itemColor(1),
+    bgColor: Color,
     customItemBgColor: (item: E) -> Color? = { null },
     itemActionsCount: (item: E) -> Int = { 0 },
     itemActions: @Composable RowScope.(item: E) -> Unit = { },
     itemContent: @Composable RowScope.(item: E) -> Unit,
     onTapItem: (item: E) -> Unit = {}
 ) {
-    val itemBgColor by remember(item, position) {
-        derivedStateOf {
-            customItemBgColor(item)
-                ?: if (position % 2 == 0)
-                    bgPositive
-                else
-                    bgNegative
-        }
-    }
-
     val maxOffset by remember {
         derivedStateOf {
             itemActionsCount(item) * holderHeight
@@ -328,19 +253,18 @@ private fun <E> MarshallListItemLogic(
     }
 
     Box(
-        modifier = Modifier
-            .pointerInput(item) {
-                val maxOffsetPx = maxOffset.roundToPx()
+        modifier = Modifier.pointerInput(item) {
+            val maxOffsetPx = maxOffset.roundToPx()
 
-                detectTapGestures {
-                    onTapItem(item)
+            detectTapGestures {
+                onTapItem(item)
 
-                    itemOffset = if (itemOffset.x >= maxOffsetPx)
-                        IntOffset(x = 0, y = 0)
-                    else
-                        IntOffset(x = maxOffsetPx, y = 0)
-                }
-            },
+                itemOffset = if (itemOffset.x >= maxOffsetPx)
+                    IntOffset(x = 0, y = 0)
+                else
+                    IntOffset(x = maxOffsetPx, y = 0)
+            }
+        },
         contentAlignment = Alignment.CenterStart
     ) {
         if (itemOffset.x > 0)
@@ -353,7 +277,7 @@ private fun <E> MarshallListItemLogic(
             .defaultMinSize(minHeight = holderHeight)
             .drawBehind {
                 drawRect(
-                    color = itemBgColor,
+                    color = customItemBgColor(item) ?: bgColor,
                     topLeft = itemOffset.toOffset()
                 )
             }

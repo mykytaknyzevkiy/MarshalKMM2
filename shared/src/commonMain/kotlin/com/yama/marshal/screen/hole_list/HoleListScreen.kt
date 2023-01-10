@@ -23,8 +23,10 @@ import com.yama.marshal.ui.view.MarshalItemDivider
 import com.yama.marshal.ui.view.MarshalItemText
 import com.yama.marshal.ui.view.PlatformList
 
-internal class HoleListScreen(navigationController: NavigationController, viewModel: MainViewModel) :
-    MainContentScreen(navigationController, viewModel)  {
+internal class HoleListScreen(
+    navigationController: NavigationController,
+    viewModel: MainViewModel
+) : MainContentScreen(navigationController, viewModel) {
     companion object {
         const val ROUTE = "hole_list"
     }
@@ -35,22 +37,10 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        val currentSort by remember(viewModel) { viewModel.currentHoleSort }.collectAsState()
-
-        TableRow(
-            sortList = SortType.SortHole.values(),
-            currentSort = currentSort.first,
-            currentDesc = currentSort.second
-        ) {
-            viewModel.updateSort(it)
-        }
-
-        val itemList = remember(viewModel) {
-            viewModel.holeList
-        }.collectAsState(emptyList())
+        Row()
 
         PlatformList(
-            listItem = itemList,
+            listState = viewModel.holeList,
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -60,7 +50,8 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
             itemActions = { item ->
                 IconButton(
                     modifier = Modifier.size(Sizes.fleet_view_holder_height).background(
-                        YamaColor.view_cart_btn_bg_color),
+                        YamaColor.view_cart_btn_bg_color
+                    ),
                     onClick = {
                         navigationController.navigateTo(
                             MapScreen.route,
@@ -85,6 +76,19 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
     }
 
     @Composable
+    private fun Row() {
+        val currentSort by remember(viewModel) { viewModel.currentHoleSort }.collectAsState()
+
+        TableRow(
+            sortList = SortType.SortHole.values(),
+            currentSort = currentSort.first,
+            currentDesc = currentSort.second
+        ) {
+            viewModel.updateSort(it)
+        }
+    }
+
+    @Composable
     private fun RowScope.ItemViewHolder(item: CourseFullDetail.HoleData) {
         MarshalItemText(
             text = item.holeNumber.toString(),
@@ -94,7 +98,10 @@ internal class HoleListScreen(navigationController: NavigationController, viewMo
         MarshalItemDivider()
 
         MarshalItemText(
-            text = PaceValueFormatter.getString(item.differentialPace, PaceValueFormatter.PaceType.Full),
+            text = PaceValueFormatter.getString(
+                item.differentialPace,
+                PaceValueFormatter.PaceType.Full
+            ),
             weight = SortType.SortHole.PACE_OF_PLAY.weight / 2,
             color = PaceValueFormatter.getColor(item.differentialPace)
         )

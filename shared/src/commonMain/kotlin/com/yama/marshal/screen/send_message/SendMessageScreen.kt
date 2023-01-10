@@ -20,7 +20,6 @@ import com.yama.marshal.ui.navigation.findInt
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.view.*
 import com.yama.marshal.ui.view.Dialog
-import com.yama.marshal.ui.view.MarshalList
 import com.yama.marshal.ui.view.TextField
 import com.yama.marshal.ui.view.YamaScreen
 
@@ -80,9 +79,8 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                 fontSize = dimensions.bodySmall
             )
 
-            MarshalList(
-                modifier = Modifier.weight(1f),
-                list = viewModel.messages,
+            PlatformList(
+                listState = viewModel.messages,
                 itemContent = {
                     MarshalItemText(
                         text = it.message,
@@ -95,6 +93,9 @@ internal class SendMessageScreen(navigationController: NavigationController) :
 
                     if (currentState != SendMessageViewState.Loading)
                         viewModel.setMessage(it.message)
+                },
+                key = { _, item ->
+                    item.id
                 }
             )
         }
