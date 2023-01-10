@@ -1,14 +1,13 @@
 package com.yama.marshal.ui.view
 
-import androidx.compose.animation.*
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PanToolAlt
 import androidx.compose.material3.Icon
@@ -19,78 +18,120 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 @Composable
 internal fun <E> PlatformList(
-    listState: Flow<List<E>>,
-    key: ((position: Int, item: E) -> Any)? = null,
+    listItem: List<E>,
+    key: ((item: E) -> Any)? = null,
     customItemBgColor: (item: E) -> Color? = { null },
-    itemActionsCount: (item: E) -> Int = { 0 },
     itemActions: @Composable RowScope.(item: E) -> Unit = { },
     itemContent: @Composable RowScope.(item: E) -> Unit,
     onTapItem: (item: E) -> Unit = {}
 ) {
     val bgPositive: Color = YamaColor.itemColor(0)
     val bgNegative: Color = YamaColor.itemColor(1)
-    val holderHeight: Dp = Sizes.fleet_view_holder_height
+
+    val scrollConnection: ScrollState = rememberScrollState()
+    val lazyScroll: LazyListState = rememberLazyListState()
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .drawWithContent {
+                var bgItemColor =
+                    if (lazyScroll.firstVisibleItemIndex % 2 == 0) bgPositive else bgNegative
+
+                lazyScroll.layoutInfo.visibleItemsInfo.forEachIndexed { index, lazyListItemInfo ->
+                    drawRect(
+                        color = bgItemColor,
+                        topLeft = Offset(
+                            x = 0f,
+                            y = index * lazyListItemInfo.size.toFloat() - if (index > 0) lazyScroll.firstVisibleItemScrollOffset else 0
+                        ),
+                        size = Size(width = this.size.width, lazyListItemInfo.size.toFloat())
+                    )
+
+                    bgItemColor = if (bgItemColor == bgPositive)
+                        bgNegative
+                    else
+                        bgPositive
+                }
+
+                if (lazyScroll.layoutInfo.visibleItemsInfo.size >= 7)
+                    drawContent()
+            },
+        state = lazyScroll
+    ) {
+        items(listItem, key = key) { item ->
+            MarshallListItemLogic(
+                item,
+                customItemBgColor,
+                itemActions,
+                itemContent,
+                onTapItem
+            )
+        }
+    }
+}
+
+@Composable
+internal fun <E> PlatformList(
+    listState: Flow<List<E>>,
+    key: ((item: E) -> Any)? = null,
+    customItemBgColor: (item: E) -> Color? = { null },
+    itemActions: @Composable RowScope.(item: E) -> Unit = { },
+    itemContent: @Composable RowScope.(item: E) -> Unit,
+    onTapItem: (item: E) -> Unit = {}
+) {
+    val bgPositive: Color = YamaColor.itemColor(0)
+    val bgNegative: Color = YamaColor.itemColor(1)
 
     val scrollConnection: ScrollState = rememberScrollState()
     val lazyScroll: LazyListState = rememberLazyListState()
 
     val listItem = remember {
         listState
-    }
-        .collectAsState(emptyList())
+    }.collectAsState(emptyList())
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        NList(
-            listItem = listItem,
-            bgPositive = bgPositive,
-            bgNegative = bgNegative,
-            holderHeight = holderHeight,
-            scrollConnection = scrollConnection,
-            lazyScroll = lazyScroll,
-            key = key,
-            customItemBgColor = customItemBgColor,
-            itemActionsCount = itemActionsCount,
-            itemActions = itemActions,
-            itemContent = itemContent,
-            onTapItem = onTapItem
-        )
+    NList(
+        listItem = listItem,
+        bgPositive = bgPositive,
+        bgNegative = bgNegative,
+        scrollConnection = scrollConnection,
+        lazyScroll = lazyScroll,
+        key = key,
+        customItemBgColor = customItemBgColor,
+        itemActions = itemActions,
+        itemContent = itemContent,
+        onTapItem = onTapItem
+    )
 
-        scrollTopBtn(scrollConnection, lazyScroll)
-    }
-
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         var firstItem: E? = null
 
         listState
             .onEach {
-            if (it.isNotEmpty() && firstItem != it.first()) {
-                lazyScroll.scrollToItem(0)
-                firstItem = it.first()
+                if (it.isNotEmpty() && firstItem != it.first()) {
+                    lazyScroll.scrollToItem(0)
+                    firstItem = it.first()
+                }
             }
-        }
             .launchIn(this)
-    }
+    }*/
 }
 
 @Composable
@@ -107,39 +148,33 @@ private fun BoxScope.scrollTopBtn(
         }
     }
 
-    AnimatedVisibility(
-        isScrolled,
-        enter = slideInHorizontally(
-            initialOffsetX = { +300 }
-        ),
-        exit = slideOutHorizontally(
-            targetOffsetX = { +300 }
-        ),
-        modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(Sizes.screenPadding)
-    ) {
-        IconButton(
+    if (isScrolled)
+        Box(
             modifier = Modifier
-                .size(Sizes.screenPadding * 3)
-                .background(
-                    MaterialTheme.colorScheme.primary,
-                    CircleShape
-                ),
-            onClick = {
-                scope.launch {
-                    scrollConnection.scrollTo(0)
-                    lazyScroll.scrollToItem(0)
-                }
-            }
+                .align(Alignment.BottomEnd)
+                .padding(Sizes.screenPadding)
         ) {
-            Icon(
-                Icons.Default.PanToolAlt,
-                tint = MaterialTheme.colorScheme.onPrimary,
-                contentDescription = null
-            )
+            IconButton(
+                modifier = Modifier
+                    .size(Sizes.screenPadding * 3)
+                    .background(
+                        MaterialTheme.colorScheme.primary,
+                        CircleShape
+                    ),
+                onClick = {
+                    scope.launch {
+                        scrollConnection.scrollTo(0)
+                        lazyScroll.scrollToItem(0)
+                    }
+                }
+            ) {
+                Icon(
+                    Icons.Default.PanToolAlt,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    contentDescription = null
+                )
+            }
         }
-    }
 }
 
 @Composable
@@ -147,33 +182,18 @@ private fun <E> NList(
     listItem: State<List<E>>,
     bgPositive: Color,
     bgNegative: Color,
-    holderHeight: Dp,
     scrollConnection: ScrollState,
     lazyScroll: LazyListState,
-    key: ((position: Int, item: E) -> Any)? = null,
+    key: ((item: E) -> Any)? = null,
     customItemBgColor: (item: E) -> Color? = { null },
-    itemActionsCount: (item: E) -> Int = { 0 },
     itemActions: @Composable RowScope.(item: E) -> Unit = { },
     itemContent: @Composable RowScope.(item: E) -> Unit,
     onTapItem: (item: E) -> Unit = {}
 ) = if (mPlatform == MPlatform.IOS)
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .drawBehind {
-            val itemHeightPX = holderHeight.roundToPx()
-            val maxHeightPX = this.size.height.roundToInt()
-
-            repeat(maxHeightPX / itemHeightPX) {
-                val y = it * itemHeightPX
-
-                if (y < maxHeightPX)
-                    drawRect(
-                        color = if (it % 2 == 0) bgPositive else bgNegative,
-                        topLeft = Offset(x = 0f, y = y.toFloat()),
-                    )
-            }
-        }
-        .verticalScroll(scrollConnection)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollConnection)
     ) {
         val iterator = listItem.value.listIterator()
 
@@ -184,10 +204,7 @@ private fun <E> NList(
 
             MarshallListItemLogic(
                 item,
-                holderHeight,
-                bg,
                 customItemBgColor,
-                itemActionsCount,
                 itemActions,
                 itemContent,
                 onTapItem
@@ -196,125 +213,84 @@ private fun <E> NList(
             bg = if (bg == bgPositive) bgNegative else bgPositive
         }
     }
-else {
+else
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .drawBehind {
-                val itemHeightPX = holderHeight.roundToPx()
-                val maxHeightPX = this.size.height.roundToInt()
+            .drawWithContent {
+                var bgItemColor =
+                    if (lazyScroll.firstVisibleItemIndex % 2 == 0) bgPositive else bgNegative
 
-                repeat(maxHeightPX / itemHeightPX) {
-                    val y = it * itemHeightPX
+                lazyScroll.layoutInfo.visibleItemsInfo.forEachIndexed { index, lazyListItemInfo ->
+                    drawRect(
+                        color = bgItemColor,
+                        topLeft = Offset(
+                            x = 0f,
+                            y = index * lazyListItemInfo.size.toFloat() - if (index > 0) lazyScroll.firstVisibleItemScrollOffset else 0
+                        ),
+                        size = Size(width = this.size.width, lazyListItemInfo.size.toFloat())
+                    )
 
-                    if (y < maxHeightPX)
-                        drawRect(
-                            color = if (it % 2 == 0) bgPositive else bgNegative,
-                            topLeft = Offset(x = 0f, y = y.toFloat()),
-                        )
+                    bgItemColor = if (bgItemColor == bgPositive)
+                        bgNegative
+                    else
+                        bgPositive
                 }
+
+                if (lazyScroll.layoutInfo.visibleItemsInfo.size >= 7)
+                    drawContent()
             },
         state = lazyScroll
     ) {
-        itemsIndexed(listItem.value, key = key) { position, item ->
+        items(listItem.value, key = key) { item ->
             MarshallListItemLogic(
                 item,
-                holderHeight,
-                if (position % 2 == 0) bgPositive else bgNegative,
                 customItemBgColor,
-                itemActionsCount,
                 itemActions,
                 itemContent,
                 onTapItem
             )
         }
     }
-}
 
 @Composable
 private fun <E> MarshallListItemLogic(
     item: E,
-    holderHeight: Dp = Sizes.fleet_view_holder_height,
-    bgColor: Color,
     customItemBgColor: (item: E) -> Color? = { null },
-    itemActionsCount: (item: E) -> Int = { 0 },
     itemActions: @Composable RowScope.(item: E) -> Unit = { },
     itemContent: @Composable RowScope.(item: E) -> Unit,
     onTapItem: (item: E) -> Unit = {}
 ) {
-    val maxOffset by remember {
+    val bgColor by remember {
         derivedStateOf {
-            itemActionsCount(item) * holderHeight
+            customItemBgColor(item)
         }
     }
 
-    var itemOffset by remember(item) {
-        mutableStateOf(IntOffset(0, 0))
+    var showActions by remember {
+        mutableStateOf(false)
     }
 
-    Box(
-        modifier = Modifier.pointerInput(item) {
-            val maxOffsetPx = maxOffset.roundToPx()
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if (showActions)
+            Row { itemActions(item) }
 
-            detectTapGestures {
-                onTapItem(item)
-
-                itemOffset = if (itemOffset.x >= maxOffsetPx)
-                    IntOffset(x = 0, y = 0)
-                else
-                    IntOffset(x = maxOffsetPx, y = 0)
-            }
-        },
-        contentAlignment = Alignment.CenterStart
-    ) {
-        if (itemOffset.x > 0)
-            Row {
-                itemActions(item)
-            }
-
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = holderHeight)
-            .drawBehind {
-                drawRect(
-                    color = customItemBgColor(item) ?: bgColor,
-                    topLeft = itemOffset.toOffset()
-                )
-            }
-            .offset { itemOffset }
-            .pointerInput(item) {
-                forEachGesture {
-                    awaitPointerEventScope {
-                        val down = awaitFirstDown(requireUnconsumed = false)
-
-                        val maxOffsetPx = maxOffset.roundToPx()
-
-                        this.horizontalDrag(
-                            pointerId = down.id
-                        ) {
-                            val original = itemOffset
-                            val summed = original + IntOffset(
-                                x = it.positionChange().x.roundToInt(),
-                                y = 0
-                            )
-
-                            if (abs(it.positionChange().x) < 20 && summed.x < maxOffsetPx / 4)
-                                itemOffset = IntOffset(0, 0)
-                            /*else if (summed.x < maxOffsetPx / 2f)
-                                itemOffset = IntOffset(0, 0)
-                            else if (summed.x > maxOffsetPx / 2f)
-                                itemOffset = IntOffset(maxOffsetPx, 0)*/
-                            else if (summed.x in 0..maxOffsetPx)
-                                itemOffset = summed
-                        }
-
-                        if (itemOffset.x < maxOffsetPx / 2f)
-                            itemOffset = IntOffset(0, 0)
-                        else if (itemOffset.x > maxOffsetPx / 2f)
-                            itemOffset = IntOffset(maxOffsetPx, 0)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = Sizes.fleet_view_holder_height)
+                .background(bgColor ?: Color.Transparent)
+                .clickable(
+                    enabled = true,
+                    onClickLabel = null,
+                    role = null,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = {
+                        onTapItem(item)
+                        showActions = !showActions
                     }
-                }
-            },
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             itemContent(item)

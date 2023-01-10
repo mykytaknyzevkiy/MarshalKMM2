@@ -1,7 +1,5 @@
 package com.yama.marshal.screen.main
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.yama.marshal.data.model.AlertModel
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CartMessageModel
 import com.yama.marshal.data.model.CourseFullDetail
@@ -10,11 +8,9 @@ import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.CourseRepository
 import com.yama.marshal.repository.UserRepository
 import com.yama.marshal.screen.YamaViewModel
-import com.yama.marshal.screen.login.LoginViewModel
 import com.yama.marshal.screen.login.UserDataViewModel
 import com.yama.marshal.service.MarshalNotificationService
 import com.yama.marshal.tool.*
-import com.yama.marshal.tool.Strings
 import io.ktor.util.date.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

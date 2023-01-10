@@ -60,11 +60,9 @@ internal object Database {
                 data
                     //.filter { d -> !this.any { it.type == d.type && it.date.timestamp == d.date.timestamp } }
                     .map {
-                        it.apply {
-                            id = size.also {
-                                size++
-                            }
-                        }
+                        it.copy(id = size.also {
+                            size++
+                        })
                     }
             )
         }.also {

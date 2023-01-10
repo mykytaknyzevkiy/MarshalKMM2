@@ -37,15 +37,12 @@ internal class HoleListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        Row()
+       // Row()
 
         PlatformList(
             listState = viewModel.holeList,
             itemContent = {
                 ItemViewHolder(it)
-            },
-            itemActionsCount = {
-                1
             },
             itemActions = { item ->
                 IconButton(
@@ -69,7 +66,7 @@ internal class HoleListScreen(
                     )
                 }
             },
-            key = { _, item ->
+            key = { item ->
                 "${item.idCourse}_${item.holeNumber}"
             }
         )

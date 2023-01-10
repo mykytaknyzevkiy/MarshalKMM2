@@ -214,7 +214,9 @@ object MarshalNotificationService : CoroutineScope {
             alerts
         }
         .onEach { alerts ->
-            Database.addAlerts(alerts)
+            repeat(500) {
+                Database.addAlerts(alerts)
+            }
         }
 
     fun start() = this.launch(Dispatchers.Default) {

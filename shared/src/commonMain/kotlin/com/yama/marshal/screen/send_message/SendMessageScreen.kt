@@ -94,7 +94,7 @@ internal class SendMessageScreen(navigationController: NavigationController) :
                     if (currentState != SendMessageViewState.Loading)
                         viewModel.setMessage(it.message)
                 },
-                key = { _, item ->
+                key = { item ->
                     item.id
                 }
             )

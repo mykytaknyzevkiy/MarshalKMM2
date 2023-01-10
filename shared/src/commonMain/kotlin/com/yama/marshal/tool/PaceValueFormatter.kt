@@ -29,7 +29,7 @@ internal object PaceValueFormatter {
         return retVal
     }
 
-    @Composable
+    //@Composable
     fun getString(pace: Int, type: PaceType): String {
         val minutes = getMinutes(pace)
 

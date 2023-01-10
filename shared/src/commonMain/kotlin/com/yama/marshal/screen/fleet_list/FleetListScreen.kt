@@ -13,10 +13,7 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import com.yama.marshal.data.model.CartFullDetail
@@ -55,17 +52,6 @@ internal class FleetListScreen(
             listState = viewModel.fleetList,
             itemContent = {
                 ItemViewHolder(it)
-            },
-            itemActionsCount = { item ->
-                var width = 0
-
-                if (item.currPosLat != null && item.currPosLon != null && item.currPosHole != null && item.currPosHole > 0) width += 1
-
-                width += 1
-
-                if (item.isMessagingAvailable) width += 1
-
-                width
             },
             itemActions = { item ->
                 if (item.currPosLat != null
@@ -144,6 +130,9 @@ internal class FleetListScreen(
                 if (it.isCartInShutdownMode) YamaColor.cart_shut_down_bg
                 else if (it.isFlag) YamaColor.item_cart_flag_container_bg
                 else null
+            },
+            key = {
+                it.id
             }
         )
     }
@@ -172,38 +161,54 @@ internal class FleetListScreen(
         MarshalItemDivider()
 
         MarshalItemText(
-            text = if ((item.state != CartFullDetail.State.inUse || item.isOnClubHouse)
-                && item.returnAreaSts != 0) {
-                if (item.isOnClubHouse) Strings.cart_not_in_use_ended_round
-                else Strings.cart_not_in_use
-            }
-            else item.startTime.let {
-                it?.format("h:mm a") ?: Strings.cart_not_in_use
-            },
+            text = remember {
+                derivedStateOf {
+                    if ((item.state != CartFullDetail.State.inUse || item.isOnClubHouse)
+                        && item.returnAreaSts != 0
+                    ) {
+                        if (item.isOnClubHouse) Strings.cart_not_in_use_ended_round
+                        else Strings.cart_not_in_use
+                    } else item.startTime.let {
+                        it?.format("h:mm a") ?: Strings.cart_not_in_use
+                    }
+                }
+            }.value,
             weight = SortType.SortFleet.START_TIME.weight
         )
 
         MarshalItemDivider()
 
         MarshalItemText(
-            text = if (item.startTime == null || item.totalNetPace == null) "---"
-            else PaceValueFormatter.getString(
-                item.totalNetPace, PaceValueFormatter.PaceType.Short
-            ),
+            text = remember {
+                derivedStateOf {
+                    if (item.startTime == null || item.totalNetPace == null) "---"
+                    else PaceValueFormatter.getString(
+                        item.totalNetPace, PaceValueFormatter.PaceType.Short
+                    )
+                }
+            }.value,
             weight = SortType.SortFleet.PLACE_OF_PLAY.weight,
-            color = PaceValueFormatter.getColor(
-                item.totalNetPace ?: 0
-            )
+            color = remember {
+                derivedStateOf {
+                    PaceValueFormatter.getColor(
+                        item.totalNetPace ?: 0
+                    )
+                }
+            }.value
         )
 
         MarshalItemDivider()
 
         MarshalItemText(
-            text = item.returnAreaSts.let { returnAreaSts ->
-                if (returnAreaSts == 0) if (item.startTime == null || item.currPosHole == null || item.currPosHole == -1) "---" else item.currPosHole.toString()
-                else if (item.isOnClubHouse) Strings.clubhouse
-                else "---"
-            },
+            text = remember {
+                derivedStateOf {
+                    item.returnAreaSts.let { returnAreaSts ->
+                        if (returnAreaSts == 0) if (item.startTime == null || item.currPosHole == null || item.currPosHole == -1) "---" else item.currPosHole.toString()
+                        else if (item.isOnClubHouse) Strings.clubhouse
+                        else "---"
+                    }
+                }
+            }.value,
             weight = SortType.SortFleet.HOLE.weight
         )
     }
