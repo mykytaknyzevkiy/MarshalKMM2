@@ -32,7 +32,7 @@ internal class AlertsScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column {
-        val listItem = remember {
+        val listItem = remember(viewModel) {
             viewModel.alertList
         }.collectAsState(emptyList())
 

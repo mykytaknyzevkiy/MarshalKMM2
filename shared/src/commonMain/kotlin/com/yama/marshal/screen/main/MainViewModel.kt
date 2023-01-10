@@ -143,6 +143,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
         .map {
             it.reversed()
         }
+        .flowOn(Dispatchers.Default)
 
     fun updateSort(type: SortType.SortFleet) {
         _currentFleetSort.value = Pair(

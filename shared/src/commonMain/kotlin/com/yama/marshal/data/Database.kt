@@ -45,7 +45,28 @@ internal object Database {
     @Synchronized
     fun addAlert(data: AlertEntity) {
         _alerts.value.toMutableList().apply {
-            add(data.copy(id = this.size, date = GMTDate(timestamp = data.date.timestamp + this.size)))
+            add(data.copy(id = this.size, date = GMTDate(timestamp = data.date.timestamp)))
+        }.also {
+            _alerts.value = it
+        }
+    }
+
+    @Synchronized
+    fun addAlerts(data: List<AlertEntity>) {
+        _alerts.value.toMutableList().apply {
+            var size = this.size
+
+            addAll(
+                data
+                    //.filter { d -> !this.any { it.type == d.type && it.date.timestamp == d.date.timestamp } }
+                    .map {
+                        it.apply {
+                            id = size.also {
+                                size++
+                            }
+                        }
+                    }
+            )
         }.also {
             _alerts.value = it
         }

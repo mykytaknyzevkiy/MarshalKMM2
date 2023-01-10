@@ -29,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
+import co.touchlab.kermit.Logger
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
 import com.yama.marshal.ui.theme.Sizes

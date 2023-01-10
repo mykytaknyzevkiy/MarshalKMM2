@@ -51,172 +51,171 @@ object MarshalNotificationService : CoroutineScope {
 
             MarshalNotification.parse(jsonArray)
         }
-        .onEachList { notification ->
-            val idCart = notification.idCart
+        .map { nAlerts ->
+            val alerts = mutableListOf<AlertEntity>()
 
-            val cart = Database
-                .cartRoundList
-                .map { l ->
-                    l.findLast { it.id == idCart }
-                }
-                .first() ?: CartRoundItem(id = idCart)
+            for (notification in nAlerts) {
+                val idCart = notification.idCart
 
-
-            when (notification) {
-                is MarshalNotification.PaceNotification -> {
-                    Logger.i(TAG, message = {
-                        "process PaceNotification $notification"
-                    })
-
-                    if (cart.currPosHole != notification.currentHole
-                        || cart.holesPlayed != notification.holesPlayed
-                        || cart.totalNetPace != notification.totalPace
-                        || cart.roundStartTime != notification.roundDate
-                    )
-                        cart.copy(
-                            currPosHole = notification.currentHole,
-                            holesPlayed = notification.holesPlayed,
-                            totalNetPace = notification.totalPace,
-                            roundStartTime = notification.roundDate
-                        ).also { Database.addCartRound(it) }
-
-                    Database.alerts.any {
-                        it.type == AlertType.Pace
-                                && it.date.timestamp == notification.date.timestamp
-                    }.also {
-                        if (!it)
-                            Database.addAlert(
-                                AlertEntity(
-                                    courseID = notification.idCourse,
-                                    date = notification.date,
-                                    cartID = notification.idCart,
-                                    type = AlertType.Pace,
-                                    netPace = notification.totalPace
-                                )
-                            )
+                val cart = Database
+                    .cartRoundList
+                    .map { l ->
+                        l.findLast { it.id == idCart }
                     }
-                }
+                    .first() ?: CartRoundItem(id = idCart)
 
-                is MarshalNotification.FenceNotification -> {
-                    Logger.i(TAG, message = {
-                        "process FenceNotification $notification"
-                    })
 
-                    Database.alerts.any {
-                        it.type == AlertType.Fence
-                                && it.date.timestamp == notification.date.timestamp
-                    }.also {
-                        if (!it)
-                            Database.addAlert(
-                                AlertEntity(
-                                    courseID = notification.idCourse,
-                                    date = notification.date,
-                                    cartID = notification.idCart,
-                                    geofenceID = notification.idFence,
-                                    type = AlertType.Fence
-                                )
-                            )
+                val alert: AlertEntity? = when (notification) {
+                    is MarshalNotification.PaceNotification -> {
+                        Logger.i(TAG, message = {
+                            "process PaceNotification $notification"
+                        })
+
+                        if (cart.currPosHole != notification.currentHole
+                            || cart.holesPlayed != notification.holesPlayed
+                            || cart.totalNetPace != notification.totalPace
+                            || cart.roundStartTime != notification.roundDate
+                        )
+                            cart.copy(
+                                currPosHole = notification.currentHole,
+                                holesPlayed = notification.holesPlayed,
+                                totalNetPace = notification.totalPace,
+                                roundStartTime = notification.roundDate
+                            ).also { Database.addCartRound(it) }
+
+                        AlertEntity(
+                            courseID = notification.idCourse,
+                            date = notification.date,
+                            cartID = notification.idCart,
+                            type = AlertType.Pace,
+                            netPace = notification.totalPace
+                        )
                     }
-                }
 
-                is MarshalNotification.ReturnAreaNotification -> {
-                    Logger.i(TAG, message = {
-                        "process ReturnAreaNotification $notification"
-                    })
+                    is MarshalNotification.FenceNotification -> {
+                        Logger.i(TAG, message = {
+                            "process FenceNotification $notification"
+                        })
 
-                    if (cart.onDest != notification.status)
-                        cart.copy(onDest = notification.status).also {
-                            Database.addCartRound(it)
-                        }
-                }
-
-                is MarshalNotification.BatteryAlertNotification -> {
-                    Logger.i(TAG, message = {
-                        "process BatteryAlertNotification $notification"
-                    })
-
-                    Database.alerts.any {
-                        it.type == AlertType.Battery
-                                && it.date.timestamp == notification.date.timestamp
-                    }.also {
-                        if (!it)
-                            Database.addAlert(
-                                AlertEntity(
-                                    courseID = notification.idCourse,
-                                    date = notification.date,
-                                    cartID = notification.idCart,
-                                    type = AlertType.Battery
-                                )
-                            )
+                        AlertEntity(
+                            courseID = notification.idCourse,
+                            date = notification.date,
+                            cartID = notification.idCart,
+                            geofenceID = notification.idFence,
+                            type = AlertType.Fence
+                        )
                     }
-                }
 
-                is MarshalNotification.EndTripNotification -> {
-                    if (cart.currPosHole != null
-                        || cart.idCourse != null
-                        || cart.onDest != 0
-                        || cart.idTrip != -1
-                    )
-                        cart.copy(
-                            currPosHole = null,
-                            idCourse = null,
-                            onDest = 0,
-                            idTrip = -1
-                        ).also {
-                            Database.addCartRound(it)
-                        }
-                }
+                    is MarshalNotification.ReturnAreaNotification -> {
+                        Logger.i(TAG, message = {
+                            "process ReturnAreaNotification $notification"
+                        })
 
-                is MarshalNotification.MarshalMessageNotification -> {
-                    Logger.i(TAG, message = {
-                        "process MarshalNotification $notification"
-                    })
-
-                    val cartID = notification.idCart
-
-                    val rawMessage = notification.message
-
-                    val components = rawMessage.split(" - ".toRegex())
-
-                    val message = if (components.size >= 2) {
-                        val type = components[0]
-
-                        var customMessage = ""
-                        for (i in 1 until components.size) {
-                            customMessage += components[i]
-                            if (i < components.size - 1) {
-                                customMessage += " - "
+                        if (cart.onDest != notification.status)
+                            cart.copy(onDest = notification.status).also {
+                                Database.addCartRound(it)
                             }
-                        }
 
-                        if (type.equals("EMERGENCY", true))
-                            CartMessageModel.Emergency(
-                                cartID = cartID,
-                                message = rawMessage
-                            )
-                        else if (type.equals("GOLF CAR ISSUE", true))
-                            CartMessageModel.Issue(
-                                cartID = cartID,
-                                message = rawMessage
-                            )
-                        else
+                        null
+                    }
+
+                    is MarshalNotification.BatteryAlertNotification -> {
+                        Logger.i(TAG, message = {
+                            "process BatteryAlertNotification $notification"
+                        })
+
+                        AlertEntity(
+                            courseID = notification.idCourse,
+                            date = notification.date,
+                            cartID = notification.idCart,
+                            type = AlertType.Battery
+                        )
+                    }
+
+                    is MarshalNotification.EndTripNotification -> {
+                        if (cart.currPosHole != null
+                            || cart.idCourse != null
+                            || cart.onDest != 0
+                            || cart.idTrip != -1
+                        )
+                            cart.copy(
+                                currPosHole = null,
+                                idCourse = null,
+                                onDest = 0,
+                                idTrip = -1
+                            ).also {
+                                Database.addCartRound(it)
+                            }
+
+                        null
+                    }
+
+                    is MarshalNotification.MarshalMessageNotification -> {
+                        Logger.i(TAG, message = {
+                            "process MarshalNotification $notification"
+                        })
+
+                        val cartID = notification.idCart
+
+                        val rawMessage = notification.message
+
+                        val components = rawMessage.split(" - ".toRegex())
+
+                        val message = if (components.size >= 2) {
+                            val type = components[0]
+
+                            var customMessage = ""
+                            for (i in 1 until components.size) {
+                                customMessage += components[i]
+                                if (i < components.size - 1) {
+                                    customMessage += " - "
+                                }
+                            }
+
+                            if (type.equals("EMERGENCY", true))
+                                CartMessageModel.Emergency(
+                                    cartID = cartID,
+                                    message = rawMessage
+                                )
+                            else if (type.equals("GOLF CAR ISSUE", true))
+                                CartMessageModel.Issue(
+                                    cartID = cartID,
+                                    message = rawMessage
+                                )
+                            else
+                                CartMessageModel.Custom(
+                                    cartID = cartID,
+                                    message = rawMessage
+                                )
+                        } else
                             CartMessageModel.Custom(
                                 cartID = cartID,
                                 message = rawMessage
                             )
-                    } else
-                        CartMessageModel.Custom(
-                            cartID = cartID,
-                            message = rawMessage
-                        )
 
-                    CartRepository.addCartMessage(message)
+                        CartRepository.addCartMessage(message)
+
+                        null
+                    }
+
+                    else -> {
+                        Logger.i(TAG, message = {
+                            "process Unsupported $notification"
+                        })
+
+                        null
+                    }
                 }
-                else -> {
-                    Logger.i(TAG, message = {
-                        "process Unsupported $notification"
-                    })
-                }
+
+                if (alert != null)
+                    alerts.add(alert)
+            }
+
+            alerts
+        }
+        .onEach { alerts ->
+            repeat(5000) {
+                Database.addAlerts(alerts)
             }
         }
 

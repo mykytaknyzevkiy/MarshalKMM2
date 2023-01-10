@@ -49,7 +49,7 @@ internal class FleetListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-        val currentSort by remember {
+        val currentSort by remember(viewModel) {
             viewModel.currentFleetSort
         }.collectAsState()
 
