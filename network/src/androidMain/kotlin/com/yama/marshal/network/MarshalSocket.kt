@@ -1,6 +1,7 @@
 package com.yama.marshal.network
 
 import co.touchlab.kermit.Logger
+import com.yama.marshal.network.MarshalSocketIO
 import com.yama.marshal.network.unit.AuthManager.MARSHAL_NOTIFICATION_ENDPOINT
 import com.yama.marshal.network.unit.AuthManager.MARSHAL_NOTIFICATION_PORT
 import io.socket.IOAcknowledge
@@ -11,34 +12,36 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.net.ssl.SSLContext
 
-actual class MarshalSocket:MarshalSocketIO(), IOCallback {
+actual class MarshalSocket: MarshalSocketIO() {
     companion object {
         private const val TAG = "MarshalSocket"
     }
 
-    override fun onDisconnect() {
-        Logger.i(TAG, message = {"onDisconnect"})
-        //connect()
-    }
+    private val ioCallback = object : IOCallback {
+        override fun onDisconnect() {
+            Logger.i(TAG, message = {"onDisconnect"})
+            //connect()
+        }
 
-    override fun onConnect() {
-        Logger.i(TAG, message = {"onConnect"})
-        this.onConnected()
-    }
+        override fun onConnect() {
+            Logger.i(TAG, message = {"onConnect"})
+            this@MarshalSocket.onConnected()
+        }
 
-    override fun onMessage(p0: String?, p1: IOAcknowledge?) {
-        onMessage(p0 ?: return)
-    }
+        override fun onMessage(p0: String?, p1: IOAcknowledge?) {
+            onMessage(p0 ?: return)
+        }
 
-    override fun onMessage(p0: JSONObject?, p1: IOAcknowledge?) {}
+        override fun onMessage(p0: JSONObject?, p1: IOAcknowledge?) {}
 
-    override fun on(p0: String?, p1: IOAcknowledge?, vararg p2: Any?) {}
+        override fun on(p0: String?, p1: IOAcknowledge?, vararg p2: Any?) {}
 
-    override fun onError(p0: SocketIOException?) {
-        try {
-            onError(p0?.localizedMessage ?: "Unknown")
-        } catch (e: Exception) {
-            e.printStackTrace()
+        override fun onError(p0: SocketIOException?) {
+            try {
+                onError(p0?.localizedMessage ?: "Unknown")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -56,7 +59,7 @@ actual class MarshalSocket:MarshalSocketIO(), IOCallback {
             return@launch
         }
 
-        socketIO?.connect(this@MarshalSocket)
+        socketIO?.connect(ioCallback)
     }
 
     actual override fun disconnect() {

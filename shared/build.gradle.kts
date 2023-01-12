@@ -6,7 +6,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
-    kotlin("plugin.serialization").version("1.7.20")
+    kotlin("plugin.serialization")
     kotlin("native.cocoapods")
 }
 
@@ -78,8 +78,6 @@ kotlin {
             )
             this.freeCompilerArgs += "-Xdisable-phases=VerifyBitcode"
         }
-
-        pod(name = "Ios", path = File(projectDir, "libs/Ios"))
     }
 
     sourceSets {
@@ -92,12 +90,15 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.ui)
+
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-websockets:$ktorVersion")
                 implementation("com.russhwolf:multiplatform-settings:1.0.0-RC")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
                 implementation("co.touchlab:kermit:1.2.2")
                 implementation("com.appmattus.crypto:cryptohash:0.10.1")
+
+                implementation(project(":network"))
             }
         }
         val commonTest by getting {

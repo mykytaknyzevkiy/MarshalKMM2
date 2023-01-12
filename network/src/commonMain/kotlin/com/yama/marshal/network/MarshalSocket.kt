@@ -2,15 +2,16 @@ package com.yama.marshal.network
 
 import co.touchlab.kermit.Logger
 import com.appmattus.crypto.Algorithm
+import com.yama.marshal.network.model.request.MarshalNotification
 import com.yama.marshal.network.unit.AuthManager
-import com.yama.marshal.tool.prefs
-import com.yama.marshal.tool.secretKey
-import com.yama.marshal.tool.userName
+import com.yama.marshal.network.unit.Base64
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
@@ -35,8 +36,24 @@ abstract class MarshalSocketIO: CoroutineScope {
     }
 
     private val _onMessage = MutableSharedFlow<String>()
-    val onMessage: Flow<String>
+    val onMessage: Flow<List<MarshalNotification>>
         get() = _onMessage
+            .map {
+                val responseJson = try {
+                    Json.parseToJsonElement(it)
+                } catch (e: Exception) {
+                    Logger.e(TAG, message = { "Parse responseJson to jsonElement" }, throwable = e)
+                    throw Exception("Parse json")
+                }
+
+                val jsonArray = try {
+                    responseJson.jsonArray
+                } catch (e: Exception) {
+                    throw Exception("Get json array")
+                }
+
+                MarshalNotification.parse(jsonArray)
+            }
 
     protected fun onError(message: String) {
         Logger.e(TAG, message = { "onError $message" })
@@ -92,8 +109,8 @@ abstract class MarshalSocketIO: CoroutineScope {
     }
 
     private fun login() = launch {
-        val userName = prefs.userName
-        val userSecretKey = prefs.secretKey
+        val userName = AuthManager.userName
+        val userSecretKey = AuthManager.userSecret
 
         if (userName == null || userSecretKey == null) {
             onError("userName is null")
@@ -108,7 +125,7 @@ abstract class MarshalSocketIO: CoroutineScope {
             .createHmac(key = (AuthManager.ApplicationSecretKey + userSecretKey).toByteArray(charset = charSet))
             .digest(userName.toByteArray(charSet))
             .let {
-                io.ktor.utils.io.core.String(com.yama.marshal.tool.Base64.encoderPadding.encode(it))
+                io.ktor.utils.io.core.String(Base64.encoderPadding.encode(it))
             }
             .replace('+', '-').replace('/', '_')
 

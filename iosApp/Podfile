@@ -5,5 +5,4 @@ target 'iosApp' do
   use_frameworks!
   platform :ios, '14.1'
   pod 'shared', :path => '../shared'
-  pod 'Ios', :path => '/Users/nek_zabirov/Documents/MarshallKMM/shared/libs/Ios'
 end

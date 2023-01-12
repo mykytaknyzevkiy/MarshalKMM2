@@ -35,22 +35,6 @@ object MarshalNotificationService : CoroutineScope {
         .catch {
             Logger.e(TAG, throwable = it)
         }
-        .map {
-            val responseJson = try {
-                Json.parseToJsonElement(it)
-            } catch (e: Exception) {
-                Logger.e(TAG, message = { "Parse responseJson to jsonElement" }, throwable = e)
-                throw Exception("Parse json")
-            }
-
-            val jsonArray = try {
-                responseJson.jsonArray
-            } catch (e: Exception) {
-                throw Exception("Get json array")
-            }
-
-            MarshalNotification.parse(jsonArray)
-        }
         .map { nAlerts ->
             val alerts = mutableListOf<AlertEntity>()
 

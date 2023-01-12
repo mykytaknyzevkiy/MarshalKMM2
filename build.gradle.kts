@@ -3,6 +3,7 @@ plugins {
     kotlin("multiplatform").version("1.7.20").apply(false)
     id("org.jetbrains.compose").version("1.3.0-beta04-dev903").apply(false)
     kotlin("native.cocoapods").version("1.7.20").apply(false)
+    kotlin("plugin.serialization").version("1.7.20").apply(false)
 }
 
 tasks.register("clean", Delete::class) {

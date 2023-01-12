@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import com.yama.marshal.network.model.request.*
 import com.yama.marshal.network.model.response.*
 import com.yama.marshal.network.unit.Action
+import com.yama.marshal.network.unit.AuthManager
 import com.yama.marshal.network.unit.YamaNetworkService
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
@@ -23,7 +24,10 @@ class DNAService : YamaNetworkService("https://api-dna.igolf.com/rest/action/") 
             if (it == null)
                 throw Exception("Cannot make request")
             else
-                return it
+                return it.also {
+                    AuthManager.userName = body.userName
+                    AuthManager.userSecret = it.secretKey
+                }
         }
     }
 

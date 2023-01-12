@@ -1,6 +1,6 @@
 package com.yama.marshal.network.model.request
 
-import com.yama.marshal.tool.parseDate
+import com.yama.marshal.network.unit.parseDate
 import io.ktor.util.date.*
 import kotlinx.serialization.json.*
 

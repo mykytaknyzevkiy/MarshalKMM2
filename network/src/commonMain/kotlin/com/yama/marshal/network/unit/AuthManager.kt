@@ -1,7 +1,6 @@
 package com.yama.marshal.network.unit
 
 import com.appmattus.crypto.Algorithm
-import com.yama.marshal.tool.*
 import io.ktor.util.date.*
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
@@ -12,6 +11,7 @@ object AuthManager {
     private const val SignatureVersion = "2.0"
     private const val SignatureMethod = "HmacSHA256"
     private const val ResponseFormat = "JSON"
+
     const val ApplicationSecretKey = "3CA0LPbu3FlXRin0UCH05rM/ZzvCkK"
     private const val timeStampDateFormatPattern = "yyMMddHHmmssZZZZ"
     const val timeStampDateFormatDataPattern = "yyMMddHHmmss"
@@ -19,6 +19,22 @@ object AuthManager {
 
     const val MARSHAL_NOTIFICATION_ENDPOINT = "pace-push.syncwise360.com"
     const val MARSHAL_NOTIFICATION_PORT = 9001
+
+    var userName: String? = null
+        set(value) {
+            field = if (value != null)
+                value
+            else
+                null
+        }
+
+    var userSecret: String? = null
+        set(value) {
+            field = if (value != null)
+                value
+            else
+                null
+        }
 
     fun getUrlForAction(action: Action): String {
         val urlBuilder = StringBuilder()
@@ -31,7 +47,7 @@ object AuthManager {
             .append(slash)
 
         if (action.isPrivate) {
-            urlBuilder.append(prefs.userName)
+            urlBuilder.append(userName)
             urlBuilder.append(slash)
         }
 
@@ -50,7 +66,7 @@ object AuthManager {
 
         val signature = makeSignature(
             urlBuilder.toString() + urlEnd.toString(),
-            if (action.isPrivate) ApplicationSecretKey + prefs.secretKey else ApplicationSecretKey
+            if (action.isPrivate) ApplicationSecretKey + userSecret else ApplicationSecretKey
         )
 
         urlBuilder
