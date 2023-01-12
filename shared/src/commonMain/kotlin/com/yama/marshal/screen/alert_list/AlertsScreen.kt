@@ -31,12 +31,8 @@ internal class AlertsScreen(
 
     @Composable
     override fun content(args: List<NavArg>) {
-        val list = remember(viewModel) {
-            viewModel.alertList
-        }.collect()
-
         PlatformList(
-            listItem = list,
+            listYama = viewModel.alertList,
             itemContent = {
                 ItemViewHolder(it)
             },

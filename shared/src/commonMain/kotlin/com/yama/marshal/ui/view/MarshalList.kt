@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
+import com.yama.marshal.tool.YamaList
 import com.yama.marshal.ui.theme.Sizes
 import com.yama.marshal.ui.theme.YamaColor
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun <E> PlatformList(
-    listItem: List<E>,
+    listYama: YamaList<E>,
     key: ((item: E) -> Any)? = null,
     customItemBgColor: (item: E) -> Color? = { null },
     itemActions: @Composable RowScope.(item: E) -> Unit = { },
@@ -51,7 +52,9 @@ internal fun <E> PlatformList(
     val lazyScroll: LazyListState = rememberLazyListState()
 
     Box {
-        if (mPlatform == MPlatform.ANDROID)
+        if (mPlatform == MPlatform.ANDROID) {
+            val listItem = listYama.collect(lazyScroll)
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -90,7 +93,10 @@ internal fun <E> PlatformList(
                     )
                 }
             }
+        }
         else {
+            val listItem = listYama.collect(scrollConnection)
+
             val holderHeight = Sizes.fleet_view_holder_height
 
             Column(modifier = Modifier

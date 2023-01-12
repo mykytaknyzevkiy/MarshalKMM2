@@ -32,6 +32,8 @@ import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalItemDivider
 import com.yama.marshal.ui.view.MarshalItemText
 import com.yama.marshal.ui.view.PlatformList
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class FleetListScreen(
     navigationController: NavigationController, override val viewModel: MainViewModel
@@ -48,10 +50,10 @@ internal class FleetListScreen(
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
         Row()
 
+        val yamaList = viewModel.fleetList
+
         PlatformList(
-            listItem = remember(viewModel) {
-                viewModel.fleetList
-            }.collect(),
+            listYama = yamaList,
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -137,6 +139,15 @@ internal class FleetListScreen(
                 it.id
             }
         )
+
+        LaunchedEffect(Unit) {
+            viewModel
+                .currentFleetSort
+                .onEach {
+                    yamaList.scrollTo(0)
+                }
+                .launchIn(this)
+        }
     }
 
     @Composable

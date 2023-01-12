@@ -22,6 +22,8 @@ import com.yama.marshal.ui.theme.YamaColor
 import com.yama.marshal.ui.view.MarshalItemDivider
 import com.yama.marshal.ui.view.MarshalItemText
 import com.yama.marshal.ui.view.PlatformList
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class HoleListScreen(
     navigationController: NavigationController,
@@ -39,10 +41,10 @@ internal class HoleListScreen(
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
         Row()
 
+        val yamaList = viewModel.holeList
+
         PlatformList(
-            listItem = remember(viewModel) {
-                viewModel.holeList
-            }.collect(),
+            listYama = yamaList,
             itemContent = {
                 ItemViewHolder(it)
             },
@@ -72,6 +74,13 @@ internal class HoleListScreen(
                 "${item.idCourse}_${item.holeNumber}"
             }
         )
+
+        LaunchedEffect(Unit) {
+            viewModel.currentHoleSort
+                .onEach {
+                    yamaList.scrollTo(0)
+                }.launchIn(this)
+        }
     }
 
     @Composable
