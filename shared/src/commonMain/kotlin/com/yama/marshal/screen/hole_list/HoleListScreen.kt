@@ -37,10 +37,12 @@ internal class HoleListScreen(
 
     @Composable
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
-       // Row()
+        Row()
 
         PlatformList(
-            listState = viewModel.holeList,
+            listItem = remember(viewModel) {
+                viewModel.holeList
+            }.collect(),
             itemContent = {
                 ItemViewHolder(it)
             },

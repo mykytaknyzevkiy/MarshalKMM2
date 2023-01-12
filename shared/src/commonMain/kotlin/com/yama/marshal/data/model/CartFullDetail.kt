@@ -61,25 +61,4 @@ data class CartFullDetail(
 
     val isShutdownEnable: Boolean
         get() = controllerAccess > 0
-
-    fun isContentEqual(item: CartItem) =
-        this.cartName == item.cartName ||
-                this.hasControlAccess == (item.controllerAccess == 1) ||
-                this.idDeviceModel == item.idDeviceModel ||
-                this.controllerAccess == item.controllerAccess ||
-                this.lastActivity == item.lastActivity
-
-    fun isContentEqual(cartRound: CartRoundItem) =
-        course?.id == cartRound.idCourse &&
-                startTime == cartRound.roundStartTime &&
-                currPosTime == cartRound.currPosTime &&
-                currPosLon == cartRound.currPosLon &&
-                currPosLat == cartRound.currPosLat &&
-                currPosHole == cartRound.currPosHole &&
-                totalNetPace == cartRound.totalNetPace &&
-                totalElapsedTime == cartRound.totalElapsedTime &&
-                returnAreaSts == (cartRound.onDest ?: 0) &&
-                holesPlayed == (cartRound.holesPlayed ?: 0) &&
-                idTrip == (cartRound.idTrip ?: -1) &&
-                assetControlOverride == cartRound.assetControlOverride
 }

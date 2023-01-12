@@ -23,8 +23,10 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
@@ -48,43 +50,82 @@ internal fun <E> PlatformList(
     val scrollConnection: ScrollState = rememberScrollState()
     val lazyScroll: LazyListState = rememberLazyListState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .drawWithContent {
-                var bgItemColor =
-                    if (lazyScroll.firstVisibleItemIndex % 2 == 0) bgPositive else bgNegative
+    Box {
+        if (mPlatform == MPlatform.ANDROID)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .drawBehind {
+                        var bgItemColor =
+                            if (lazyScroll.firstVisibleItemIndex % 2 == 0) bgPositive else bgNegative
 
-                lazyScroll.layoutInfo.visibleItemsInfo.forEachIndexed { index, lazyListItemInfo ->
-                    drawRect(
-                        color = bgItemColor,
-                        topLeft = Offset(
-                            x = 0f,
-                            y = index * lazyListItemInfo.size.toFloat() - if (index > 0) lazyScroll.firstVisibleItemScrollOffset else 0
-                        ),
-                        size = Size(width = this.size.width, lazyListItemInfo.size.toFloat())
+                        lazyScroll.layoutInfo.visibleItemsInfo.forEachIndexed { index, lazyListItemInfo ->
+                            drawRect(
+                                color = bgItemColor,
+                                topLeft = Offset(
+                                    x = 0f,
+                                    y = index * lazyListItemInfo.size.toFloat() - if (index > 0) lazyScroll.firstVisibleItemScrollOffset else 0
+                                ),
+                                size = Size(
+                                    width = this.size.width,
+                                    lazyListItemInfo.size.toFloat()
+                                )
+                            )
+
+                            bgItemColor = if (bgItemColor == bgPositive)
+                                bgNegative
+                            else
+                                bgPositive
+                        }
+                    },
+                state = lazyScroll
+            ) {
+                items(listItem, key = key) { item ->
+                    MarshallListItemLogic(
+                        item,
+                        customItemBgColor,
+                        itemActions,
+                        itemContent,
+                        onTapItem
                     )
-
-                    bgItemColor = if (bgItemColor == bgPositive)
-                        bgNegative
-                    else
-                        bgPositive
                 }
+            }
+        else {
+            val holderHeight = Sizes.fleet_view_holder_height
 
-                if (lazyScroll.layoutInfo.visibleItemsInfo.size >= 7)
-                    drawContent()
-            },
-        state = lazyScroll
-    ) {
-        items(listItem, key = key) { item ->
-            MarshallListItemLogic(
-                item,
-                customItemBgColor,
-                itemActions,
-                itemContent,
-                onTapItem
-            )
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollConnection)
+                .drawBehind {
+                    repeat(listItem.size) { index ->
+                        drawRect(
+                            color = if (index % 2 == 0) bgPositive else bgNegative,
+                            topLeft = Offset(
+                                x = 0f,
+                                y = index * holderHeight.toPx()
+                            ),
+                            size = Size(
+                                width = this.size.width,
+                                holderHeight.toPx()
+                            )
+                        )
+                    }
+                }
+            ) {
+                listItem.forEach { item ->
+                    MarshallListItemLogic(
+                        item,
+                        customItemBgColor,
+                        itemActions,
+                        itemContent,
+                        onTapItem
+                    )
+                }
+            }
         }
+
+
+        scrollTopBtn(scrollConnection, lazyScroll)
     }
 }
 
@@ -261,7 +302,7 @@ private fun <E> MarshallListItemLogic(
     itemContent: @Composable RowScope.(item: E) -> Unit,
     onTapItem: (item: E) -> Unit = {}
 ) {
-    val bgColor by remember {
+    val bgColor by remember(item) {
         derivedStateOf {
             customItemBgColor(item)
         }
@@ -271,15 +312,30 @@ private fun <E> MarshallListItemLogic(
         mutableStateOf(false)
     }
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Box(
+        contentAlignment = Alignment.CenterStart
+    ) {
+        var actionsWidth by remember {
+            mutableStateOf(0)
+        }
+
         if (showActions)
-            Row { itemActions(item) }
+            Row(modifier = Modifier.onSizeChanged {
+                actionsWidth = it.width
+            }) { itemActions(item) }
+        else
+            actionsWidth = 0
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = Sizes.fleet_view_holder_height)
+                .let {
+                    if (mPlatform == MPlatform.ANDROID)
+                        it.defaultMinSize(minHeight = Sizes.fleet_view_holder_height)
+                    else
+                        it.height(Sizes.fleet_view_holder_height)
+                }
                 .background(bgColor ?: Color.Transparent)
+                .offset { IntOffset(x = actionsWidth, y = 0) }
                 .clickable(
                     enabled = true,
                     onClickLabel = null,
@@ -322,7 +378,7 @@ internal fun RowScope.MarshalItemText(
                     drawContent()
             },
         color = color,
-        softWrap = text.contains(" "),
+        softWrap = if (mPlatform == MPlatform.ANDROID) text.contains(" ") else false,
         style = textRealStyle,
         onTextLayout = {
             if (it.didOverflowWidth)

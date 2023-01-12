@@ -49,7 +49,9 @@ internal class FleetListScreen(
         Row()
 
         PlatformList(
-            listState = viewModel.fleetList,
+            listItem = remember(viewModel) {
+                viewModel.fleetList
+            }.collect(),
             itemContent = {
                 ItemViewHolder(it)
             },
