@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import com.yama.marshal.MPlatform
 import com.yama.marshal.mPlatform
 import com.yama.marshal.tool.YamaList
@@ -43,95 +45,100 @@ internal fun <E> PlatformList(
     customItemBgColor: (item: E) -> Color? = { null },
     itemActions: @Composable RowScope.(item: E) -> Unit = { },
     itemContent: @Composable RowScope.(item: E) -> Unit,
-    onTapItem: (item: E) -> Unit = {}
+    onTapItem: (item: E) -> Unit = {},
 ) {
-    val bgPositive: Color = YamaColor.itemColor(0)
-    val bgNegative: Color = YamaColor.itemColor(1)
+    Logger.d("PlatformList", message = {
+        "on compose"
+    })
 
     val scrollConnection: ScrollState = rememberScrollState()
     val lazyScroll: LazyListState = rememberLazyListState()
 
-    Box {
+    listYama.scrollConnection = scrollConnection
+    listYama.lazyScroll = lazyScroll
+
+    val listItem = remember(listYama) {
+        listYama.list
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
         if (mPlatform == MPlatform.ANDROID) {
-            val listItem = listYama.collect(lazyScroll)
+            val bgPositive: Color = YamaColor.itemColor(0)
+            val bgNegative: Color = YamaColor.itemColor(1)
 
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .drawBehind {
-                        var bgItemColor =
-                            if (lazyScroll.firstVisibleItemIndex % 2 == 0) bgPositive else bgNegative
+                modifier = Modifier.drawBehind {
+                    var bgItemColor =
+                        if (lazyScroll.firstVisibleItemIndex % 2 == 0) bgPositive else bgNegative
 
-                        lazyScroll.layoutInfo.visibleItemsInfo.forEachIndexed { index, lazyListItemInfo ->
-                            drawRect(
-                                color = bgItemColor,
-                                topLeft = Offset(
-                                    x = 0f,
-                                    y = index * lazyListItemInfo.size.toFloat() - if (index > 0) lazyScroll.firstVisibleItemScrollOffset else 0
-                                ),
-                                size = Size(
-                                    width = this.size.width,
-                                    lazyListItemInfo.size.toFloat()
-                                )
+                    lazyScroll.layoutInfo.visibleItemsInfo.forEachIndexed { index, lazyListItemInfo ->
+                        drawRect(
+                            color = bgItemColor,
+                            topLeft = Offset(
+                                x = 0f,
+                                y = index * lazyListItemInfo.size.toFloat() - if (index > 0) lazyScroll.firstVisibleItemScrollOffset else 0
+                            ),
+                            size = Size(
+                                width = this.size.width,
+                                lazyListItemInfo.size.toFloat()
                             )
+                        )
 
-                            bgItemColor = if (bgItemColor == bgPositive)
-                                bgNegative
-                            else
-                                bgPositive
-                        }
-                    },
+                        bgItemColor = if (bgItemColor == bgPositive)
+                            bgNegative
+                        else
+                            bgPositive
+                    }
+                },
                 state = lazyScroll
             ) {
                 items(listItem, key = key) { item ->
                     MarshallListItemLogic(
-                        item,
-                        customItemBgColor,
-                        itemActions,
-                        itemContent,
-                        onTapItem
+                        item = item,
+                        customItemBgColor = customItemBgColor,
+                        itemActions = itemActions,
+                        itemContent = itemContent,
+                        onTapItem = onTapItem
                     )
                 }
             }
-        }
-        else {
-            val listItem = listYama.collect(scrollConnection)
-
-            val holderHeight = Sizes.fleet_view_holder_height
-
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollConnection)
-                .drawBehind {
-                    repeat(listItem.size) { index ->
-                        drawRect(
-                            color = if (index % 2 == 0) bgPositive else bgNegative,
-                            topLeft = Offset(
-                                x = 0f,
-                                y = index * holderHeight.toPx()
-                            ),
-                            size = Size(
-                                width = this.size.width,
-                                holderHeight.toPx()
-                            )
-                        )
-                    }
-                }
-            ) {
-                listItem.forEach { item ->
-                    MarshallListItemLogic(
-                        item,
-                        customItemBgColor,
-                        itemActions,
-                        itemContent,
-                        onTapItem
-                    )
-                }
-            }
-        }
-
+        } else
+            IOSList(
+                listItem,
+                scrollConnection,
+                customItemBgColor,
+                itemActions,
+                itemContent,
+                onTapItem
+            )
 
         scrollTopBtn(scrollConnection, lazyScroll)
+    }
+}
+
+@Composable
+private fun <E> IOSList(
+    listItem: List<E>,
+    scrollConnection: ScrollState,
+    customItemBgColor: (item: E) -> Color? = { null },
+    itemActions: @Composable RowScope.(item: E) -> Unit = { },
+    itemContent: @Composable RowScope.(item: E) -> Unit,
+    onTapItem: (item: E) -> Unit = {},
+) {
+    val bgPositive: Color = YamaColor.itemColor(0)
+    val bgNegative: Color = YamaColor.itemColor(1)
+
+    Column(modifier = Modifier.verticalScroll(scrollConnection)) {
+        listItem.forEachIndexed { index, item ->
+            MarshallListItemLogic(
+                modifier = Modifier.background(if (index % 2 == 0) bgPositive else bgNegative),
+                item = item,
+                customItemBgColor = customItemBgColor,
+                itemActions = itemActions,
+                itemContent = itemContent,
+                onTapItem = onTapItem
+            )
+        }
     }
 }
 
@@ -166,19 +173,6 @@ internal fun <E> PlatformList(
         itemContent = itemContent,
         onTapItem = onTapItem
     )
-
-    /*LaunchedEffect(Unit) {
-        var firstItem: E? = null
-
-        listState
-            .onEach {
-                if (it.isNotEmpty() && firstItem != it.first()) {
-                    lazyScroll.scrollToItem(0)
-                    firstItem = it.first()
-                }
-            }
-            .launchIn(this)
-    }*/
 }
 
 @Composable
@@ -250,11 +244,11 @@ private fun <E> NList(
             val item = iterator.next()
 
             MarshallListItemLogic(
-                item,
-                customItemBgColor,
-                itemActions,
-                itemContent,
-                onTapItem
+                item = item,
+                customItemBgColor = customItemBgColor,
+                itemActions = itemActions,
+                itemContent = itemContent,
+                onTapItem = onTapItem
             )
 
             bg = if (bg == bgPositive) bgNegative else bgPositive
@@ -291,17 +285,18 @@ else
     ) {
         items(listItem.value, key = key) { item ->
             MarshallListItemLogic(
-                item,
-                customItemBgColor,
-                itemActions,
-                itemContent,
-                onTapItem
+                item = item,
+                customItemBgColor = customItemBgColor,
+                itemActions = itemActions,
+                itemContent = itemContent,
+                onTapItem = onTapItem
             )
         }
     }
 
 @Composable
 private fun <E> MarshallListItemLogic(
+    modifier: Modifier = Modifier,
     item: E,
     customItemBgColor: (item: E) -> Color? = { null },
     itemActions: @Composable RowScope.(item: E) -> Unit = { },
@@ -314,14 +309,15 @@ private fun <E> MarshallListItemLogic(
         }
     }
 
-    var showActions by remember {
+    var showActions by remember(item) {
         mutableStateOf(false)
     }
 
     Box(
+        modifier = modifier,
         contentAlignment = Alignment.CenterStart
     ) {
-        var actionsWidth by remember {
+        var actionsWidth by remember(item) {
             mutableStateOf(0)
         }
 
@@ -334,13 +330,11 @@ private fun <E> MarshallListItemLogic(
 
         Row(
             modifier = Modifier
-                .let {
-                    if (mPlatform == MPlatform.ANDROID)
-                        it.defaultMinSize(minHeight = Sizes.fleet_view_holder_height)
-                    else
-                        it.height(Sizes.fleet_view_holder_height)
+                .defaultMinSize(minHeight = Sizes.fleet_view_holder_height)
+                .drawBehind {
+                    if (bgColor != null)
+                        drawRect(bgColor!!, topLeft = Offset(x = actionsWidth.toFloat(), y = 0f))
                 }
-                .background(bgColor ?: Color.Transparent)
                 .offset { IntOffset(x = actionsWidth, y = 0) }
                 .clickable(
                     enabled = true,
@@ -384,7 +378,7 @@ internal fun RowScope.MarshalItemText(
                     drawContent()
             },
         color = color,
-        softWrap = if (mPlatform == MPlatform.ANDROID) text.contains(" ") else false,
+        softWrap = text.contains(" "),
         style = textRealStyle,
         onTextLayout = {
             if (it.didOverflowWidth)

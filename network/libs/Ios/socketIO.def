@@ -1,0 +1,3 @@
+modules = socket_IO
+package = socket_IO
+language = Objective-C

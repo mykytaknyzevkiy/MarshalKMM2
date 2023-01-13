@@ -1,6 +1,0 @@
-framework module Ios {
-  umbrella header "Ios-umbrella.h"
-
-  export *
-  module * { export * }
-}

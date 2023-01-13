@@ -83,14 +83,8 @@ class LoginViewModel : YamaViewModel(), UserDataViewModel {
     fun login(userName: String, password: String) = viewModelScope.launch {
         _currentViewState.emit(LoginViewState.Loading)
 
-        userRepository.login(
-            userName, password
-        ).also {
-            if (!it) {
-                _currentViewState.emit(LoginViewState.Error)
-                return@launch
-            }
-        }
+        prefs.userName = userName
+        prefs.userPassword = password
 
         loadData().also {
             if (!it) {

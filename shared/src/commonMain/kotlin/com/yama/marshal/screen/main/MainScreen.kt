@@ -124,6 +124,10 @@ internal class MainScreen(navigationController: NavigationController) :
         SelectCourseBox()
 
         CartMessageBox()
+
+        LaunchedEffect(Unit) {
+            viewModel.launch()
+        }
     }
 
     @Composable

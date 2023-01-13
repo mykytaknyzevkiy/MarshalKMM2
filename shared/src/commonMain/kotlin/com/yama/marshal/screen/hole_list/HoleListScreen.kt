@@ -41,7 +41,9 @@ internal class HoleListScreen(
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
         Row()
 
-        val yamaList = viewModel.holeList
+        val yamaList = remember(viewModel) {
+            viewModel.holeList
+        }
 
         PlatformList(
             listYama = yamaList,

@@ -21,3 +21,4 @@ rootProject.name = "MarshalKMM"
 include(":shared")
 include(":androidApp")
 include(":3dviewer")
+include(":network")
