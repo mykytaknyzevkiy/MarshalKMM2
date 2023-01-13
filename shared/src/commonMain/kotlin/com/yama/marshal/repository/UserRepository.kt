@@ -6,7 +6,7 @@ import com.yama.marshal.network.model.request.UserAccountLoginRequest
 import com.yama.marshal.network.service.DNAService
 import com.yama.marshal.tool.*
 
-class UserRepository {
+internal class UserRepository {
     companion object {
         private const val TAG = "UserRepository"
     }

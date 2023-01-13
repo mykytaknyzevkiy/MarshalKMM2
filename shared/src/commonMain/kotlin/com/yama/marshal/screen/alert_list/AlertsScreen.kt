@@ -5,11 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import com.yama.marshal.data.model.AlertModel
+import com.yama.marshal.network.unit.format
 import com.yama.marshal.screen.main.MainContentScreen
 import com.yama.marshal.screen.main.MainViewModel
 import com.yama.marshal.tool.PaceValueFormatter
 import com.yama.marshal.tool.Strings
-import com.yama.marshal.tool.format
 import com.yama.marshal.ui.navigation.NavArg
 import com.yama.marshal.ui.navigation.NavigationController
 import com.yama.marshal.ui.theme.YamaColor

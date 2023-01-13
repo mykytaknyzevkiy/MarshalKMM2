@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.yama.marshal.LocalAppDimens
+import com.yama.marshal.MPlatform
+import com.yama.marshal.mPlatform
 import com.yama.marshal.screen.alert_list.AlertsScreen
 import com.yama.marshal.screen.fleet_list.FleetListScreen
 import com.yama.marshal.screen.hole_list.HoleListScreen
@@ -212,6 +214,24 @@ internal class MainScreen(navigationController: NavigationController) :
                 icon = Icons.Default.Warning,
                 label = Strings.main_screen_navigation_item_alert_label
             )
+        }
+
+        if (mPlatform == MPlatform.IOS) {
+            Row(modifier = Modifier.height(Sizes.screenPadding)) {
+                Box(
+                    modifier = Modifier.fillMaxHeight().weight(1f)
+                        .background(YamaColor.fleet_navigation_card_bg)
+                )
+                Box(
+                    modifier = Modifier.fillMaxHeight().weight(1f)
+                        .background(YamaColor.hole_navigation_card_bg)
+                )
+                Box(
+                    modifier = Modifier.fillMaxHeight().weight(1f)
+                        .background(YamaColor.alert_navigation_card_bg)
+                )
+
+            }
         }
     }
 

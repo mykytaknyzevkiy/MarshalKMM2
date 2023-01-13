@@ -4,7 +4,7 @@ import com.yama.marshal.tool.isCartFlag
 import com.yama.marshal.tool.prefs
 import io.ktor.util.date.*
 
-data class CartItem(
+internal data class CartItem(
     val id: Int,
     val cartName: String,
     val idDevice: String?,
@@ -16,7 +16,7 @@ data class CartItem(
     val isFlag: Boolean = prefs.isCartFlag(id)
 )
 
-data class CartRoundItem(
+internal data class CartRoundItem(
     val id: Int? = null,
     val idCourse: String? = null,
     val cartName: String? = null,

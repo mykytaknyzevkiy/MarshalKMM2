@@ -11,7 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 
-class MapViewModel : YamaViewModel() {
+internal class MapViewModel : YamaViewModel() {
     companion object {
         private const val TAG = "MapViewModel"
     }

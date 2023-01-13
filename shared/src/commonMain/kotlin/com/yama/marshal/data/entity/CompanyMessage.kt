@@ -1,6 +1,6 @@
 package com.yama.marshal.data.entity
 
-data class CompanyMessage(
+internal data class CompanyMessage(
     val id: Int,
     val message: String
 )

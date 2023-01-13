@@ -19,7 +19,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 
-object CourseRepository : YamaRepository() {
+internal object CourseRepository : YamaRepository() {
     private const val TAG = "CompanyRepository"
 
     private val dnaService = DNAService()

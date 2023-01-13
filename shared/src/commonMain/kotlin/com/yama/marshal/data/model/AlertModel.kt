@@ -4,7 +4,7 @@ import com.yama.marshal.data.entity.GeofenceItem
 import io.ktor.util.date.*
 import kotlinx.coroutines.flow.Flow
 
-sealed class AlertModel(
+internal sealed class AlertModel(
     open val id: Int,
     open val courseID: String,
     open val date: GMTDate,

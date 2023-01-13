@@ -10,6 +10,17 @@ tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
 }
 
+tasks.register("upload_all") {
+    this.finalizedBy(":androidApp:assembleRelease")
+    //this.finalizedBy(":androidApp:appDistributionUploadRelease")
+
+    exec {
+        workingDir = File(rootDir, "iosApp")
+        commandLine("xcodebuild", "-scheme", "iosApp", "archive")
+
+    }
+}
+
 buildscript {
     dependencies {
         classpath("com.google.gms:google-services:4.3.14")

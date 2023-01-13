@@ -4,7 +4,9 @@ import com.appmattus.crypto.Algorithm
 import io.ktor.util.date.*
 import io.ktor.utils.io.charsets.*
 import io.ktor.utils.io.core.*
+import kotlin.native.concurrent.ThreadLocal
 
+@ThreadLocal
 object AuthManager {
     private const val slash = "/"
     private const val APIVersion = "1.0"
@@ -21,20 +23,7 @@ object AuthManager {
     const val MARSHAL_NOTIFICATION_PORT = 9001
 
     var userName: String? = null
-        set(value) {
-            field = if (value != null)
-                value
-            else
-                null
-        }
-
     var userSecret: String? = null
-        set(value) {
-            field = if (value != null)
-                value
-            else
-                null
-        }
 
     fun getUrlForAction(action: Action): String {
         val urlBuilder = StringBuilder()

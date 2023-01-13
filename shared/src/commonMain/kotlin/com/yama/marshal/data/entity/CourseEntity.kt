@@ -1,6 +1,6 @@
 package com.yama.marshal.data.entity
 
-data class CourseEntity internal constructor(
+internal data class CourseEntity constructor(
     val id: String,
     val courseName: String,
     val defaultCourse: Int = 0,

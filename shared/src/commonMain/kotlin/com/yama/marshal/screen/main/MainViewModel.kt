@@ -3,6 +3,8 @@ package com.yama.marshal.screen.main
 import com.yama.marshal.data.model.CartFullDetail
 import com.yama.marshal.data.model.CartMessageModel
 import com.yama.marshal.data.model.CourseFullDetail
+import com.yama.marshal.network.unit.format
+import com.yama.marshal.network.unit.isBeforeDate
 import com.yama.marshal.repository.CartRepository
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.repository.CourseRepository
@@ -17,7 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-interface SortType {
+internal interface SortType {
     val label: String
     val weight: Float
 
@@ -44,13 +46,13 @@ interface SortType {
     }
 }
 
-sealed class MainFullReloadState {
+internal sealed class MainFullReloadState {
     object Empty : MainFullReloadState()
 
     object Loading : MainFullReloadState()
 }
 
-class MainViewModel : YamaViewModel(), UserDataViewModel {
+internal class MainViewModel : YamaViewModel(), UserDataViewModel {
     override val userRepository: UserRepository = UserRepository()
 
     val clock = flow {

@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 
-object CompanyRepository : CoroutineScope {
+internal object CompanyRepository : CoroutineScope {
     private const val TAG = "CompanyRepository"
 
     override val coroutineContext: CoroutineContext = Dispatchers.Default

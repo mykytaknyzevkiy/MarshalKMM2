@@ -1,6 +1,6 @@
 package com.yama.marshal.data.model
 
-sealed class CartMessageModel(
+internal sealed class CartMessageModel(
     open val cartID: Int,
     open val message: String
 ) {

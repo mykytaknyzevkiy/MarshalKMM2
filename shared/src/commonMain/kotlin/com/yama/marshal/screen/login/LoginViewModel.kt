@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-interface UserDataViewModel {
+internal interface UserDataViewModel {
     val userRepository: UserRepository
     
     suspend fun loadData(): Boolean {
@@ -66,14 +66,14 @@ interface UserDataViewModel {
     }
 }
 
-sealed class LoginViewState {
+internal sealed class LoginViewState {
     object Empty: LoginViewState()
     object Loading: LoginViewState()
     object Error: LoginViewState()
     object OK: LoginViewState()
 }
 
-class LoginViewModel : YamaViewModel(), UserDataViewModel {
+internal class LoginViewModel : YamaViewModel(), UserDataViewModel {
     private val _currentViewState = MutableStateFlow<LoginViewState>(LoginViewState.Empty)
     val currentState: StateFlow<LoginViewState>
         get() = _currentViewState

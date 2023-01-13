@@ -5,12 +5,12 @@ import androidx.compose.runtime.remember
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-data class NavArg(
+internal data class NavArg(
     internal val key: String,
     internal val value: Any?
 )
 
-data class StackRoute internal constructor(
+internal data class StackRoute internal constructor(
     val route: String,
     val args: List<NavArg>
 )
@@ -20,7 +20,7 @@ internal fun rememberNavController(currentRoute: String): NavigationController {
     return remember { NavigationController(currentRoute) }
 }
 
-class NavigationController constructor(currentRoute: String) {
+internal class NavigationController constructor(currentRoute: String) {
     private val stackRoutes = linkedSetOf<StackRoute>()
 
     private val _currentState = MutableStateFlow(StackRoute(route = currentRoute, args = emptyList()))
@@ -49,8 +49,8 @@ class NavigationController constructor(currentRoute: String) {
     fun isBackStackEmpty() = stackRoutes.isEmpty()
 }
 
-fun List<NavArg>.findInt(key: String): Int? =
+internal fun List<NavArg>.findInt(key: String): Int? =
     this.find { it.key == key }?.value.let { if (it == null) null else it as Int }
 
-fun List<NavArg>.findString(key: String): String? =
+internal fun List<NavArg>.findString(key: String): String? =
     this.find { it.key == key }?.value.let { if (it == null) null else it as String }

@@ -23,7 +23,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlin.coroutines.CoroutineContext
 
-object MarshalNotificationService : CoroutineScope {
+internal object MarshalNotificationService : CoroutineScope {
     private const val TAG = "MarshalNotificationService"
 
     private val job = Job()

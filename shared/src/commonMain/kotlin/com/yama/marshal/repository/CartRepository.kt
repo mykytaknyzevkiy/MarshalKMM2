@@ -13,13 +13,13 @@ import com.yama.marshal.network.model.request.CartShutdownRequest
 import com.yama.marshal.network.model.request.CompanyCartsRoundDetailsRequest
 import com.yama.marshal.network.service.DNAService
 import com.yama.marshal.network.unit.AuthManager
+import com.yama.marshal.network.unit.parseDate
 import com.yama.marshal.repository.unit.YamaRepository
 import com.yama.marshal.tool.*
-import io.ktor.util.date.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
-object CartRepository: YamaRepository() {
+internal object CartRepository: YamaRepository() {
     private const val TAG = "CartRepository"
 
     private val dnaService = DNAService()

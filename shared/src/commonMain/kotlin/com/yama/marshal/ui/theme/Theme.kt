@@ -70,7 +70,7 @@ internal object Sizes {
         get() = dimensions.fleet_view_holder_height
 }
 
-sealed class Dimensions(
+internal sealed class Dimensions(
     val bodyLarge: TextUnit = 22.sp,
 
     val bodySmall: TextUnit = 16.sp,

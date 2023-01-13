@@ -21,6 +21,6 @@ class MainActivity : ComponentActivity() {
     )
     override fun onBackPressed() {
         //super.onBackPressed()
-        AppDelegate.onBackPresse()
+        AppDelegate.onBackPress()
     }
 }

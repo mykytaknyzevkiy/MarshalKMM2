@@ -1,6 +1,6 @@
 package com.yama.marshal.data.entity
 
-data class HoleEntity(
+internal data class HoleEntity(
     val id: Int,
     val idCourse: String,
     val defaultPace: Int,

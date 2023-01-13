@@ -7,7 +7,8 @@ import com.yama.marshal.screen.main.SortType.SortHole
 import com.yama.marshal.screen.main.SortType.SortHole.HOLE
 import com.yama.marshal.screen.main.SortType.SortHole.PACE_OF_PLAY
 
-class FleetSorter(private val sortFleet: SortFleet, private val desc: Boolean) : Comparator<CartFullDetail> {
+internal class FleetSorter(private val sortFleet: SortFleet, private val desc: Boolean) :
+    Comparator<CartFullDetail> {
     override fun compare(a: CartFullDetail, b: CartFullDetail): Int {
         return if (a.isFlag && !b.isFlag)
             -1
@@ -45,7 +46,7 @@ class FleetSorter(private val sortFleet: SortFleet, private val desc: Boolean) :
     private fun byCardName(a: CartFullDetail, b: CartFullDetail): Int {
         return byString(a.cartName, b.cartName)
     }
-    
+
     private fun byStartTime(a: CartFullDetail, b: CartFullDetail): Int {
         if (a.state == CartFullDetail.State.inUse && b.state == CartFullDetail.State.inUse) {
             if (a.startTime == b.startTime)
@@ -123,7 +124,7 @@ class FleetSorter(private val sortFleet: SortFleet, private val desc: Boolean) :
             0
         else if (a.currPosHole == null && b.currPosHole == null)
             0
-        else if (a.currPosHole!! < b.currPosHole!! )
+        else if (a.currPosHole!! < b.currPosHole!!)
             -1
         else {
             1
@@ -151,22 +152,24 @@ class FleetSorter(private val sortFleet: SortFleet, private val desc: Boolean) :
     }
 }
 
-class HoleSorter(private val sortHole: SortHole, private val desc: Boolean) : Comparator<CourseFullDetail.HoleData> {
-    override fun compare(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int = when (sortHole) {
-        HOLE -> byID(a, b).let {
-            if (desc)
-                it * -1
-            else
-                it
-        }
+internal class HoleSorter(private val sortHole: SortHole, private val desc: Boolean) :
+    Comparator<CourseFullDetail.HoleData> {
+    override fun compare(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int =
+        when (sortHole) {
+            HOLE -> byID(a, b).let {
+                if (desc)
+                    it * -1
+                else
+                    it
+            }
 
-        PACE_OF_PLAY -> holeByPaceOfPlay(a, b).let {
-            if (desc)
-                it * -1
-            else
-                it
+            PACE_OF_PLAY -> holeByPaceOfPlay(a, b).let {
+                if (desc)
+                    it * -1
+                else
+                    it
+            }
         }
-    }
 
     private fun byID(a: CourseFullDetail.HoleData, b: CourseFullDetail.HoleData): Int {
         return if (a.holeNumber < b.holeNumber)

@@ -2,11 +2,11 @@ package com.yama.marshal.data.entity
 
 import io.ktor.util.date.*
 
-enum class AlertType {
+internal enum class AlertType {
     Pace, Battery, Fence
 }
 
-data class AlertEntity(
+internal data class AlertEntity(
     val id: Int = 0,
     val courseID: String,
     val date: GMTDate,

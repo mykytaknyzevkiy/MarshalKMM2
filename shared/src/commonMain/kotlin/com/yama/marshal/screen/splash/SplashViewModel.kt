@@ -13,7 +13,7 @@ sealed class SplashViewState {
     object OK: SplashViewState()
 }
 
-class SplashViewModel : YamaViewModel(), UserDataViewModel {
+internal class SplashViewModel : YamaViewModel(), UserDataViewModel {
     private val _currentViewState = MutableStateFlow<SplashViewState>(
         SplashViewState.Loading
     )

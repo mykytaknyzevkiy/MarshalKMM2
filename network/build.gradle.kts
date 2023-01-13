@@ -7,14 +7,14 @@ plugins {
 kotlin {
     android()
 
-    iosArm64() {
+    iosArm64 {
+        val socketIOFramework = File(rootDir, "network/libs/Ios/socket_IO/ios-arm64").absolutePath
+        val rocketFramework = File(rootDir, "network/libs/Ios/SocketRocket/ios-arm64").absolutePath
+
+        val socketFrameworkCompilerLinkerOpts = listOf("-framework", "socket_IO", "-F$socketIOFramework")
+        val rocketFrameworkCompilerLinkerOpts = listOf("-framework", "socket_IO", "-F$rocketFramework")
+
         compilations.getByName("main") {
-            val socketIOFramework = File(projectDir, "libs/Ios/socket_IO/ios-arm64").absolutePath
-            val rocketFramework = File(projectDir, "libs/Ios/SocketRocket/ios-arm64").absolutePath
-
-            val socketFrameworkCompilerLinkerOpts = listOf("-framework", "socket_IO", "-F$socketIOFramework")
-            val rocketFrameworkCompilerLinkerOpts = listOf("-framework", "socket_IO", "-F$rocketFramework")
-
             val socketIO by cinterops.creating {
                 // Path to .def file
                 defFile("libs/Ios/socketIO.def")
@@ -22,11 +22,13 @@ kotlin {
                 compilerOpts(socketFrameworkCompilerLinkerOpts)
                 compilerOpts(rocketFrameworkCompilerLinkerOpts)
             }
+        }
 
-            binaries.all {
-                linkerOpts(socketFrameworkCompilerLinkerOpts)
-                linkerOpts(rocketFrameworkCompilerLinkerOpts)
-            }
+        binaries.framework {
+            isStatic = true
+
+            linkerOpts(socketFrameworkCompilerLinkerOpts)
+            linkerOpts(rocketFrameworkCompilerLinkerOpts)
         }
     }
 

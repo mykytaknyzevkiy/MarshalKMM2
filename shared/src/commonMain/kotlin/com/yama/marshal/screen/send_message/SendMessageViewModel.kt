@@ -1,6 +1,5 @@
 package com.yama.marshal.screen.send_message
 
-import androidx.compose.runtime.mutableStateListOf
 import com.yama.marshal.data.entity.CompanyMessage
 import com.yama.marshal.repository.CompanyRepository
 import com.yama.marshal.screen.YamaViewModel
@@ -10,13 +9,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-sealed class SendMessageViewState {
+internal sealed class SendMessageViewState {
     object Empty: SendMessageViewState()
     object Loading: SendMessageViewState()
     object Success: SendMessageViewState()
 }
 
-class SendMessageViewModel : YamaViewModel() {
+internal class SendMessageViewModel : YamaViewModel() {
     private val _messagesList = MutableStateFlow<List<CompanyMessage>>(emptyList())
     val messages: StateFlow<List<CompanyMessage>>
         get() = _messagesList

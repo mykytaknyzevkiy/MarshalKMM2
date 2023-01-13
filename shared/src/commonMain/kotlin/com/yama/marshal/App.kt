@@ -14,6 +14,7 @@ import com.yama.marshal.ui.theme.Dimensions
 import com.yama.marshal.ui.theme.YamaTheme
 import com.yama.marshal.ui.tool.screenSize
 import com.yama.marshal.ui.view.NavHost
+import kotlin.native.concurrent.ThreadLocal
 
 internal val LocalAppDimens = compositionLocalOf<Dimensions> { Dimensions.Phone }
 
@@ -26,8 +27,9 @@ internal fun ProvideDimens(
     CompositionLocalProvider(LocalAppDimens provides dimensionSet, content = content)
 }
 
+@ThreadLocal
 object AppDelegate {
-    lateinit var onBackPresse: () -> Unit
+    lateinit var onBackPress: () -> Unit
 }
 
 @Composable
@@ -58,7 +60,7 @@ internal fun App() {
         }
     }
 
-    AppDelegate.onBackPresse = {
+    AppDelegate.onBackPress = {
         navigationController.popBack()
     }
 
