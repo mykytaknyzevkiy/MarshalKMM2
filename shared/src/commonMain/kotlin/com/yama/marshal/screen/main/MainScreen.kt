@@ -183,13 +183,6 @@ internal class MainScreen(navigationController: NavigationController) :
     override fun bottomBar() {
         val dimensions = LocalAppDimens.current
 
-        val navColors = NavigationBarItemDefaults.colors(
-            selectedIconColor = Color.Black,
-            selectedTextColor = Color.White,
-            unselectedIconColor = Color.White,
-            unselectedTextColor = Color.White
-        )
-
         BottomAppBar(
             modifier = Modifier.let {
                 if (dimensions !is Dimensions.Tablet)
@@ -199,77 +192,70 @@ internal class MainScreen(navigationController: NavigationController) :
             },
             contentPadding = PaddingValues(0.dp),
         ) {
-            val currentRoute by mainNavigationController.currentRoute.collectAsState()
-
-            NavigationBarItem(
-                selected = currentRoute.route == FleetListScreen.ROUTE,
-                modifier = Modifier.background(YamaColor.fleet_navigation_card_bg),
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.DirectionsCar,
-                        contentDescription = null
-                    )
-                },
-                label = if (dimensions is Dimensions.Tablet) {
-                    {
-                        Text(
-                            Strings.main_screen_navigation_item_fleet_label.uppercase()
-                        )
-                    }
-                } else null,
-                onClick = {
-                    mainNavigationController.navigateTo(FleetListScreen.ROUTE)
-                },
-                colors = navColors,
-                alwaysShowLabel = true
+            BottomNavigationItem(
+                route = FleetListScreen.ROUTE,
+                color = YamaColor.fleet_navigation_card_bg,
+                icon = Icons.Default.DirectionsCar,
+                label = Strings.main_screen_navigation_item_fleet_label
             )
 
-            NavigationBarItem(
-                selected = currentRoute.route == HoleListScreen.ROUTE,
-                modifier = Modifier.background(YamaColor.hole_navigation_card_bg),
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.GolfCourse,
-                        contentDescription = null
-                    )
-                },
-                label = if (dimensions is Dimensions.Tablet) {
-                    {
-                        Text(
-                            Strings.main_screen_navigation_item_hole_label.uppercase()
-                        )
-                    }
-                } else null,
-                onClick = {
-                    mainNavigationController.navigateTo(HoleListScreen.ROUTE)
-                },
-                colors = navColors,
-                alwaysShowLabel = true
+            BottomNavigationItem(
+                route = HoleListScreen.ROUTE,
+                color = YamaColor.hole_navigation_card_bg,
+                icon = Icons.Default.GolfCourse,
+                label = Strings.main_screen_navigation_item_hole_label
             )
 
-            NavigationBarItem(
-                selected = currentRoute.route == AlertsScreen.ROUTE,
-                modifier = Modifier.background(YamaColor.alert_navigation_card_bg),
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Warning,
-                        contentDescription = null
-                    )
-                },
-                label = if (dimensions is Dimensions.Tablet) {
-                    {
-                        Text(
-                            Strings.main_screen_navigation_item_alert_label.uppercase()
-                        )
-                    }
-                } else null,
-                onClick = {
-                    mainNavigationController.navigateTo(AlertsScreen.ROUTE)
-                },
-                colors = navColors,
-                alwaysShowLabel = true
+            BottomNavigationItem(
+                route = AlertsScreen.ROUTE,
+                color = YamaColor.alert_navigation_card_bg,
+                icon = Icons.Default.Warning,
+                label = Strings.main_screen_navigation_item_alert_label
             )
         }
+    }
+
+    @Composable
+    private fun RowScope.BottomNavigationItem(
+        route: String,
+        color: Color,
+        icon: ImageVector,
+        label: String
+    ) {
+        val dimensions = LocalAppDimens.current
+
+        val navColors = NavigationBarItemDefaults.colors(
+            selectedIconColor = Color.Black,
+            selectedTextColor = Color.White,
+            unselectedIconColor = Color.White,
+            unselectedTextColor = Color.White
+        )
+
+        val currentRoute by mainNavigationController.currentRoute.collectAsState()
+
+        NavigationBarItem(
+            selected = currentRoute.route == route,
+            modifier = Modifier.background(color),
+            icon = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null
+                    )
+
+                    if (dimensions is Dimensions.Tablet)
+                        Text(
+                            label.uppercase(),
+                            modifier = Modifier.padding(horizontal = Sizes.screenPadding / 2)
+                        )
+                }
+            },
+            onClick = {
+                mainNavigationController.navigateTo(route)
+            },
+            colors = navColors,
+            alwaysShowLabel = true
+        )
     }
 
     override val isToolbarEnable: Boolean = true
