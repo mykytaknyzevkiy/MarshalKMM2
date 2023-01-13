@@ -12,11 +12,15 @@ tasks.register("clean", Delete::class) {
 
 tasks.register("upload_all") {
     this.finalizedBy(":androidApp:assembleRelease")
-    //this.finalizedBy(":androidApp:appDistributionUploadRelease")
+    this.finalizedBy(":androidApp:appDistributionUploadRelease")
 
     exec {
         workingDir = File(rootDir, "iosApp")
+
+        commandLine("/usr/libexec/PlistBuddy", "-c", "Set :CFBundleVersion ${Config.version_build}", "iosApp/Info.plist")
+
         commandLine("xcodebuild", "-scheme", "iosApp", "archive")
+
 
     }
 }
