@@ -105,7 +105,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
 
     internal val fleetList = CartRepository
         .cartList
-        //.filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
+        .filterList { it.lastActivity?.isBeforeDate(GMTDate()) == false }
         .combine(_selectedCourse) { a, b ->
             if (b?.id.isNullOrBlank())
                 a
@@ -115,7 +115,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
         .combine(_currentFleetSort) { a, b ->
             a.sortedWith(FleetSorter(b.first, b.second))
         }
-        .toStateList()
+        .toStateList(this.viewModelScope)
 
     internal val holeList = CourseRepository
         .holeList
@@ -128,7 +128,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
         .combine(_currentHoleSort) { a, b ->
             a.sortedWith(HoleSorter(b.first, b.second))
         }
-        .toStateList()
+        .toStateList(this.viewModelScope)
 
     internal val alertList = CompanyRepository
         .alerts
@@ -142,8 +142,7 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
             it.reversed()
         }
         .flowOn(Dispatchers.Default)
-        .toStateList()
-
+        .toStateList(this.viewModelScope)
 
     fun updateSort(type: SortType.SortFleet) {
         _currentFleetSort.value = Pair(
@@ -190,6 +189,12 @@ class MainViewModel : YamaViewModel(), UserDataViewModel {
         loadData()
 
         _fullReloadState.emit(MainFullReloadState.Empty)
+    }
+
+    fun launch() {
+        fleetList.launch()
+        holeList.launch()
+        alertList.launch()
     }
 
     override fun onClear() {

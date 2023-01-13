@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Marshal</string>
+
+    <string name="login_screen_text_field_username_label">Login</string>
+    <string name="login_screen_text_field_password_label">Password</string>
+    <string name="login_screen_button_login_label">Log in</string>
+
+    <string name="main_screen_navigation_item_fleet_label">Fleet</string>
+    <string name="main_screen_navigation_item_hole_label">Hole</string>
+    <string name="main_screen_navigation_item_alert_label">Alert</string>
+
+    <string name="fleet_list_screen_title">Fleet</string>
+    <string name="fleet_list_screen_table_row_car_label">Car</string>
+    <string name="fleet_list_screen_table_row_start_time_label">Start time</string>
+    <string name="fleet_list_screen_table_row_place_of_place_label">Pace of play</string>
+    <string name="fleet_list_screen_table_row_hole_label">Hole</string>
+
+    <string name="fleet_view_holder_car_no_active">Car not in use</string>
+
+    <string name="on_pace">On Pace</string>
+    <string name="mins">mins</string>
+    <string name="min">min</string>
+    <string name="behind">behind</string>
+    <string name="ahead">ahead</string>
+    <string name="pace">pace</string>
+    <string name="of_pace">of pace</string>
+    <string name="current_pace">current pace</string>
+    <string name="clubhouse">CH</string>
+    <string name="cart_not_in_use_ended_round">Car not in use - Recently ended round"</string>
+    <string name="cart_not_in_use">Car not in use</string>
+
+
+
+
+
+</resources>

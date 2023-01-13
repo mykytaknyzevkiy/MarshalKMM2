@@ -50,7 +50,9 @@ internal class FleetListScreen(
     override fun content(args: List<NavArg>) = Column(modifier = Modifier.fillMaxSize()) {
         Row()
 
-        val yamaList = viewModel.fleetList
+        val yamaList = remember(viewModel) {
+            viewModel.fleetList
+        }
 
         PlatformList(
             listYama = yamaList,
@@ -174,54 +176,38 @@ internal class FleetListScreen(
         MarshalItemDivider()
 
         MarshalItemText(
-            text = remember {
-                derivedStateOf {
-                    if ((item.state != CartFullDetail.State.inUse || item.isOnClubHouse)
-                        && item.returnAreaSts != 0
-                    ) {
-                        if (item.isOnClubHouse) Strings.cart_not_in_use_ended_round
-                        else Strings.cart_not_in_use
-                    } else item.startTime.let {
-                        it?.format("h:mm a") ?: Strings.cart_not_in_use
-                    }
-                }
-            }.value,
+            text = if ((item.state != CartFullDetail.State.inUse || item.isOnClubHouse)
+                && item.returnAreaSts != 0
+            ) {
+                if (item.isOnClubHouse) Strings.cart_not_in_use_ended_round
+                else Strings.cart_not_in_use
+            } else item.startTime.let {
+                it?.format("h:mm a") ?: Strings.cart_not_in_use
+            },
             weight = SortType.SortFleet.START_TIME.weight
         )
 
         MarshalItemDivider()
 
         MarshalItemText(
-            text = remember {
-                derivedStateOf {
-                    if (item.startTime == null || item.totalNetPace == null) "---"
-                    else PaceValueFormatter.getString(
-                        item.totalNetPace, PaceValueFormatter.PaceType.Short
-                    )
-                }
-            }.value,
+            text = if (item.startTime == null || item.totalNetPace == null) "---"
+            else PaceValueFormatter.getString(
+                item.totalNetPace, PaceValueFormatter.PaceType.Short
+            ),
             weight = SortType.SortFleet.PLACE_OF_PLAY.weight,
-            color = remember {
-                derivedStateOf {
-                    PaceValueFormatter.getColor(
-                        item.totalNetPace ?: 0
-                    )
-                }
-            }.value
+            color = PaceValueFormatter.getColor(
+                item.totalNetPace ?: 0
+            )
         )
 
         MarshalItemDivider()
 
         MarshalItemText(
-            text = remember {
-                derivedStateOf {
-                    item.returnAreaSts.let { returnAreaSts ->
-                        if (returnAreaSts == 0) if (item.startTime == null || item.currPosHole == null || item.currPosHole == -1) "---" else item.currPosHole.toString()
-                        else if (item.isOnClubHouse) Strings.clubhouse
-                        else "---"
-                    }
-                }
-            }.value,
+            text = item.returnAreaSts.let { returnAreaSts ->
+                if (returnAreaSts == 0) if (item.startTime == null || item.currPosHole == null || item.currPosHole == -1) "---" else item.currPosHole.toString()
+                else if (item.isOnClubHouse) Strings.clubhouse
+                else "---"
+            },
             weight = SortType.SortFleet.HOLE.weight
         )
     }

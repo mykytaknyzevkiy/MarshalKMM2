@@ -12,8 +12,7 @@
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/Theme.YamaScoreBoard"
         android:usesCleartextTraffic="true"
-        tools:replace="android:supportsRtl"
-        android:hardwareAccelerated="false">
+        tools:replace="android:supportsRtl">
 
         <activity
             android:name="com.yama.marshal_app.MainActivity"

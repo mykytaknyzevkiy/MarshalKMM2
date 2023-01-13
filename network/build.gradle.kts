@@ -1,37 +1,37 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("native.cocoapods")
     id("com.android.library")
     kotlin("plugin.serialization")
 }
 
 kotlin {
     android()
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
 
-    cocoapods {
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
-        version = "1.0"
+    iosArm64() {
+        compilations.getByName("main") {
+            val socketIOFramework = File(projectDir, "libs/Ios/socket_IO/ios-arm64").absolutePath
+            val rocketFramework = File(projectDir, "libs/Ios/SocketRocket/ios-arm64").absolutePath
 
-        ios.deploymentTarget = "14.1"
+            val socketFrameworkCompilerLinkerOpts = listOf("-framework", "socket_IO", "-F$socketIOFramework")
+            val rocketFrameworkCompilerLinkerOpts = listOf("-framework", "socket_IO", "-F$rocketFramework")
 
-        specRepos {
-            url("https://github.com/Kotlin/kotlin-cocoapods-spec.git")
+            val socketIO by cinterops.creating {
+                // Path to .def file
+                defFile("libs/Ios/socketIO.def")
+
+                compilerOpts(socketFrameworkCompilerLinkerOpts)
+                compilerOpts(rocketFrameworkCompilerLinkerOpts)
+            }
+
+            binaries.all {
+                linkerOpts(socketFrameworkCompilerLinkerOpts)
+                linkerOpts(rocketFrameworkCompilerLinkerOpts)
+            }
         }
-
-        framework {
-            baseName = "network"
-        }
-
-        pod(name = "Ios", path = File(projectDir, "libs/Ios"))
     }
-    
+
     sourceSets {
         val ktorVersion = "2.1.3"
-
 
         val commonMain by getting {
             dependencies {
@@ -42,24 +42,25 @@ kotlin {
             }
         }
 
-
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
-                implementation(fileTree(mapOf("dir" to "libs/android", "include" to listOf("*.jar"))))
+                implementation(
+                    fileTree(
+                        mapOf(
+                            "dir" to "libs/android",
+                            "include" to listOf("*.jar")
+                        )
+                    )
+                )
             }
         }
 
-        val iosX64Main by getting
         val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-
         val iosMain by creating {
             dependsOn(commonMain)
 
-            iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
 
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
